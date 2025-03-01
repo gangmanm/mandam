@@ -1,11 +1,11 @@
-import { useState } from 'react'
-import * as S from "./styles/App"
 import { ThemeProvider } from 'styled-components'
 import { theme } from './styles/theme'
 import List from './pages/List'
 import Main from './pages/Main'
-
+import SignUp from './pages/SignUp'
+import SignIn from './pages/SignIn'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 
 const AppContent = () => {
   return (
@@ -14,6 +14,8 @@ const AppContent = () => {
         <Routes>
          <Route path="/" element={<Main />} />  
          <Route path="/list" element={<List />} />
+         <Route path="/signup" element={<SignUp />} />
+         <Route path="/signin" element={<SignIn />} />
         </Routes>
       </BrowserRouter>
     </>

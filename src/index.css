@@ -47,6 +47,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box; 
+  font-family: "Paperlogy", "Pretendard", Arial, Helvetica, sans-serif;
 }
 
 html, body {
@@ -57,10 +58,15 @@ html, body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  background-color: #000000;
 }
 
 input, textarea {
   all: unset; 
   font-family: inherit; 
   font-size: inherit; 
+}
+
+input {
+  width: 100%;
 }
