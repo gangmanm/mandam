@@ -1,9 +1,9 @@
 import * as S from "../styles/pages/post";
-import Header from "../components/Header";
 import { useState, useRef } from "react";
 import { FaFileUpload, FaPlus } from "react-icons/fa";
 import * as H from "../styles/components/header";
 import { createPost } from "../api/post";
+import Preview from "./Preview";
 
 export default function Post() {
   const [file, setFile] = useState<File | null>(null);
@@ -60,6 +60,8 @@ export default function Post() {
     }
   };
 
+  const [youtubeLink, setYoutubeLink] = useState("");
+
   const handleModalOpen = () => {
     setIsModalOpen(true);
   };
@@ -84,7 +86,7 @@ export default function Post() {
       <S.ContentContainer>
         <S.YoutubeContainer>
           <S.Label>유튜브 영상 링크</S.Label>
-          <S.Input placeholder="유튜브 영상 링크를 입력해주세요." />
+          <S.Input value={youtubeLink} onChange={(e) => setYoutubeLink(e.target.value)} placeholder="유튜브 영상 링크를 입력해주세요." />
         </S.YoutubeContainer>
 
         <S.FileInput onDrop={handleDrop} onClick={handleClick}>
@@ -132,13 +134,6 @@ export default function Post() {
                 >
                   X
                 </S.CharacterRemoveButton>
-
-                <input
-                  type="file"
-                  onChange={(e) => handleCharacterImageChange(e, index)}
-                  ref={(el) => (characterImageInputRefs.current[index] = el)}
-                  style={{ display: "none" }}
-                />
               </S.CharacterBoxItem>
             ))}
           </S.CharcterContainer>
@@ -146,6 +141,9 @@ export default function Post() {
       </S.ContentContainer>
       {isModalOpen && <CharacterAddModal onAddCharacter={handleAddCharacter} handleModalClose={handleModalClose} />}
       </S.LeftContainer>
+      <S.RightContainer>
+        <Preview youtubeLink={youtubeLink} srtFile={file as File} characterImages={characterImages} />
+      </S.RightContainer>
     
     </S.Container>
   );

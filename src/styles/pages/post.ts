@@ -12,9 +12,15 @@ export const Container = styled.div`
   @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
     width: 100vw;
     height: 100vh;
+    flex-direction: column;
+    align-items: center;
+    overflow: scroll;
+  }
+
+  &::-webkit-scrollbar {
+    display: none;
   }
 `;
-
 
 export const LeftContainer = styled.div`
   width: 50%;
@@ -23,6 +29,10 @@ export const LeftContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
+    width: 100%;
+  }
 `;
 
 export const HeaderContainer = styled.div`
@@ -65,7 +75,6 @@ export const Label = styled.label`
   background-color: #e63946;
 `;
 
-
 export const Input = styled.input`
   width: calc(100% - 40px);
   padding: 10px;
@@ -80,7 +89,6 @@ export const Input = styled.input`
 
   color: black;
 `;
-
 
 export const FileInput = styled.div`
   width: 100%;
@@ -99,7 +107,6 @@ export const FileInput = styled.div`
     background-color: rgba(255, 255, 255, 0.1);
   }
 `;
-
 
 export const FileInputInput = styled.input`
   display: none;
@@ -121,7 +128,6 @@ export const CharacterBox = styled.div`
   margin-top: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 `;
-
 
 export const CharacterBoxTitle = styled.div`
   width: 100%;
@@ -281,5 +287,19 @@ export const CancelButton = styled.button`
 
   &:hover {
     background-color: #d62839;
+  }
+`;
+
+export const RightContainer = styled.div`
+  width: 50%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
+    width: 100%;
+    min-height: 700px;
   }
 `;

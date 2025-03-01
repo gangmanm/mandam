@@ -1,5 +1,5 @@
 export function sendEmail(email: string) {
-    fetch('http://localhost:5017/send-code', {
+    fetch('http://localhost:5017/auth/send-code', {
         method: 'POST',
         mode: 'cors', // CORS 문제를 해결하기 위한 설정
         headers: {
@@ -20,7 +20,7 @@ export function sendEmail(email: string) {
 
 export async function verifyCode(email: string, code: string) {
     try {
-        const response = await fetch('http://localhost:5017/verify-code', {
+        const response = await fetch('http://localhost:5017/auth/verify-code', {
             method: 'POST',
             mode: 'cors', // CORS 문제를 해결하기 위한 설정
             headers: {
@@ -41,7 +41,7 @@ export async function verifyCode(email: string, code: string) {
 
 export async function storeSignUp(email: string, password: string, username: string) {
     try {
-        const response = await fetch('http://localhost:5017/store-signup', {
+        const response = await fetch('http://localhost:5017/auth/store-signup', {
             method: 'POST',
             mode: 'cors', // CORS 문제를 해결하기 위한 설정
             headers: {
@@ -63,7 +63,7 @@ export async function storeSignUp(email: string, password: string, username: str
 
 export async function signIn(email: string, password: string) {
     try {
-        const response = await fetch('http://localhost:5017/signin', {
+        const response = await fetch('http://localhost:5017/auth/signin', {
             method: 'POST',
             mode: 'cors', // CORS 문제를 해결하기 위한 설정
             headers: {
