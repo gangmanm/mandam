@@ -60,3 +60,24 @@ export async function storeSignUp(email: string, password: string, username: str
         return false;
     }
 }
+
+export async function signIn(email: string, password: string) {
+    try {
+        const response = await fetch('http://localhost:5017/signin', {
+            method: 'POST',
+            mode: 'cors', // CORS 문제를 해결하기 위한 설정
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: email,
+                password: password
+            })
+        });
+        const data = await response.json();
+        return data.success;
+    } catch (error) {
+        console.error('Error:', error);
+        return false;
+    }
+}   

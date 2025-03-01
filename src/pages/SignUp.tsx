@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { sendEmail, verifyCode, storeSignUp } from '../api/auth';
-import * as S from '../styles/pages/SignUp';
-import { Icon } from '@material-ui/core';
+import * as S from '../styles/pages/signUp';
 import { Email, Lock, Person, VpnKey } from '@material-ui/icons';
 
 interface FormData {
@@ -36,7 +35,7 @@ const SignUp = () => {
       await sendEmail(formData.email);
       setIsEmailSent(true);
       alert('인증 코드가 이메일로 전송되었습니다.');
-    } catch (error) { l
+    } catch (error) { 
       alert('인증 코드 전송에 실패했습니다.');
     }
   };
