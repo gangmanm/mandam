@@ -229,7 +229,7 @@ export default function Preview({ youtubeLink, srtFile, characterImages }: Previ
       <S.VideoContainer tabIndex={0} onFocus={(e) => e.currentTarget.blur()}>
         {youtubeLink && (
           <YouTube
-            videoId={youtubeLink.split("v=")[1]}
+               videoId="c-k7WEnSCCU"
             opts={opts}
             onReady={onPlayerReady}
             onStateChange={onPlayerStateChange}

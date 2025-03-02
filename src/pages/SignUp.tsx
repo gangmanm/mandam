@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { sendEmail, verifyCode, storeSignUp } from '../api/auth';
-import * as S from '../styles/pages/signUp';
+import * as S from '../styles/pages/SignUp';
 
 interface FormData {
   username: string;

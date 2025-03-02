@@ -1,4 +1,4 @@
-import * as S from "../styles/pages/signIn";
+import * as S from "../styles/pages/SignIn";
 import { useState } from "react";
 import { signIn } from "../api/auth";
 import { useNavigate } from "react-router-dom";
