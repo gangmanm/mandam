@@ -3,25 +3,70 @@ interface Post  {
   File: File;
   content: string;
   youtubeUrl: string;
-  userId: string;
+  userId: number;
   text: string;
-  characters: { img: File; name: string }[];
+}
+
+interface Character {
+  img: File | null;
+  name: string; 
 }
 
 export const createPost = async (post: Post) => {
-  const formData = new FormData();
-  formData.append("title", post.title);
-  formData.append("user_id", post.userId);
-  formData.append("text", post.text);
-  formData.append("file_path", post.File);
-  formData.append("content", post.content);
-  formData.append("youtube_url", post.youtubeUrl);
-  formData.append("characters", JSON.stringify(post.characters));
+  try {
+    console.log(post);
 
-  const response = await fetch("http://localhost:5017/posts/create-post", {
-    method: "POST",
-    body: formData,
-    mode: "cors",
-  });
-  return response.json();   
+    const formData = new FormData();
+    formData.append("title", post.title);
+    formData.append("userId", 5);
+    formData.append("text", post.text);
+    
+    if (post.File instanceof File) {
+      formData.append("srtFile", post.File);
+    } else {
+      console.warn("post.File is not a valid File object.");
+    }
+
+    formData.append("content", post.content);
+    formData.append("youtube_url", post.youtubeUrl);
+
+    const response = await fetch("http://localhost:5017/posts/create-post", {
+      method: "POST",
+      body: formData,
+      mode: "cors",
+    });
+
+    if (!response.ok) {
+      throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
+    } 
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error creating post:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+export const createCharacter = async (character: Character, postId: number) => {
+  try {
+    const formData = new FormData();
+    formData.append("img", character.img as File);
+    formData.append("name", character.name);
+    formData.append("postId", postId.toString());
+
+    const response = await fetch("http://localhost:5017/posts/create-character", {
+      method: "POST",
+      body: formData,
+      mode: "cors",
+    });
+
+    if (!response.ok) {
+      throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
+    }
+
+    return await response.json(); 
+  } catch (error) {
+    console.error("Error creating character:", error);
+    return { success: false, error: error.message };
+  }
 };

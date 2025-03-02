@@ -95,3 +95,12 @@ export const SubmitButton = styled.button`
   }
 `;
 
+export const SignUpLink = styled.a`
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  color: #e0e0e0;
+  text-decoration: none;
+  font-size: 14px;
+  margin-top: 10px;
+`;

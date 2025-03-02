@@ -2,6 +2,7 @@ import * as S from "../styles/pages/SignIn";
 import { useState } from "react";
 import { signIn } from "../api/auth";
 import { useNavigate } from "react-router-dom";
+import { FaUser, FaLock } from "react-icons/fa";
 interface FormData {
   email: string;
   password: string;
@@ -39,6 +40,7 @@ const SignIn = () => {
         <S.Title>로그인</S.Title>
         <S.InputGroup>
           <S.Label>
+            <FaUser />
           </S.Label>
           <S.Input
               type="email"
@@ -52,6 +54,7 @@ const SignIn = () => {
 
         <S.InputGroup>
           <S.Label>
+            <FaLock />
           </S.Label>
           <S.Input
             type="password"
@@ -63,6 +66,7 @@ const SignIn = () => {
           />
         </S.InputGroup>
         <S.SubmitButton type="submit">로그인</S.SubmitButton>
+        <S.SignUpLink href="/signup">회원가입 &gt;</S.SignUpLink>
       </S.Form>
     </S.Container>
   );

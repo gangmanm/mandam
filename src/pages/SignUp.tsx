@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { sendEmail, verifyCode, storeSignUp } from '../api/auth';
 import * as S from '../styles/pages/SignUp';
+import { FaUser, FaLock, FaEnvelope, FaKey } from 'react-icons/fa';
 
 interface FormData {
   username: string;
@@ -84,6 +85,7 @@ const SignUp = () => {
         
         <S.InputGroup>
           <S.Label>
+            <FaUser />
           </S.Label>
           <S.Input
             type="text"
@@ -97,7 +99,8 @@ const SignUp = () => {
 
         <S.InputGroup>
           <S.Label>
-=          </S.Label>
+            <FaEnvelope />
+          </S.Label>
           <S.EmailWrapper>
             <S.Input
               type="email"
@@ -121,7 +124,7 @@ const SignUp = () => {
         {isEmailSent && (
           <S.InputGroup>
             <S.Label>
-              <VpnKey style={{ color: 'white' }} />
+              <FaKey />
             </S.Label>
             <S.EmailWrapper>
               <S.Input
@@ -146,6 +149,7 @@ const SignUp = () => {
 
         <S.InputGroup>
           <S.Label>
+            <FaLock />
           </S.Label>
           <S.Input
             type="password"
@@ -159,6 +163,7 @@ const SignUp = () => {
 
         <S.InputGroup>
           <S.Label>
+            <FaLock />
           </S.Label>
           <S.Input
             type="password"

@@ -2,9 +2,9 @@ import * as S from "../styles/pages/post";
 import { useState, useRef } from "react";
 import { FaFileUpload, FaPlus } from "react-icons/fa";
 import * as H from "../styles/components/header";
-import { createPost } from "../api/post";
+import { createPost, createCharacter } from "../api/post";
 import Preview from "./Preview";
-
+import YouTube from "react-youtube";
 export default function Post() {
   const [file, setFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -35,15 +35,16 @@ export default function Post() {
       content: "test",
       File: file as File,
       youtubeUrl: "test",
-      userId: "test",
+      userId: 5,
       text: "test",
-      characters: characters.map((character) => ({
-        img: character.img as File,
-        name: character.name,
-      })),
     };
 
     const response = await createPost(post);
+
+    characters.forEach(async (character) => {
+      await createCharacter(character, response.postId);
+    });
+
     console.log(response);
   };
 
@@ -148,7 +149,7 @@ export default function Post() {
       {isModalOpen && <CharacterAddModal onAddCharacter={handleAddCharacter} handleModalClose={handleModalClose} />}
       </S.LeftContainer>
       <S.RightContainer>
-        <Preview youtubeLink={youtubeUrl} srtFile={file as File} characterImages={characters.map((character) => ({ image: character.img as File, name: character.name }))} />
+        {youtubeUrl && <Preview youtubeLink={youtubeUrl} srtFile={file as File} characterImages={characters.map((character) => ({ image: character.img as File, name: character.name }))} />}
       </S.RightContainer>
     </S.Container>
   );
@@ -182,6 +183,8 @@ const CharacterAddModal = ({ onAddCharacter, handleModalClose }: { onAddCharacte
           <S.CharacterBoxItemNameInput type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="이름 입력" />
           <S.CancelButton onClick={() => img && name && onAddCharacter({ img , name })}>추가하기</S.CancelButton>
         </S.CharacterBox>
+
+
       </S.CharacterAddModal>
     );
   };

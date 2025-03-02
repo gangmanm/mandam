@@ -35,6 +35,8 @@ export default function Preview({ youtubeLink, srtFile, characterImages }: Previ
   const commentsContainerRef = useRef<HTMLDivElement>(null);
   const activeCommentRef = useRef<HTMLDivElement>(null);
   const [speakers, setSpeakers] = useState<Speaker[]>([]);
+  const [videoId, setVideoId] = useState<string>("");
+  const [videoStart, setVideoStart] = useState<number>(0);
 
   // SRT 타임코드를 초로 변환하는 함수
   const srtTimeToSeconds = (timeString: string): number => {
@@ -220,8 +222,19 @@ export default function Preview({ youtubeLink, srtFile, characterImages }: Previ
       disablekb: 1, // YouTube 기본 키보드 컨트롤 비활성화
       fs: 0,
       enablejsapi: 1, // JavaScript API 활성화
+      start: 100,
     },
   };
+
+
+  useEffect(() => {
+    const videoIdArray = youtubeLink.split("=");
+    setVideoId(videoIdArray[1].split("&")[0]);
+    const videoStartArray = youtubeLink.split("t=");
+    const videoStart = videoStartArray[1].split("s")[0];
+    setVideoStart(Number(videoStart));
+  }, [youtubeLink]);
+
 
   return (
     <S.MainContainer onKeyDown={(e) => e.stopPropagation()} tabIndex={-1}>
@@ -229,7 +242,7 @@ export default function Preview({ youtubeLink, srtFile, characterImages }: Previ
       <S.VideoContainer tabIndex={0} onFocus={(e) => e.currentTarget.blur()}>
         {youtubeLink && (
           <YouTube
-            videoId={youtubeLink.split("v=")[1]}
+            videoId={videoId}
             opts={opts}
             onReady={onPlayerReady}
             onStateChange={onPlayerStateChange}
