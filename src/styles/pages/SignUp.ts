@@ -45,12 +45,16 @@ export const Label = styled.label`
 export const Input = styled.input`
   width: calc(100% - 20px);
   padding: 10px;
-  border-radius: 4px;
   font-size: 16px;
 color:white;
   &:disabled {
     background-color: #555;
   }
+
+   &:-webkit-autofill {
+     -webkit-box-shadow: 0 0 0px 1000px #2a2a2a inset !important;
+    background-color: #2a2a2a; !important;
+   }
 `;
 
 export const EmailWrapper = styled.div`

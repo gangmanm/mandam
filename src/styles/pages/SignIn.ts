@@ -28,7 +28,7 @@ export const InputGroup = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 20px;
-  width: 100%;
+  width: 300px;
   background-color: #2a2a2a;
   border-radius: 8px;
   padding: 5px;
@@ -43,14 +43,23 @@ export const Label = styled.label`
 `;
 
 export const Input = styled.input`
-  width: calc(100% - 20px);
+  width: calc(100% - 20px) !important;
   padding: 10px;
-  border-radius: 4px;
-  font-size: 16px;
-color:white;
+  font-size: 14px;
+  color: white;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
   &:disabled {
     background-color: #555;
   }
+  &:focus {
+    background-color: transparent;
+  }
+  &:-webkit-autofill {
+     -webkit-box-shadow: 0 0 0px 1000px #2a2a2a inset !important;
+    background-color: #2a2a2a; !important;
+   }
 `;
 
 export const EmailWrapper = styled.div`

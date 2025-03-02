@@ -240,20 +240,26 @@ export const CharacterAddModal = styled.div`
   left: 25%;
   transform: translate(-50%, -50%);
   z-index: 1000;
-
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  background-color: #2a2a2a;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
+  top: 50%;
+    left: 50%;
+  }
 `;
 
 export const CharacterAddModalTitle = styled.div`
   width: 100%;
-  height: 50px;
+  height: 100px;
 
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  padding: 10px;
 
   color: #f1faee;
-  background-color:rgb(3, 3, 3);
+  background-color:rgb(34, 34, 34);
 `;
 
 export const CharacterBoxItemImageWrapper = styled.div`
@@ -276,18 +282,17 @@ export const CharacterBoxItemImage = styled.img`
   border-radius: 50%;
 `;
 
-export const CancelButton = styled.button`
+export const CancelButton = styled.div`
   width: 100%;
   height: 40px;
-  background-color: #e63946;
+  background-color:rgb(0, 0, 0);
   color: white;
 
-  border-radius: 5px;
-  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-  &:hover {
-    background-color: #d62839;
-  }
+  margin-top: 20px;
 `;
 
 export const RightContainer = styled.div`

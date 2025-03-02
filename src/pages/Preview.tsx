@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import * as S from "../styles/pages/preview";
 import { useSearchParams } from "next/navigation";
 import YouTube from "react-youtube";
+import { ToastContainer, toast } from "react-toastify";
 
 interface Speaker {
   name: string;
@@ -25,6 +26,8 @@ interface PreviewProps {
 }
 
 export default function Preview({ youtubeLink, srtFile, characterImages }: PreviewProps) {
+
+    console.log(youtubeLink);
 
   const [currentTime, setCurrentTime] = useState<number>(0);
   const [subtitles, setSubtitles] = useState<CommentaryItem[]>([]);
@@ -127,6 +130,8 @@ export default function Preview({ youtubeLink, srtFile, characterImages }: Previ
   // 현재 자막 업데이트
   useEffect(() => {
     if (subtitles.length > 0) {
+
+        setVideoStart(subtitles[0].startTime);
       const currentSub = subtitles.find(
         (sub) => currentTime >= sub.startTime && currentTime <= sub.endTime
       );
@@ -222,17 +227,26 @@ export default function Preview({ youtubeLink, srtFile, characterImages }: Previ
       disablekb: 1, // YouTube 기본 키보드 컨트롤 비활성화
       fs: 0,
       enablejsapi: 1, // JavaScript API 활성화
-      start: 100,
+      start: videoStart || 0,
     },
   };
 
 
   useEffect(() => {
-    const videoIdArray = youtubeLink.split("=");
-    setVideoId(videoIdArray[1].split("&")[0]);
-    const videoStartArray = youtubeLink.split("t=");
-    const videoStart = videoStartArray[1].split("s")[0];
-    setVideoStart(Number(videoStart));
+    if (youtubeLink) {
+      if (youtubeLink.includes("youtube.com")) {
+        const videoIdArray = youtubeLink.split("=");
+
+        if (youtubeLink.includes("t=")) {
+          const videoStartArray = youtubeLink.split("t=");
+          const videoStart = videoStartArray[1].split("s")[0];
+          setVideoStart(Number(videoStart));
+        }
+        setVideoId(videoIdArray[1].split("&")[0]);
+      } else {
+        toast.error("유튜브 영상 링크가 올바르지 않습니다.");
+      }
+    }
   }, [youtubeLink]);
 
 
@@ -242,18 +256,19 @@ export default function Preview({ youtubeLink, srtFile, characterImages }: Previ
       <S.VideoContainer tabIndex={0} onFocus={(e) => e.currentTarget.blur()}>
         {youtubeLink && (
           <YouTube
+            key={videoId}
             videoId={videoId}
             opts={opts}
             onReady={onPlayerReady}
             onStateChange={onPlayerStateChange}
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-          }}
-        />
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+            }}
+          />
         )}
       </S.VideoContainer>
 
@@ -288,6 +303,7 @@ export default function Preview({ youtubeLink, srtFile, characterImages }: Previ
           );
         })}
       </S.AllCommentsContainer>
+      <ToastContainer />
     </S.MainContainer>
   );
 }

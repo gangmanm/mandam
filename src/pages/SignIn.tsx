@@ -3,6 +3,8 @@ import { useState } from "react";
 import { signIn } from "../api/auth";
 import { useNavigate } from "react-router-dom";
 import { FaUser, FaLock } from "react-icons/fa";
+import { useEffect } from "react";
+import { ToastContainer, toast } from "react-toastify";
 interface FormData {
   email: string;
   password: string;
@@ -10,6 +12,15 @@ interface FormData {
 
 const SignIn = () => {
   const navigate = useNavigate();
+  const userId = localStorage.getItem("userId");
+
+  useEffect(() => {
+    if (userId) {
+      navigate("/list");
+    }
+  }, []);
+
+
   const [formData, setFormData] = useState<FormData>({
     email: "",
     password: "",
@@ -29,9 +40,8 @@ const SignIn = () => {
     if(res.success){
       localStorage.setItem("userId", res.data.uuid);
       navigate("/list");
-    }
-    else{
-      alert("로그인 실패");
+    }else{
+      toast.error("이메일과 비밀번호를 확인해주세요.");
     }
   };
 
@@ -69,6 +79,7 @@ const SignIn = () => {
         <S.SubmitButton type="submit">로그인</S.SubmitButton>
         <S.SignUpLink href="/signup">회원가입 &gt;</S.SignUpLink>
       </S.Form>
+      <ToastContainer />
     </S.Container>
   );
 };

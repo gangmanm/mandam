@@ -4,14 +4,19 @@ import { FaFileUpload, FaPlus } from "react-icons/fa";
 import * as H from "../styles/components/header";
 import { createPost, createCharacter } from "../api/post";
 import Preview from "./Preview";
-import YouTube from "react-youtube";
+import { heicTo } from "heic-to"
+import { ToastContainer, toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+
 export default function Post() {
+  const navigate = useNavigate();
   const [userId, setUserId] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [characters, setCharacters] = useState<{ img: File | null; name: string }[]>([]);
   const characterImageInputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
@@ -24,7 +29,12 @@ export default function Post() {
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
-      setFile(event.target.files[0]);
+      const selectedFile = event.target.files[0];
+      if (selectedFile.type !== "application/x-subrip") {
+        toast.error("srt 파일만 업로드할 수 있습니다.");
+        return;
+      }
+      setFile(selectedFile);
     }
   };
 
@@ -54,8 +64,6 @@ export default function Post() {
       text: "test",
     };
 
-    console.log(post);
-
     const response = await createPost(post);
 
     characters.forEach(async (character) => {
@@ -64,24 +72,8 @@ export default function Post() {
 
     console.log(response);
   };
-
-  const addCharacter = () => {
-    setCharacters((prev) => [...prev, { img: null, name: "" }]);
-  };
-
   const handleCharacterImageClick = (index: number) => {
     characterImageInputRefs.current[index]?.click();
-  };
-
-  const handleCharacterImageChange = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
-    if (event.target.files && event.target.files[0]) {
-      const newImage = event.target.files[0];
-      setCharacters((prevImages) => {
-        const updatedImages = [...prevImages];
-        updatedImages[index] = { ...updatedImages[index], img: newImage };
-        return updatedImages;
-      });
-    }
   };
 
   const [youtubeUrl, setYoutubeUrl] = useState("");
@@ -97,13 +89,14 @@ export default function Post() {
   const handleAddCharacter = (character: { img: File; name: string }) => {
     setCharacters((prev) => [...prev, { img: character.img, name: character.name }]);
     handleModalClose();
+    toast.success("영상 등장인물이 추가되었습니다.");
   };
 
   return (
     <S.Container>
       <S.LeftContainer>
       <H.HeaderContainer>
-        <H.Title>글 목록</H.Title>
+        <H.Title onClick={() => navigate("/list")}>글 목록</H.Title>
         <H.Title onClick={handleSubmit}>글 작성하기</H.Title>
       </H.HeaderContainer>
 
@@ -168,6 +161,7 @@ export default function Post() {
       <S.RightContainer>
         {youtubeUrl && <Preview youtubeLink={youtubeUrl} srtFile={file as File} characterImages={characters.map((character) => ({ image: character.img as File, name: character.name }))} />}
       </S.RightContainer>
+      <ToastContainer />
     </S.Container>
   );
 }
@@ -176,9 +170,18 @@ const CharacterAddModal = ({ onAddCharacter, handleModalClose }: { onAddCharacte
     const [name, setName] = useState("");
     const imageInputRef = useRef<HTMLInputElement | null>(null);
   
-    const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
       if (event.target.files && event.target.files[0]) {
-        setImg(event.target.files[0]);
+        if (event.target.files[0].type === "image/heic" || event.target.files[0].type === "image/heif") {
+            const jpeg = await heicTo({
+                blob: event.target.files[0],
+                type: "image/jpeg",
+                quality: 0.5
+              })
+           setImg(new File([jpeg as Blob], event.target.files[0].name.replace(/\.[^/.]+$/, ".jpg"), { type: "image/jpeg" }));
+        } else {
+            setImg(event.target.files[0]);
+        }
       }
     };
   

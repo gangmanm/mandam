@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { sendEmail, verifyCode, storeSignUp } from '../api/auth';
 import * as S from '../styles/pages/SignUp';
 import { FaUser, FaLock, FaEnvelope, FaKey } from 'react-icons/fa';
+import { ToastContainer, toast } from "react-toastify";
+import { useNavigate } from 'react-router-dom';
 
 interface FormData {
   username: string;
@@ -12,6 +14,7 @@ interface FormData {
 }
 
 const SignUp = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState<FormData>({
     username: '',
     email: '',
@@ -34,9 +37,10 @@ const SignUp = () => {
     try {
       await sendEmail(formData.email);
       setIsEmailSent(true);
-      alert('인증 코드가 이메일로 전송되었습니다.');
+      toast.success("인증 코드가 이메일로 전송되었습니다.");
     } catch (error) { 
       alert('인증 코드 전송에 실패했습니다.');
+      toast.error("인증 코드 전송에 실패했습니다.");
     }
   };
 
@@ -46,13 +50,13 @@ const SignUp = () => {
       console.log(res);
       if(res){
         setIsVerified(true);
-        alert('이메일이 인증되었습니다.');
+        toast.success("이메일이 인증되었습니다.");
       }
         else{
-          alert('인증에 실패했습니다.');
+          toast.error("인증에 실패했습니다.");
         }
     } catch (error) {
-      alert('인증에 실패했습니다.');
+      toast.error("인증에 실패했습니다.");
     }
   };
 
@@ -60,21 +64,47 @@ const SignUp = () => {
     e.preventDefault();
     
     if (!isVerified) {
-      alert('이메일 인증이 필요합니다.');
+      toast.error("이메일 인증이 필요합니다.");
       return;
     }
 
     if (formData.password !== formData.passwordConfirm) {
-      alert('비밀번호가 일치하지 않습니다.');
+      toast.error("비밀번호가 일치하지 않습니다.");
+      return;
+    }
+
+    if(formData.username === ""){
+      toast.error("닉네임을 입력해주세요.");
+      return;
+    }
+
+    if(formData.email === ""){
+      toast.error("이메일을 입력해주세요.");
+      return;
+    }
+
+    if(formData.password === "" || formData.password.length < 8){
+      toast.error("비밀번호를 8자 이상 입력해주세요.");
+      return;
+    }
+
+    if(formData.passwordConfirm === "" || formData.passwordConfirm !== formData.password){
+      toast.error("비밀번호가 일치하지 않습니다.");
       return;
     }
 
     try {
       // TODO: 회원가입 API 연동
-      await storeSignUp(formData.email, formData.password, formData.username);
-      alert('회원가입이 완료되었습니다.');
+      const res = await storeSignUp(formData.email, formData.password, formData.username);
+      console.log(res);
+      if(res.success){
+        toast.success("회원가입이 완료되었습니다.");
+        navigate("/signin");
+      }else{
+        toast.error("회원가입에 실패했습니다.");
+      }
     } catch (error) {
-      alert('회원가입에 실패했습니다.');
+      toast.error("회원가입에 실패했습니다.");
     }
   };
 
@@ -177,6 +207,7 @@ const SignUp = () => {
 
         <S.SubmitButton type="submit">가입하기</S.SubmitButton>
       </S.Form>
+      <ToastContainer />
     </S.Container>
   );
 };

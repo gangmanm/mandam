@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import * as S from "../styles/pages/content";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import YouTube from "react-youtube";
 import { getPost, getFile, getComments, likePost, getLike } from "../api/post";
 import { addComment } from "../api/post";
 import { FaHeart } from "react-icons/fa";
-
+import { ToastContainer, toast } from "react-toastify";
 const SERVER_URL = "http://localhost:5017";
 
 interface Speaker {
@@ -43,6 +43,7 @@ export default function Content() {
   const [player, setPlayer] = useState<any>(null);
   const commentsContainerRef = useRef<HTMLDivElement>(null);
   const activeCommentRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
   const [speakers, setSpeakers] = useState<Speaker[]>([]);
   const [videoId, setVideoId] = useState<string>("");
   const [videoStart, setVideoStart] = useState<number>(0);
@@ -54,6 +55,7 @@ export default function Content() {
   const [comments, setComments] = useState<Comment[]>([]);
   const [like, setLike] = useState<number>(0);
   const [isLiked, setIsLiked] = useState<boolean>(false);
+  const userId = localStorage.getItem("userId");
   const opts = {
     height: "100%",
     width: "100%",
@@ -66,11 +68,16 @@ export default function Content() {
       disablekb: 1, // YouTube 기본 키보드 컨트롤 비활성화
       fs: 0,
       enablejsapi: 1, // JavaScript API 활성화
-      start: 100,
+      start: videoStart || 0,
     },
   };
 
 
+  useEffect(() => {
+    if (!userId) {
+        navigate("/signin");
+    }
+  }, []);
 
   useEffect(() => {
     getPost(id as string).then((res) => {
@@ -110,48 +117,38 @@ export default function Content() {
 
   // SRT 파일 파싱
   const parseSRT = (srtContent: string): CommentaryItem[] => {
-    if (!srtContent) return []; // 빈 문자열이나 undefined인 경우 빈 배열 반환
+    if (!srtContent) return [];
 
     const blocks = srtContent.trim().split("\n\n");
     let currentSpeaker: string | undefined;
 
-    return blocks.map((block) => {
-      if (!block)
+    return blocks
+      .map((block) => {
+        if (!block.trim()) return null; // 빈 블록 무시
+
+        const lines = block.split("\n");
+        if (lines.length < 2) return null; // 유효하지 않은 블록 무시
+
+        const [startTime, endTime] = lines[1]
+          .split(" --> ")
+          .map(srtTimeToSeconds);
+        const text = lines.slice(2).join("\n");
+
+        // 화자 정보 추출
+        const speakerMatch = text.match(/^\[(.*?)\]/);
+        if (speakerMatch) {
+          currentSpeaker = speakerMatch[1];
+        }
+        const cleanText = speakerMatch ? text.replace(/^\[(.*?)\]\s*/, "") : text;
+
         return {
-          startTime: 0,
-          endTime: 0,
-          text: "",
-          speaker: undefined,
+          startTime,
+          endTime,
+          text: cleanText,
+          speaker: currentSpeaker,
         };
-
-      const lines = block.split("\n");
-      if (lines.length < 2)
-        return {
-          startTime: 0,
-          endTime: 0,
-          text: "",
-          speaker: undefined,
-        };
-
-      const [startTime, endTime] = lines[1]
-        .split(" --> ")
-        .map(srtTimeToSeconds);
-      const text = lines.slice(2).join("\n");
-
-      // 화자 정보 추출
-      const speakerMatch = text.match(/^\[(.*?)\]/);
-      if (speakerMatch) {
-        currentSpeaker = speakerMatch[1];
-      }
-      const cleanText = speakerMatch ? text.replace(/^\[(.*?)\]\s*/, "") : text;
-
-      return {
-        startTime,
-        endTime,
-        text: cleanText,
-        speaker: currentSpeaker,
-      };
-    });
+      })
+      .filter((item): item is CommentaryItem => item !== null); // null 값 필터링
   };
 
   // SRT 파일 로드
@@ -175,7 +172,9 @@ export default function Content() {
 
   // 현재 자막 업데이트
   useEffect(() => {
+
     if (subtitles.length > 0) {
+        setVideoStart(subtitles[0].startTime);
       const currentSub = subtitles.find(
         (sub) => currentTime >= sub.startTime && currentTime <= sub.endTime
       );
@@ -272,6 +271,7 @@ export default function Content() {
   // 댓글 추가
   const handleAddComment = async () => {
     console.log("댓글 추가");
+    toast.success("댓글 추가됨");
     const userId = localStorage.getItem("userId");
     await addComment(comment, id as string, userId as string); // addComment가 완료될 때까지 기다림
     const res = await getComments(id as string); // 댓글 목록을 다시 가져옴
@@ -295,6 +295,7 @@ export default function Content() {
       const like = res.length;
       setLike(like);
     });
+    setIsLiked(true);
   };
 
   useEffect(() => {
@@ -308,6 +309,7 @@ export default function Content() {
   }, [id]);
 
   return (
+    userId ? (
     <S.MainContainer onKeyDown={(e) => e.stopPropagation()} tabIndex={-1}>
 
 <S.LeftContainer>
@@ -391,7 +393,8 @@ export default function Content() {
           );
         })}
       </S.AllCommentsContainer>
-  
+    <ToastContainer />
     </S.MainContainer>
-  );
+  ) : null
+  )
 }
