@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { sendEmail, verifyCode, storeSignUp } from '../api/auth';
 import * as S from '../styles/pages/signUp';
-import { Email, Lock, Person, VpnKey } from '@material-ui/icons';
 
 interface FormData {
   username: string;
@@ -85,7 +84,6 @@ const SignUp = () => {
         
         <S.InputGroup>
           <S.Label>
-            <Person style={{ color: 'white' }} />
           </S.Label>
           <S.Input
             type="text"
@@ -99,8 +97,7 @@ const SignUp = () => {
 
         <S.InputGroup>
           <S.Label>
-            <Email style={{ color: 'white' }} />
-          </S.Label>
+=          </S.Label>
           <S.EmailWrapper>
             <S.Input
               type="email"
@@ -149,7 +146,6 @@ const SignUp = () => {
 
         <S.InputGroup>
           <S.Label>
-            <Lock style={{ color: 'white' }} />
           </S.Label>
           <S.Input
             type="password"
@@ -163,7 +159,6 @@ const SignUp = () => {
 
         <S.InputGroup>
           <S.Label>
-            <Lock style={{ color: 'white' }} />
           </S.Label>
           <S.Input
             type="password"

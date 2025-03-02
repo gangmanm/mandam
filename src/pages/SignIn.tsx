@@ -1,5 +1,4 @@
 import * as S from "../styles/pages/signIn";
-import { Email, Lock } from "@material-ui/icons";
 import { useState } from "react";
 import { signIn } from "../api/auth";
 import { useNavigate } from "react-router-dom";
@@ -40,7 +39,6 @@ const SignIn = () => {
         <S.Title>로그인</S.Title>
         <S.InputGroup>
           <S.Label>
-          <Email style={{ color: 'white' }} />
           </S.Label>
           <S.Input
               type="email"
@@ -54,7 +52,6 @@ const SignIn = () => {
 
         <S.InputGroup>
           <S.Label>
-            <Lock style={{ color: 'white' }} />
           </S.Label>
           <S.Input
             type="password"
