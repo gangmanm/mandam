@@ -1,7 +1,8 @@
 import * as S from "../styles/components/postComponent";
 import { useState, useEffect } from "react";
-
-export default function PostComponent({ title, youtubeUrl }: { title: string, youtubeUrl: string }) {
+import { useNavigate } from "react-router-dom";
+export default function PostComponent({ title, youtubeUrl, username, id }: { title: string, youtubeUrl: string, username: string, id: string }) {
+    const navigate = useNavigate();
         
     const [videoId, setVideoId] = useState("");
     const [videoStart, setVideoStart] = useState(0);
@@ -18,10 +19,13 @@ export default function PostComponent({ title, youtubeUrl }: { title: string, yo
       }, [youtubeUrl]);
 
       
-  return <S.PostComponent>
+  return <S.PostComponent onClick={() => navigate(`/content/${id}`)}>
      <S.PostComponentImage src={thumbnailUrl} alt="YouTube Thumbnail" />
      <S.PostInfoContainer>
-        <S.PostComponentTitle>{title}</S.PostComponentTitle>
+        <S.PostComponentTitleContainer>
+            <S.PostComponentTitle>{title}</S.PostComponentTitle>
+            <S.PostComponentUsername>작성자 : {username}</S.PostComponentUsername>
+        </S.PostComponentTitleContainer>
      </S.PostInfoContainer>
 
   </S.PostComponent>;

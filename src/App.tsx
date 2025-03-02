@@ -6,7 +6,7 @@ import SignUp from './pages/SignUp'
 import SignIn from './pages/SignIn'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Post from './pages/Post'
-
+import Content from './pages/Content'
 
 const AppContent = () => {
   return (
@@ -18,6 +18,7 @@ const AppContent = () => {
          <Route path="/signup" element={<SignUp />} />
          <Route path="/signin" element={<SignIn />} />
          <Route path="/post" element={<Post />} />
+         <Route path="/content/:id" element={<Content />} />
         </Routes>
       </BrowserRouter>
     </>

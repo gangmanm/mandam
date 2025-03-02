@@ -9,6 +9,7 @@ export default function List() {
     console.log("getPosts");
     getPosts().then((data) => {
       console.log(data);
+
       setPosts(data);
     });
   }, []);
@@ -17,7 +18,7 @@ export default function List() {
       <S.Header>글 목록</S.Header>
       <S.ContentContainer>
         {posts.map((post) => (
-          post.youtube_url ? <PostComponent key={post.id} title={post.title} youtubeUrl={post.youtube_url} /> : null
+          post.youtube_url ? <PostComponent key={post.id} title={post.title} youtubeUrl={post.youtube_url} username={post.username} id={post.id} /> : null
         ))}
       </S.ContentContainer>
     </S.MainContainer>

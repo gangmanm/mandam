@@ -29,6 +29,14 @@ export const PostInfoContainer = styled.div`
   margin-left: 10px;
 `;
 
+export const PostComponentTitleContainer = styled.div`
+  width: 100%;
+  height: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+`;
 
 export const PostComponentTitle = styled.div`
   font-size: 16px;
@@ -36,3 +44,7 @@ export const PostComponentTitle = styled.div`
   color: #fff;
 `;
 
+export const PostComponentUsername = styled.div`
+  font-size: 14px;
+  color: #fff;
+`;

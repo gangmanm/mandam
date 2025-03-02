@@ -1,4 +1,3 @@
-
 const SETTING = import.meta.env.VITE_SETTING;
 const SERVER_URL = SETTING === "dev" ? import.meta.env.VITE_DEV_SERVER_URL : import.meta.env.VITE_SERVER_URL;
 
@@ -7,7 +6,7 @@ interface Post  {
   File: File;
   content: string;
   youtubeUrl: string;
-  userId: number;
+  userId: string;
   text: string;
 }
 
@@ -20,9 +19,10 @@ export const createPost = async (post: Post) => {
   try {
     console.log(post);
 
+
     const formData = new FormData();
     formData.append("title", post.title);
-    formData.append("userId", 5);
+    formData.append("userId", post.userId);
     formData.append("text", post.text);
     
     if (post.File instanceof File) {
@@ -92,3 +92,42 @@ export const getPosts = async () => {
     return { success: false, error: error.message };
   }
 };
+
+export const getPost = async (id: string) => {
+  try {
+    const response = await fetch(`${SERVER_URL}/posts/get-post/${id}`, {
+      method: "GET",
+      mode: "cors",
+    });
+
+    if (!response.ok) {
+      throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error getting post:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+export const getFile = async (filePath: string) => {
+  try {
+    const response = await fetch(`${SERVER_URL}/posts/get-file?file_path=${filePath}`, {
+      method: "GET",
+      mode: "cors",
+    });
+
+    console.log(response);
+
+    if (!response.ok) {
+      throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
+    }
+
+    return await response.blob();
+  } catch (error) {
+    console.error("Error getting file:", error);
+    return { success: false, error: error.message };
+  }
+};
+

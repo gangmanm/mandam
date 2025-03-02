@@ -1,16 +1,26 @@
 import * as S from "../styles/pages/post";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { FaFileUpload, FaPlus } from "react-icons/fa";
 import * as H from "../styles/components/header";
 import { createPost, createCharacter } from "../api/post";
 import Preview from "./Preview";
 import YouTube from "react-youtube";
 export default function Post() {
+  const [userId, setUserId] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [characters, setCharacters] = useState<{ img: File | null; name: string }[]>([]);
   const characterImageInputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    console.log(userId);
+
+    if (userId) {
+      setUserId(userId);
+    }
+  }, []);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -35,15 +45,16 @@ export default function Post() {
       return;
     }
 
-    console.log(youtubeUrl);
     const post = {
       title: "test",
       content: "test",
       File: file as File,
       youtubeUrl: youtubeUrl,
-      userId: 5,
+      userId: userId as string,
       text: "test",
     };
+
+    console.log(post);
 
     const response = await createPost(post);
 
