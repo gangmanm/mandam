@@ -8,7 +8,7 @@ import Preview from "./Preview";
 export default function Post() {
   const [file, setFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [characterImages, setCharacterImages] = useState<{ image: File | null; name: string }[]>([]);
+  const [characters, setCharacters] = useState<{ img: File | null; name: string }[]>([]);
   const characterImageInputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -33,8 +33,14 @@ export default function Post() {
     const post = {
       title: "test",
       content: "test",
-      srtFile: file as File,
-      youtubeLink: "test",
+      File: file as File,
+      youtubeUrl: "test",
+      userId: "test",
+      text: "test",
+      characters: characters.map((character) => ({
+        img: character.img as File,
+        name: character.name,
+      })),
     };
 
     const response = await createPost(post);
@@ -42,7 +48,7 @@ export default function Post() {
   };
 
   const addCharacter = () => {
-    setCharacterImages((prev) => [...prev, { image: null, name: "" }]);
+    setCharacters((prev) => [...prev, { img: null, name: "" }]);
   };
 
   const handleCharacterImageClick = (index: number) => {
@@ -52,15 +58,15 @@ export default function Post() {
   const handleCharacterImageChange = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
     if (event.target.files && event.target.files[0]) {
       const newImage = event.target.files[0];
-      setCharacterImages((prevImages) => {
+      setCharacters((prevImages) => {
         const updatedImages = [...prevImages];
-        updatedImages[index] = { ...updatedImages[index], image: newImage };
+        updatedImages[index] = { ...updatedImages[index], img: newImage };
         return updatedImages;
       });
     }
   };
 
-  const [youtubeLink, setYoutubeLink] = useState("");
+  const [youtubeUrl, setYoutubeUrl] = useState("");
 
   const handleModalOpen = () => {
     setIsModalOpen(true);
@@ -70,8 +76,8 @@ export default function Post() {
     setIsModalOpen(false);
   };
 
-  const handleAddCharacter = (character: { image: File; name: string }) => {
-    setCharacterImages((prev) => [...prev, { image: character.image, name: character.name }]);
+  const handleAddCharacter = (character: { img: File; name: string }) => {
+    setCharacters((prev) => [...prev, { img: character.img, name: character.name }]);
     handleModalClose();
   };
 
@@ -86,7 +92,7 @@ export default function Post() {
       <S.ContentContainer>
         <S.YoutubeContainer>
           <S.Label>유튜브 영상 링크</S.Label>
-          <S.Input value={youtubeLink} onChange={(e) => setYoutubeLink(e.target.value)} placeholder="유튜브 영상 링크를 입력해주세요." />
+          <S.Input value={youtubeUrl} onChange={(e) => setYoutubeUrl(e.target.value)} placeholder="유튜브 영상 링크를 입력해주세요." />
         </S.YoutubeContainer>
 
         <S.FileInput onDrop={handleDrop} onClick={handleClick}>
@@ -111,11 +117,11 @@ export default function Post() {
           </S.CharacterBoxTitle>
 
           <S.CharcterContainer>
-            {characterImages.map((character, index) => (
+            {characters.map((character, index) => (
               <S.CharacterBoxItem key={index}>
-                {character.image && (
+                {character.img && (
                   <S.CharacterBoxItemImage
-                    src={URL.createObjectURL(character.image)}
+                    src={URL.createObjectURL(character.img)}
                     onClick={() => handleCharacterImageClick(index)}
                   />
                 )}
@@ -124,13 +130,13 @@ export default function Post() {
                   value={character.name}
                   onChange={(e) => {
                     const newName = e.target.value;
-                    setCharacterImages((prev) =>
+                    setCharacters((prev) =>
                       prev.map((char, i) => (i === index ? { ...char, name: newName } : char))
                     );
                   }}
                 />
                 <S.CharacterRemoveButton
-                  onClick={() => setCharacterImages((prev) => prev.filter((_, i) => i !== index))}
+                  onClick={() => setCharacters((prev) => prev.filter((_, i) => i !== index))}
                 >
                   X
                 </S.CharacterRemoveButton>
@@ -142,20 +148,19 @@ export default function Post() {
       {isModalOpen && <CharacterAddModal onAddCharacter={handleAddCharacter} handleModalClose={handleModalClose} />}
       </S.LeftContainer>
       <S.RightContainer>
-        <Preview youtubeLink={youtubeLink} srtFile={file as File} characterImages={characterImages} />
+        <Preview youtubeLink={youtubeUrl} srtFile={file as File} characterImages={characters.map((character) => ({ image: character.img as File, name: character.name }))} />
       </S.RightContainer>
-    
     </S.Container>
   );
 }
-const CharacterAddModal = ({ onAddCharacter, handleModalClose }: { onAddCharacter: (character: { image: File; name: string }) => void, handleModalClose: () => void }) => {
-    const [image, setImage] = useState<File | null>(null);
+const CharacterAddModal = ({ onAddCharacter, handleModalClose }: { onAddCharacter: (character: { img: File; name: string }) => void, handleModalClose: () => void }) => {
+    const [img, setImg] = useState<File | null>(null);
     const [name, setName] = useState("");
     const imageInputRef = useRef<HTMLInputElement | null>(null);
   
     const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       if (event.target.files && event.target.files[0]) {
-        setImage(event.target.files[0]);
+        setImg(event.target.files[0]);
       }
     };
   
@@ -166,8 +171,8 @@ const CharacterAddModal = ({ onAddCharacter, handleModalClose }: { onAddCharacte
         </S.CharacterAddModalTitle>
         <S.CharacterBox>
           <S.CharacterBoxItemImageWrapper onClick={() => imageInputRef.current?.click()}>
-            {image ? (
-              <S.CharacterBoxItemImage src={URL.createObjectURL(image)} />
+            {img ? (
+              <S.CharacterBoxItemImage src={URL.createObjectURL(img)} />
             ) : (
               <FaPlus size={20} color="gray" />
             )}
@@ -175,7 +180,7 @@ const CharacterAddModal = ({ onAddCharacter, handleModalClose }: { onAddCharacte
   
           <input type="file" ref={imageInputRef} style={{ display: "none" }} onChange={handleImageChange} />
           <S.CharacterBoxItemNameInput type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="이름 입력" />
-          <S.CancelButton onClick={() => image && name && onAddCharacter({ image, name })}>추가하기</S.CancelButton>
+          <S.CancelButton onClick={() => img && name && onAddCharacter({ img , name })}>추가하기</S.CancelButton>
         </S.CharacterBox>
       </S.CharacterAddModal>
     );
