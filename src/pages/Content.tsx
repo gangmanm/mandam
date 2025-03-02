@@ -1,15 +1,15 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import * as S from "../styles/pages/content";
 import { useParams } from "react-router-dom";
 import YouTube from "react-youtube";
 import { getPost, getFile } from "../api/post";
 
+const SERVER_URL = "http://localhost:5017";
 
 interface Speaker {
   name: string;
   color: string;
-  image: File;
+  img_file_path: string;
 }
 
 interface CommentaryItem {
@@ -41,7 +41,7 @@ export default function Content() {
   const [videoStart, setVideoStart] = useState<number>(0);
   const [youtubeLink, setYoutubeLink] = useState<string>("");
   const [srtFile, setSrtFile] = useState<File | null>(null);
-  const [characters, setCharacters] = useState<{ image_file_path: string; name: string }[]>([]);
+  const [characters, setCharacters] = useState<{ img_file_path: string; name: string }[]>([]);
 
   useEffect(() => {
     getPost(id as string).then((res) => {
@@ -71,8 +71,9 @@ export default function Content() {
       const speakers = characters.map((character) => ({
         name: character.name,
         color: getRandomColor(),
-        image: getFile(character.img_file_path),
+        img_file_path: character.img_file_path,
       }));
+      console.log(speakers);
       setSpeakers(speakers);
     }
   }, [srtFile, characters]);
@@ -294,7 +295,7 @@ export default function Content() {
                 {speakerData && (
                   <S.SpeakerInfo>
                     <S.SpeakerImage
-                      src={URL.createObjectURL(speakerData.image)}
+                      src={`${SERVER_URL}/posts/get-file?file_path=${speakerData.img_file_path}`}
                       alt={speakerData.name}
                     />
                     <S.SpeakerName style={{ color: speakerData.color }}>
