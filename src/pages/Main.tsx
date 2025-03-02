@@ -5,7 +5,7 @@ export default function Main() {
   const navigate = useNavigate();
 
   const handleRouteToList = () => {
-    navigate("/signin");
+    navigate("/post");
   };
 
   return (
