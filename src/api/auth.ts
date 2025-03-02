@@ -1,5 +1,9 @@
+
+const SETTING = import.meta.env.VITE_SETTING;
+const SERVER_URL = SETTING === "dev" ? import.meta.env.VITE_DEV_SERVER_URL : import.meta.env.VITE_SERVER_URL;
+
 export function sendEmail(email: string) {
-    fetch('http://localhost:5017/auth/send-code', {
+    fetch(`${SERVER_URL}/auth/send-code`, {
         method: 'POST',
         mode: 'cors', // CORS 문제를 해결하기 위한 설정
         headers: {
@@ -20,10 +24,10 @@ export function sendEmail(email: string) {
 
 export async function verifyCode(email: string, code: string) {
     try {
-        const response = await fetch('http://localhost:5017/auth/verify-code', {
+        const response = await fetch(`${SERVER_URL}/auth/verify-code`, {
             method: 'POST',
             mode: 'cors', // CORS 문제를 해결하기 위한 설정
-            headers: {
+            headers: {  
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
@@ -41,7 +45,7 @@ export async function verifyCode(email: string, code: string) {
 
 export async function storeSignUp(email: string, password: string, username: string) {
     try {
-        const response = await fetch('http://localhost:5017/auth/store-signup', {
+        const response = await fetch(`${SERVER_URL}/auth/store-signup`, {
             method: 'POST',
             mode: 'cors', // CORS 문제를 해결하기 위한 설정
             headers: {
@@ -63,7 +67,7 @@ export async function storeSignUp(email: string, password: string, username: str
 
 export async function signIn(email: string, password: string) {
     try {
-        const response = await fetch('http://localhost:5017/auth/signin', {
+        const response = await fetch(`${SERVER_URL}/auth/signin`, {
             method: 'POST',
             mode: 'cors', // CORS 문제를 해결하기 위한 설정
             headers: {
@@ -75,7 +79,8 @@ export async function signIn(email: string, password: string) {
             })
         });
         const data = await response.json();
-        return data.success;
+
+        return data;
     } catch (error) {
         console.error('Error:', error);
         return false;

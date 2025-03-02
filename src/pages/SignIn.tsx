@@ -26,7 +26,8 @@ const SignIn = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const res = await signIn(formData.email, formData.password);
-    if(res){
+    if(res.success){
+      localStorage.setItem("userId", res.data.uuid);
       navigate("/list");
     }
     else{

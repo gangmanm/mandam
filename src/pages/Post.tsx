@@ -30,11 +30,17 @@ export default function Post() {
   };
 
   const handleSubmit = async () => {
+    if (!youtubeUrl) {
+      alert("유튜브 영상 링크를 입력해주세요.");
+      return;
+    }
+
+    console.log(youtubeUrl);
     const post = {
       title: "test",
       content: "test",
       File: file as File,
-      youtubeUrl: "test",
+      youtubeUrl: youtubeUrl,
       userId: 5,
       text: "test",
     };

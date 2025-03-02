@@ -5,6 +5,13 @@ export const MainContainer = styled.div`
   height: 100vh;
 
   background-color: #000;
+
+  overflow: scroll;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 export const Header = styled.div`
@@ -27,7 +34,8 @@ export const ContentContainer = styled.div`
   grid-template-columns: repeat(2, 1fr);
 
   padding: 20px;
-  overflow-y: scroll;
+  overflow: scroll;
+
   scrollbar-width: none;
   -ms-overflow-style: none;
   &::-webkit-scrollbar {

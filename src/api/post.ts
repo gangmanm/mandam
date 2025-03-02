@@ -1,3 +1,7 @@
+
+const SETTING = import.meta.env.VITE_SETTING;
+const SERVER_URL = SETTING === "dev" ? import.meta.env.VITE_DEV_SERVER_URL : import.meta.env.VITE_SERVER_URL;
+
 interface Post  {
   title: string;
   File: File;
@@ -30,7 +34,7 @@ export const createPost = async (post: Post) => {
     formData.append("content", post.content);
     formData.append("youtube_url", post.youtubeUrl);
 
-    const response = await fetch("http://localhost:5017/posts/create-post", {
+    const response = await fetch(`${SERVER_URL}/posts/create-post`, {
       method: "POST",
       body: formData,
       mode: "cors",
@@ -54,7 +58,7 @@ export const createCharacter = async (character: Character, postId: number) => {
     formData.append("name", character.name);
     formData.append("postId", postId.toString());
 
-    const response = await fetch("http://localhost:5017/posts/create-character", {
+    const response = await fetch(`${SERVER_URL}/posts/create-character`, {
       method: "POST",
       body: formData,
       mode: "cors",
@@ -67,6 +71,24 @@ export const createCharacter = async (character: Character, postId: number) => {
     return await response.json(); 
   } catch (error) {
     console.error("Error creating character:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+export const getPosts = async () => {
+  try {
+    const response = await fetch(`${SERVER_URL}/posts/get-posts`, {
+      method: "GET",
+      mode: "cors",
+    });
+
+    if (!response.ok) {
+      throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error getting posts:", error);
     return { success: false, error: error.message };
   }
 };
