@@ -130,4 +130,83 @@ export const getFile = async (filePath: string) => {
     return { success: false, error: error.message };
   }
 };
+export const addComment = async (comment: string, postId: string, userId: string) => {
+  console.log(comment, postId, userId);
+  try {
+    const response = await fetch(`${SERVER_URL}/posts/comment`, {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json" // Content-Type 헤더 추가
+      },
+      body: JSON.stringify({ comment, post_id: postId, user_id: userId }),
+    });
 
+    if (!response.ok) {
+      throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error adding comment:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+export const getComments = async (postId: string) => {
+  try {
+    const response = await fetch(`${SERVER_URL}/posts/get-comments/${postId}`, {
+      method: "GET",
+      mode: "cors",
+    });
+
+    if (!response.ok) {
+      throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error getting comments:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+export const likePost = async (postId: string, userId: string) => {
+  try {
+    const response = await fetch(`${SERVER_URL}/posts/like`, {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json" // Content-Type 헤더 추가
+      },
+      body: JSON.stringify({ post_id: postId, user_id: userId }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error liking post:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+export const getLike = async (postId: string) => {
+  try {
+    const response = await fetch(`${SERVER_URL}/posts/get-likes/${postId}`, {
+      method: "GET",  
+      mode: "cors",
+    });
+
+    if (!response.ok) {
+      throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
+    } 
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error getting like:", error);
+    return { success: false, error: error.message };
+  }
+};

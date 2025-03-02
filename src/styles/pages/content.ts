@@ -27,6 +27,7 @@ export const LeftContainer = styled.div`
   @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
     width: 100%;
     height: 100%;
+    padding: 0px;
   }
 `;
 
@@ -175,7 +176,7 @@ export const SpeakerName = styled.span`
 
 export const VideoInfoContainer = styled.div`
   width: 100%;
-  height: 300px;
+  max-height: 400px;
   display: flex;
   background-color :rgb(26, 26, 26);
   margin-top: 20px;
@@ -185,7 +186,7 @@ export const VideoInfoContainer = styled.div`
 
    @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
     width: 100%;
-    height: 200px;
+    max-height: 200px;
   }
 `;
 
@@ -215,11 +216,18 @@ export const TitleContainer = styled.div`
 export const UserCommentContainer = styled.div`
   width: 100%;
   height: 100%;
-  display: flex;
-  flex-direction: column;
+  overflow-y: scroll;
+  margin-top: 10px;
 
-  border: 1px solid white;
-  padding : 10px;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`;
+
+export const UserCommentScroll = styled.div`
+  width: 100%;
+  height: 100%;
+  overflow-y: scroll;
 `;
 
 export const CommentAddButton = styled.button`
@@ -238,4 +246,34 @@ export const CommentInput = styled.input`
   background-color: rgb(60, 60, 60);
   border: none;
   color: white;
+`;
+
+export const UserCommentTextContainer = styled.div`
+  width: 100%;
+  min-height: 40px;
+  display: flex;
+  justify-content: space-between;
+  background-color: rgb(39, 39, 39);
+  border : 1px dashed rgb(110, 110, 110);
+  margin-top: 10px;
+  padding: 10px;
+`;
+
+export const UserCommentText = styled.div`
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+`;
+
+export const UserCommentUsername = styled.div`
+  width: 100px;
+  height: 100%;
+
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;

@@ -2,7 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 import * as S from "../styles/pages/content";
 import { useParams } from "react-router-dom";
 import YouTube from "react-youtube";
-import { getPost, getFile } from "../api/post";
+import { getPost, getFile, getComments, likePost, getLike } from "../api/post";
+import { addComment } from "../api/post";
+import { FaHeart } from "react-icons/fa";
 
 const SERVER_URL = "http://localhost:5017";
 
@@ -10,6 +12,11 @@ interface Speaker {
   name: string;
   color: string;
   img_file_path: string;
+}
+
+interface Comment {
+  comment: string;
+  username: string;
 }
 
 interface CommentaryItem {
@@ -43,6 +50,27 @@ export default function Content() {
   const [srtFile, setSrtFile] = useState<File | null>(null);
   const [characters, setCharacters] = useState<{ img_file_path: string; name: string }[]>([]);
   const [videoInfo, setVideoInfo] = useState<{ title: string; text: string, username: string ,created_at: string}>({ title: "", text: "", writer: "" ,created_at: ""});
+  const [comment, setComment] = useState<string>("");
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [like, setLike] = useState<number>(0);
+  const [isLiked, setIsLiked] = useState<boolean>(false);
+  const opts = {
+    height: "100%",
+    width: "100%",
+    playerVars: {
+      autoplay: 1,
+      rel: 0,
+      modestbranding: 1,
+      showinfo: 0,
+      controls: 1, // 컨트롤을 활성화하여 키보드 이벤트 충돌 방지
+      disablekb: 1, // YouTube 기본 키보드 컨트롤 비활성화
+      fs: 0,
+      enablejsapi: 1, // JavaScript API 활성화
+      start: 100,
+    },
+  };
+
+
 
   useEffect(() => {
     getPost(id as string).then((res) => {
@@ -231,23 +259,6 @@ export default function Content() {
     }
   }, [player]);
 
-  const opts = {
-    height: "100%",
-    width: "100%",
-    playerVars: {
-      autoplay: 1,
-      rel: 0,
-      modestbranding: 1,
-      showinfo: 0,
-      controls: 1, // 컨트롤을 활성화하여 키보드 이벤트 충돌 방지
-      disablekb: 1, // YouTube 기본 키보드 컨트롤 비활성화
-      fs: 0,
-      enablejsapi: 1, // JavaScript API 활성화
-      start: 100,
-    },
-  };
-
-
   useEffect(() => {
     if (youtubeLink) {
       const videoIdArray = youtubeLink.split("=");
@@ -258,6 +269,43 @@ export default function Content() {
     }
   }, [youtubeLink]);
 
+  // 댓글 추가
+  const handleAddComment = async () => {
+    console.log("댓글 추가");
+    const userId = localStorage.getItem("userId");
+    await addComment(comment, id as string, userId as string); // addComment가 완료될 때까지 기다림
+    const res = await getComments(id as string); // 댓글 목록을 다시 가져옴
+    console.log(res);
+    setComments(res);
+    setComment("");
+  };
+
+  useEffect(() => {
+    getComments(id as string).then((res) => {
+      setComments(res);
+    });
+  }, [id]);
+
+  const handleLikePost = async () => {
+    const userId = localStorage.getItem("userId");
+
+    await likePost(id as string, userId as string);
+    getLike(id as string).then((res) => {
+      console.log(res);
+      const like = res.length;
+      setLike(like);
+    });
+  };
+
+  useEffect(() => {
+    getLike(id as string).then((res) => {
+      console.log(res);
+      const userId = localStorage.getItem("userId");
+      const like = res.length;
+      setLike(like);
+      setIsLiked(res.some((like: any) => like.user_id === userId));
+    });
+  }, [id]);
 
   return (
     <S.MainContainer onKeyDown={(e) => e.stopPropagation()} tabIndex={-1}>
@@ -288,13 +336,24 @@ export default function Content() {
             <S.TitleContainer>
                 <div>{videoInfo.title}</div>
                 <div> 작성자 : {videoInfo.username}  | 작성일 : {videoInfo.created_at.toLocaleString().split("T")[0]}</div>
+                <div style={{display: "flex", alignItems: "center"}}>
+                    <FaHeart onClick={handleLikePost} color={isLiked ? "red" : "white"}/>
+                    <div style={{marginLeft: "5px"}}>{like}</div>
+                </div>
             </S.TitleContainer>
 
          <S.UserCommentContainer>
             <div style={{display: "flex", justifyContent: "space-between"}}>
-            <S.CommentInput />
-            <S.CommentAddButton>댓글 추가</S.CommentAddButton>
+            <S.CommentInput value={comment} onChange={(e) => setComment(e.target.value)} />
+            <S.CommentAddButton onClick={handleAddComment}>댓글 추가</S.CommentAddButton>
             </div>
+            {comments.map((comment) => (
+              <S.UserCommentTextContainer key={comment.id}>
+                                <S.UserCommentUsername>{comment.user.username}</S.UserCommentUsername>
+                <S.UserCommentText>{comment.comment}</S.UserCommentText>
+
+              </S.UserCommentTextContainer>
+            ))}
          </S.UserCommentContainer>
          </S.InfoLeftContainer>
 
