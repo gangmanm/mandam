@@ -8,10 +8,6 @@ export default function List() {
   const [posts, setPosts] = useState<any[]>([]);
   const navigate = useNavigate();
 
-  if (!localStorage.getItem("userId")) {
-    navigate("/login");
-  }
-
   useEffect(() => {
     console.log("getPosts");
     getPosts().then((data) => {

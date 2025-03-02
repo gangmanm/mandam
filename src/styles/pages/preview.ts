@@ -42,8 +42,8 @@ export const Header = styled.div`
 `;
 
 export const SpeakerImageContainer = styled.div`
-  width: 80px;
-  height: 70px;
+  width: 100px;
+  height: 100px;
   border-radius: 100%;
   background-color: white;
   margin-right: 20px;
@@ -133,8 +133,8 @@ export const SpeakerInfo = styled.div`
 `;
 
 export const SpeakerImage = styled.img`
-  width: 24px;
-  height: 24px;
+  width: 35px;
+  height: 35px;
   border-radius: 50%;
   margin-right: 8px;
   border: 2px solid rgba(255, 255, 255, 0.2);

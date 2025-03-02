@@ -144,14 +144,21 @@ export const CharacterBoxTitle = styled.div`
 export const CharcterContainer = styled.div`
   width: 100%;
   height: 100%;
-  display: flex;
   align-items: center;
   padding: 10px;
   gap: 10px;
+  display: flex;
+  flex-direction: row;
+  overflow-x: scroll;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 export const CharacterBoxItem = styled.div`
   width: 100px;
+  min-width: 100px;
   height: 100%;
   display: flex;
   flex-direction: column;

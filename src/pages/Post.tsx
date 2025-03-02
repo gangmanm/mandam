@@ -30,10 +30,6 @@ export default function Post() {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       const selectedFile = event.target.files[0];
-      if (selectedFile.type !== "application/x-subrip") {
-        toast.error("srt 파일만 업로드할 수 있습니다.");
-        return;
-      }
       setFile(selectedFile);
     }
   };
@@ -50,8 +46,8 @@ export default function Post() {
   };
 
   const handleSubmit = async () => {
-    if (!youtubeUrl) {
-      alert("유튜브 영상 링크를 입력해주세요.");
+    if (!youtubeUrl || !file) {
+      toast.error("유튜브 영상 링크와 영상 파일을 입력해주세요.");
       return;
     }
 
