@@ -42,6 +42,7 @@ export default function Content() {
   const [youtubeLink, setYoutubeLink] = useState<string>("");
   const [srtFile, setSrtFile] = useState<File | null>(null);
   const [characters, setCharacters] = useState<{ img_file_path: string; name: string }[]>([]);
+  const [videoInfo, setVideoInfo] = useState<{ title: string; text: string, username: string ,created_at: string}>({ title: "", text: "", writer: "" ,created_at: ""});
 
   useEffect(() => {
     getPost(id as string).then((res) => {
@@ -51,6 +52,7 @@ export default function Content() {
         setSrtFile(res);
       });
       setCharacters(res.characters);
+      setVideoInfo(res);
     });
   }, [id]);
 
@@ -260,6 +262,7 @@ export default function Content() {
   return (
     <S.MainContainer onKeyDown={(e) => e.stopPropagation()} tabIndex={-1}>
 
+<S.LeftContainer>
       <S.VideoContainer tabIndex={0} onFocus={(e) => e.currentTarget.blur()}>
         {youtubeLink && (
           <YouTube
@@ -273,10 +276,30 @@ export default function Content() {
             left: 0,
             width: "100%",
             height: "100%",
+            border: "1px solid white",
           }}
         />
         )}
       </S.VideoContainer>
+
+        <S.VideoInfoContainer>
+
+         <S.InfoLeftContainer>
+            <S.TitleContainer>
+                <div>{videoInfo.title}</div>
+                <div> 작성자 : {videoInfo.username}  | 작성일 : {videoInfo.created_at.toLocaleString().split("T")[0]}</div>
+            </S.TitleContainer>
+
+         <S.UserCommentContainer>
+            <div style={{display: "flex", justifyContent: "space-between"}}>
+            <S.CommentInput />
+            <S.CommentAddButton>댓글 추가</S.CommentAddButton>
+            </div>
+         </S.UserCommentContainer>
+         </S.InfoLeftContainer>
+
+        </S.VideoInfoContainer>
+      </S.LeftContainer>
 
       <S.AllCommentsContainer ref={commentsContainerRef}>
         {subtitles.map((subtitle, index) => {
@@ -309,6 +332,7 @@ export default function Content() {
           );
         })}
       </S.AllCommentsContainer>
+  
     </S.MainContainer>
   );
 }

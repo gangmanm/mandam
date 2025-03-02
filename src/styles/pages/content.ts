@@ -10,7 +10,23 @@ export const MainContainer = styled.div`
   @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
     width: 100vw;
     height: 100vh;
-      flex-direction: column;
+    overflow: hidden;
+    flex-direction: column;
+  }
+`;
+
+export const LeftContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding: 20px;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
+    width: 100%;
+    height: 100%;
   }
 `;
 
@@ -74,7 +90,6 @@ export const AllScenesContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
-  margin: 20px 0;
 `;
 
 export const AllCommentsContainer = styled.div`
@@ -85,7 +100,7 @@ export const AllCommentsContainer = styled.div`
   gap: 15px;
   overflow: auto;
   margin-top: 20px;
-  padding: 15px;
+  padding-right: 15px;
 
   /* 스크롤바 스타일링 */
   &::-webkit-scrollbar {
@@ -154,5 +169,73 @@ export const SpeakerName = styled.span`
   background: linear-gradient(90deg, #000000, #202020);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-shadow: 0 2px 4px rgba(54, 54, 54, 0.1);
+`;
+
+
+export const VideoInfoContainer = styled.div`
+  width: 100%;
+  height: 300px;
+  display: flex;
+  background-color :rgb(26, 26, 26);
+  margin-top: 20px;
+
+  border-radius: 10px;
+
+
+   @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
+    width: 100%;
+    height: 200px;
+  }
+`;
+
+export const InfoLeftContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+`;
+
+export const InfoRightContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+`;
+
+export const TitleContainer = styled.div`
+  width: 100%;
+  height: 30px;
+  display: flex;
+  justify-content: space-between;
+  color : white;
+`;
+
+export const UserCommentContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  border: 1px solid white;
+  padding : 10px;
+`;
+
+export const CommentAddButton = styled.button`
+  height: 30px;
+  background-color: rgb(179, 54, 54);
+  border: none;
+  text-wrap: nowrap;
+  padding: 0 10px;
+  color: white;
+`;
+
+
+export const CommentInput = styled.input`
+  width: 100%;
+  height: 30px;
+  background-color: rgb(60, 60, 60);
+  border: none;
+  color: white;
 `;
