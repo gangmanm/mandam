@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import * as S from "../styles/pages/content";
 import { useParams, useNavigate } from "react-router-dom";
 import YouTube from "react-youtube";
@@ -35,7 +35,7 @@ interface PreviewProps {
 export default function Content() {
 
  const { id } = useParams();
-  const [currentTime, setCurrentTime] = useState<number>(0);
+  const currentTime = useRef<number>(0);
   const [subtitles, setSubtitles] = useState<CommentaryItem[]>([]);
   const [currentSubtitle, setCurrentSubtitle] = useState<CommentaryItem | null>(
     null
@@ -174,11 +174,14 @@ export default function Content() {
 
   // 현재 자막 업데이트
   useEffect(() => {
+    if (!player || !subtitles.length) return;
 
-    if (subtitles.length > 0) {
-        setVideoStart(subtitles[0].startTime);
+    const intervalId = setInterval(() => {
+      const currentVideoTime = player.getCurrentTime();
+      currentTime.current = currentVideoTime;
+
       const currentSub = subtitles.find(
-        (sub) => currentTime >= sub.startTime && currentTime <= sub.endTime
+        (sub) => currentVideoTime >= sub.startTime && currentVideoTime <= sub.endTime
       );
 
       if (JSON.stringify(currentSub) !== JSON.stringify(currentSubtitle)) {
@@ -192,33 +195,14 @@ export default function Content() {
           });
         }
       }
-    }
-  }, [currentTime, subtitles, currentSubtitle]);
+    }, 100); // 100ms마다 체크
+
+    return () => clearInterval(intervalId);
+  }, [player, subtitles, currentSubtitle]);
 
   const onPlayerReady = (event: any) => {
-    const player = event.target;
-    setPlayer(player);
-    player.playVideo();
-  };
-
-  const onPlayerStateChange = (event: any) => {
-    const player = event.target;
-    if (event.data === YouTube.PlayerState.PLAYING) {
-      let animationFrameId: number;
-
-      const updateTime = () => {
-        setCurrentTime(player.getCurrentTime());
-        animationFrameId = requestAnimationFrame(updateTime);
-      };
-      updateTime();
-
-      // 컴포넌트가 언마운트되거나 동영상이 일시정지될 때 정리
-      return () => {
-        if (animationFrameId) {
-          cancelAnimationFrame(animationFrameId);
-        }
-      };
-    }
+    setPlayer(event.target);
+    event.target.playVideo();
   };
 
   // window 레벨에서 이벤트 리스너 추가
@@ -250,15 +234,6 @@ export default function Content() {
       window.removeEventListener("keydown", handleKeyDown, { capture: true });
   }, [player]);
 
-  useEffect(() => {
-    if (player) {
-      const updateTime = () => {
-        setCurrentTime(player.getCurrentTime());
-        requestAnimationFrame(updateTime);
-      };
-      updateTime();
-    }
-  }, [player]);
 
   useEffect(() => {
     if (youtubeLink) {
@@ -321,7 +296,6 @@ export default function Content() {
             videoId={videoId}
             opts={opts}
             onReady={onPlayerReady}
-            onStateChange={onPlayerStateChange}
           style={{
             position: "absolute",
             top: 0,
@@ -367,8 +341,8 @@ export default function Content() {
       <S.AllCommentsContainer ref={commentsContainerRef}>
         {subtitles.map((subtitle, index) => {
           const isActive =
-            currentTime >= subtitle.startTime &&
-            currentTime <= subtitle.endTime;
+            currentTime.current >= subtitle.startTime &&
+            currentTime.current <= subtitle.endTime;
           const speakerData = speakers.find((s) => s.name === subtitle.speaker);
 
           return (

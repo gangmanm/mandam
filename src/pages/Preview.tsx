@@ -26,10 +26,8 @@ interface PreviewProps {
 }
 
 export default function Preview({ youtubeLink, srtFile, characterImages }: PreviewProps) {
+     const currentTime = useRef<number>(0);
 
-    console.log(youtubeLink);
-
-  const [currentTime, setCurrentTime] = useState<number>(0);
   const [subtitles, setSubtitles] = useState<CommentaryItem[]>([]);
   const [currentSubtitle, setCurrentSubtitle] = useState<CommentaryItem | null>(
     null
@@ -119,12 +117,18 @@ export default function Preview({ youtubeLink, srtFile, characterImages }: Previ
   }, [srtFile]);
 
   // 현재 자막 업데이트
-  useEffect(() => {
-    if (subtitles.length > 0) {
+// ... existing code ...
 
-        setVideoStart(subtitles[0].startTime);
+  // 현재 자막 업데이트
+  useEffect(() => {
+    if (!player || !subtitles.length) return;
+
+    const intervalId = setInterval(() => {
+      const currentVideoTime = player.getCurrentTime();
+      currentTime.current = currentVideoTime;
+
       const currentSub = subtitles.find(
-        (sub) => currentTime >= sub.startTime && currentTime <= sub.endTime
+        (sub) => currentVideoTime >= sub.startTime && currentVideoTime <= sub.endTime
       );
 
       if (JSON.stringify(currentSub) !== JSON.stringify(currentSubtitle)) {
@@ -138,34 +142,16 @@ export default function Preview({ youtubeLink, srtFile, characterImages }: Previ
           });
         }
       }
-    }
-  }, [currentTime, subtitles, currentSubtitle]);
+    }, 100); // 100ms마다 체크
+
+    return () => clearInterval(intervalId);
+  }, [player, subtitles, currentSubtitle]);
 
   const onPlayerReady = (event: any) => {
-    const player = event.target;
-    setPlayer(player);
-    player.playVideo();
+    setPlayer(event.target);
+    event.target.playVideo();
   };
 
-  const onPlayerStateChange = (event: any) => {
-    const player = event.target;
-    if (event.data === YouTube.PlayerState.PLAYING) {
-      let animationFrameId: number;
-
-      const updateTime = () => {
-        setCurrentTime(player.getCurrentTime());
-        animationFrameId = requestAnimationFrame(updateTime);
-      };
-      updateTime();
-
-      // 컴포넌트가 언마운트되거나 동영상이 일시정지될 때 정리
-      return () => {
-        if (animationFrameId) {
-          cancelAnimationFrame(animationFrameId);
-        }
-      };
-    }
-  };
 
   // window 레벨에서 이벤트 리스너 추가
   useEffect(() => {
@@ -199,7 +185,7 @@ export default function Preview({ youtubeLink, srtFile, characterImages }: Previ
   useEffect(() => {
     if (player) {
       const updateTime = () => {
-        setCurrentTime(player.getCurrentTime());
+        currentTime.current = player.getCurrentTime();
         requestAnimationFrame(updateTime);
       };
       updateTime();
@@ -251,7 +237,6 @@ export default function Preview({ youtubeLink, srtFile, characterImages }: Previ
             videoId={videoId}
             opts={opts}
             onReady={onPlayerReady}
-            onStateChange={onPlayerStateChange}
             style={{
               position: "absolute",
               top: 0,
@@ -266,8 +251,8 @@ export default function Preview({ youtubeLink, srtFile, characterImages }: Previ
       <S.AllCommentsContainer ref={commentsContainerRef}>
         {subtitles.map((subtitle, index) => {
           const isActive =
-            currentTime >= subtitle.startTime &&
-            currentTime <= subtitle.endTime;
+            currentTime.current >= subtitle.startTime &&
+            currentTime.current <= subtitle.endTime;
           const speakerData = speakers.find((s) => s.name === subtitle.speaker);
 
           return (
