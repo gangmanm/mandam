@@ -189,6 +189,7 @@ export default function Content() {
 
         // 활성화된 자막으로 스크롤
         if (activeCommentRef.current && commentsContainerRef.current) {
+          activeCommentRef.current.style.scrollMarginBottom = "200px"; // 스크롤 마진을 추가
           activeCommentRef.current.scrollIntoView({
             behavior: "smooth",
             block: "center",
@@ -309,8 +310,6 @@ export default function Content() {
       </S.VideoContainer>
 
         <S.VideoInfoContainer>
-
-         <S.InfoLeftContainer>
             <S.TitleContainer>
                 <div>{videoInfo.title}</div>
                 <div> 작성자 : {videoInfo.username}  | 작성일 : {videoInfo.created_at.toLocaleString().split("T")[0]}</div>
@@ -320,6 +319,8 @@ export default function Content() {
                 </div>
             </S.TitleContainer>
 
+         
+         {window.innerWidth > 768 && (
          <S.UserCommentContainer>
             <div style={{display: "flex", justifyContent: "space-between"}}>
             <S.CommentInput value={comment} onChange={(e) => setComment(e.target.value)} />
@@ -333,7 +334,7 @@ export default function Content() {
               </S.UserCommentTextContainer>
             ))}
          </S.UserCommentContainer>
-         </S.InfoLeftContainer>
+         )}
 
         </S.VideoInfoContainer>
       </S.LeftContainer>
@@ -369,7 +370,24 @@ export default function Content() {
           );
         })}
       </S.AllCommentsContainer>
+
+      
     <ToastContainer />
+    {window.innerWidth < 768 && (
+              <S.UserCommentContainer>
+              <div style={{display: "flex", justifyContent: "space-between"}}>
+              <S.CommentInput value={comment} onChange={(e) => setComment(e.target.value)} />
+              <S.CommentAddButton onClick={handleAddComment}>댓글 추가</S.CommentAddButton>
+              </div>
+              {comments.map((comment) => (
+                <S.UserCommentTextContainer key={comment.id}>
+                                  <S.UserCommentUsername>{comment.user.username}</S.UserCommentUsername>
+                  <S.UserCommentText>{comment.comment}</S.UserCommentText>
+  
+                </S.UserCommentTextContainer>
+              ))}
+           </S.UserCommentContainer>
+      )}
     </S.MainContainer>
   ) : null
   )

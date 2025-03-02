@@ -26,7 +26,6 @@ export const LeftContainer = styled.div`
 
   @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
     width: 100%;
-    height: 100%;
     padding: 0px;
   }
 `;
@@ -38,7 +37,8 @@ export const VideoContainer = styled.div`
   
   @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
     width: 100%;
-    height: 50%;
+    height: 100%;
+    min-height: 200px;
   }
 `;
 
@@ -176,23 +176,24 @@ export const SpeakerName = styled.span`
 
 export const VideoInfoContainer = styled.div`
   width: 100%;
-  max-height: 400px;
+  height: 400px;
   display: flex;
   background-color :rgb(26, 26, 26);
   margin-top: 20px;
-
+    flex-direction: column;
   border-radius: 10px;
-
 
    @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
     width: 100%;
-    max-height: 200px;
+    height: 40px;
+    padding: 10px;
+
   }
 `;
 
 export const InfoLeftContainer = styled.div`
   width: 100%;
-  height: 100%;
+  height: 30px;
   display: flex;
   flex-direction: column;
   padding: 10px;
@@ -221,6 +222,11 @@ export const UserCommentContainer = styled.div`
 
   &::-webkit-scrollbar {
     display: none;
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
+    width: 100%;
+    height: 300px;
   }
 `;
 
