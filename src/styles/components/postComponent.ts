@@ -9,6 +9,11 @@ export const PostComponent = styled.div`
   align-items: center;
   justify-content: flex-start;
   padding: 10px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #2a2a2a;
+  }
 `;
 
 

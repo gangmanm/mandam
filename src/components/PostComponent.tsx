@@ -1,7 +1,8 @@
 import * as S from "../styles/components/postComponent";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaComment, FaHeart } from "react-icons/fa";
+import { FaComment, FaHeart, FaTrash } from "react-icons/fa";
+import { deletePost } from "../api/post";
 export default function PostComponent({ title, youtubeUrl, username, id, comments_count, likes_count, date }: { title: string, youtubeUrl: string, username: string, id: string, comments_count: number, likes_count: number, date: string }) {
     const navigate = useNavigate();
         
@@ -19,6 +20,13 @@ export default function PostComponent({ title, youtubeUrl, username, id, comment
         setThumbnailUrl(thumbnailUrl);
       }, [youtubeUrl]);
 
+      const handleDeletePost = async (postId: string) => {
+        const response = await deletePost(postId);
+        if (response.success) {
+          navigate("/list");
+        }
+      };
+      
       
   return <S.PostComponent onClick={() => navigate(`/content/${id}`)}>
      <S.PostComponentImage src={thumbnailError ? defaultThumbnail : thumbnailUrl} alt="YouTube Thumbnail" onError={() => setThumbnailError(true)} />

@@ -2,9 +2,9 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import * as S from "../styles/pages/content";
 import { useParams, useNavigate } from "react-router-dom";
 import YouTube from "react-youtube";
-import { getPost, getFile, getComments, likePost, getLike } from "../api/post";
+import { getPost, getFile, getComments, likePost, getLike, deletePost } from "../api/post";
 import { addComment } from "../api/post";
-import { FaHeart } from "react-icons/fa";
+import { FaEdit, FaHeart } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import { deleteComment } from "../api/post";
 import { FaTrash } from "react-icons/fa";
@@ -307,6 +307,37 @@ export default function Content() {
     }
   };
 
+  const handleEditPost = () => {
+    navigate(`/post/${id}`);
+
+  };
+
+  const handleDeletePost = () => {
+    toast.info(
+      <div style={{display: "flex", alignItems: "center"}}>
+        게시글을 삭제하시겠습니까?
+        <S.ToastButton onClick={async () => {
+          try {
+            const res = await deletePost(id as string);
+            if (res.success) {
+              toast.success("게시글이 삭제되었습니다.");
+              navigate("/list");
+            } else {
+              toast.error("게시글 삭제에 실패했습니다.");
+            }
+          } catch (error) {
+            toast.error("게시글 삭제 중 오류가 발생했습니다.");
+          }
+        }}>
+          삭제
+        </S.ToastButton>
+      </div>,
+      {
+        closeOnClick: true,
+      }
+    );
+  };
+
   return (
     userId ? (
     <S.MainContainer onKeyDown={(e) => e.stopPropagation()} tabIndex={-1}>
@@ -337,6 +368,10 @@ export default function Content() {
                 <div style={{display: "flex", alignItems: "center"}}>
                     <FaHeart onClick={handleLikePost} color={isLiked ? "red" : "white"}/>
                     <div style={{marginLeft: "5px"}}>{like}</div>
+                    {userId === localStorage.getItem("userId") && <FaTrash style={{cursor: "pointer", marginLeft: "10px", color: "white" , width: "15px", height: "15px"}} onClick={() => handleDeletePost(id as string)} />}
+                    <div style={{marginLeft: "10px"}}>
+                    <FaEdit style={{cursor: "pointer", color: "white" , width: "15px", height: "15px"}} onClick={() => handleEditPost(id as string)} />
+                  </div>
                 </div>
             </S.TitleContainer>
 
@@ -354,6 +389,7 @@ export default function Content() {
                 <S.UserCommentText>{comment.comment}           </S.UserCommentText>
                 {comment.user_id === userId && <FaTrash style={{cursor: "pointer", marginLeft: "10px", color: "white" , width: "15px", height: "15px"}} onClick={() => handleDeleteComment(comment.id)} />} 
                </div>
+            
               </S.UserCommentTextContainer>
             ))}
          </S.UserCommentContainer>

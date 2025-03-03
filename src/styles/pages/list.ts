@@ -34,28 +34,13 @@ export const Header = styled.div`
 `;
 
 export const ContentContainer = styled.div`
-  width: 100%;
-  height: calc(100vh - 60px);
-  display: grid;
-  padding: 20px;
-  overflow-y: auto;
-
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  &::-webkit-scrollbar {
-    display: none;
-  }
-
-  gap: 10px;
-  margin-top: 60px;
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
     display: flex;
     width: 100%;
-    height: calc(100vh - 60px);
+    margin-top: 60px;
     flex-direction: column;
     padding: 10px;
-  }
+    gap: 10px;
+
 `;
 
 export const MovieContainer = styled.div`

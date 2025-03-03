@@ -3,6 +3,7 @@ import { getPosts } from "../api/post";
 import { useEffect, useState } from "react";
 import PostComponent from "../components/PostComponent";
 import { useNavigate } from "react-router-dom";
+import * as H from "../styles/components/header";
 
 export default function List() {
   const [posts, setPosts] = useState<any[]>([]);
@@ -17,10 +18,10 @@ export default function List() {
   return (
     <S.MainContainer>
       <S.Header>
-        <div style={{fontSize: "20px", fontWeight: "bold"}}>글 목록</div>
-        <div style={{fontSize: "16px", fontWeight: "bold"}} onClick={() => {
+          <H.Title>글 목록</H.Title>
+        <H.Title onClick={() => {
           navigate("/post");
-        }}>새로운 글 작성하기</div>
+        }}>새로운 글 작성하기</H.Title>
       </S.Header>
       <S.ContentContainer>
         {posts.map((post) => (

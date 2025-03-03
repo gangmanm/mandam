@@ -294,3 +294,23 @@ export const UserCommentUsername = styled.div`
     font-size: 12px;
   }
 `;
+
+export const ToastButton = styled.div`
+  width: 50px;
+  height: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 400;
+  transition: all 0.2s ease;
+  margin-left: 10px;
+  background-color: #ff4444;
+
+  &:hover {
+    background-color: #ff0000;
+    transform: scale(1.05);
+  }
+`;

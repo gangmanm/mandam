@@ -229,3 +229,26 @@ export const deleteComment = async (commentId: string) => {
     return { success: false, error: error.message };
   }
 };
+
+
+export const deletePost = async (postId: string) => {
+  try {
+    const response = await fetch(`${SERVER_URL}/posts/delete-post`, {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ post_id: postId })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error deleting post:", error);
+    return { success: false, error: error.message };
+  }
+};  
