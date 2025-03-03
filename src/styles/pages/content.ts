@@ -9,9 +9,8 @@ export const MainContainer = styled.div`
 
   @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
     width: 100vw;
-    height: 100vh;
-    overflow: hidden;
     flex-direction: column;
+    padding: 0px;
   }
 `;
 
@@ -126,6 +125,7 @@ export const AllCommentsContainer = styled.div`
   @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
     width: 100%;
     height: 100%;
+    padding: 10px;
   }
 `;
 
@@ -226,7 +226,8 @@ export const UserCommentContainer = styled.div`
 
   @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
     width: 100%;
-    height: 300px;
+    padding: 10px;
+    background-color:rgb(165, 165, 165);
   }
 `;
 
@@ -234,6 +235,8 @@ export const UserCommentScroll = styled.div`
   width: 100%;
   height: 100%;
   overflow-y: scroll;
+
+
 `;
 
 export const CommentAddButton = styled.button`
