@@ -92,8 +92,24 @@ export default function Post() {
   const handleAddCharacter = (character: { img: File; name: string }) => {
     setCharacters((prev) => [...prev, { img: character.img, name: character.name }]);
     handleModalClose();
-    toast.success("영상 등장인물이 추가되었습니다.");
+    
+    setTimeout(() => {
+      toast.success("영상 등장인물이 추가되었습니다.", {
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light"
+      });
+    }, 0);
   };
+
+    // cleanup에서 toast.dismiss() 제거
+    useEffect(() => {
+      return () => {
+        toast.dismiss(); // 제거함
+      };
+    }, []);
+  
 
   return (
     <S.Container>

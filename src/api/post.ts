@@ -4,7 +4,7 @@ const SERVER_URL = SETTING === "dev" ? import.meta.env.VITE_DEV_SERVER_URL : imp
 interface Post  {
   title: string;
   File: File;
-  youtubeUrl: string;
+  youtubeUrl?: string;
   userId: string;
   text: string;
 }
@@ -66,7 +66,7 @@ export const createCharacter = async (character: Character, postId: number) => {
     if (!response.ok) {
       throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
     }
-
+    
     return await response.json(); 
   } catch (error) {
     console.error("Error creating character:", error);
@@ -252,3 +252,50 @@ export const deletePost = async (postId: string) => {
     return { success: false, error: error.message };
   }
 };  
+
+
+export const editPost = async (post: Post) => {
+  try {
+    const response = await fetch(`${SERVER_URL}/posts/edit-post`, {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(post)
+    });
+
+    if (!response.ok) {
+      throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error editing post:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+
+export const deleteCharacter = async (id: string) => {
+  try {
+    const response = await fetch(`${SERVER_URL}/posts/delete-character`, {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ character_id: id })
+    });
+
+
+    if (!response.ok) {
+      throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error deleting character:", error);
+    return { success: false, error: error.message };
+  }
+};

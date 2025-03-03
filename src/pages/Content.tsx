@@ -308,7 +308,7 @@ export default function Content() {
   };
 
   const handleEditPost = () => {
-    navigate(`/post/${id}`);
+    navigate(`/edit/${id}`);
 
   };
 
@@ -370,7 +370,7 @@ export default function Content() {
                     <div style={{marginLeft: "5px"}}>{like}</div>
                     {userId === localStorage.getItem("userId") && <FaTrash style={{cursor: "pointer", marginLeft: "10px", color: "white" , width: "15px", height: "15px"}} onClick={() => handleDeletePost(id as string)} />}
                     <div style={{marginLeft: "10px"}}>
-                    <FaEdit style={{cursor: "pointer", color: "white" , width: "15px", height: "15px"}} onClick={() => handleEditPost(id as string)} />
+                    <FaEdit style={{cursor: "pointer", color: "white" , width: "15px", height: "15px"}} onClick={() => handleEditPost()} />
                   </div>
                 </div>
             </S.TitleContainer>

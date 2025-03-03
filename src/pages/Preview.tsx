@@ -22,10 +22,12 @@ interface CommentaryItem {
 interface PreviewProps {
   youtubeLink: string;
   srtFile: File;
-  characterImages: { image: File; name: string }[];
+  characterImages?: { image: File; name: string }[];
+  characters?: { img_file_path: string | null; name: string , id : string , post_id : string}[];
+  edit?: boolean;
 }
 
-export default function Preview({ youtubeLink, srtFile, characterImages }: PreviewProps) {
+export default function Preview({ youtubeLink, srtFile, characterImages , characters , edit}: PreviewProps) {
      const currentTime = useRef<number>(0);
 
   const [subtitles, setSubtitles] = useState<CommentaryItem[]>([]);
@@ -38,6 +40,7 @@ export default function Preview({ youtubeLink, srtFile, characterImages }: Previ
   const [speakers, setSpeakers] = useState<Speaker[]>([]);
   const [videoId, setVideoId] = useState<string>("");
   const [videoStart, setVideoStart] = useState<number>(0);
+  const SERVER_URL = "http://localhost:5017";
 
   // SRT 타임코드를 초로 변환하는 함수
   const srtTimeToSeconds = (timeString: string): number => {
@@ -50,14 +53,27 @@ export default function Preview({ youtubeLink, srtFile, characterImages }: Previ
     return "#" + Math.floor(Math.random() * 16777215).toString(16);
   };
 
+
+
   // speakers 데이터 로드
   useEffect(() => {
-    const speakers = characterImages.map((character) => ({
-      name: character.name,
-      color: getRandomColor(),
-      image: URL.createObjectURL(character.image),
-    }));
-    setSpeakers(speakers);
+
+    console.log(characterImages);
+    if(edit && characters){
+      const speakers = characters.map((character) => ({
+        name: character.name,
+        color: getRandomColor(),
+        image: `${SERVER_URL}/posts/get-file?file_path=${character.img_file_path}`,
+      }));
+      setSpeakers(speakers);
+    }else if(characterImages){
+      const speakers = characterImages.map((character) => ({
+        name: character.name,
+        color: getRandomColor(),
+        image: URL.createObjectURL(character.image),
+      }));
+      setSpeakers(speakers);
+    }
   }, [srtFile, characterImages]);
 
   // SRT 파일 파싱
@@ -116,8 +132,6 @@ export default function Preview({ youtubeLink, srtFile, characterImages }: Previ
     fetchSRT();
   }, [srtFile]);
 
-  // 현재 자막 업데이트
-// ... existing code ...
 
   // 현재 자막 업데이트
   useEffect(() => {
