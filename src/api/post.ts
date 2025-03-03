@@ -255,6 +255,16 @@ export const deletePost = async (postId: string) => {
 
 
 export const editPost = async (post: Post) => {
+  console.log(post);
+
+  const formData = new FormData();
+  formData.append("title", post.title);
+  formData.append("userId", post.userId);
+  formData.append("text", post.text);
+  formData.append("post_id", post.id);
+  formData.append("youtube_url", post.youtube_url);
+  formData.append("File", post.File);
+  
   try {
     const response = await fetch(`${SERVER_URL}/posts/edit-post`, {
       method: "POST",

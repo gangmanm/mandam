@@ -85,6 +85,7 @@ export default function Edit() {
       youtube_url: youtubeUrl,
       text: "test",
     };
+    console.log("post", post);
 
     const response = await editPost(post);
 
