@@ -79,7 +79,6 @@ export default function Content() {
 
   useEffect(() => {
     getPost(id as string).then((res) => {
-        console.log(res);
       setYoutubeLink(res.youtube_url);
       getFile(res.file_path).then((res) => {
         setSrtFile(res);
@@ -108,7 +107,6 @@ export default function Content() {
         color: getRandomColor(),
         img_file_path: character.img_file_path,
       }));
-      console.log(speakers);
       setSpeakers(speakers);
     }
   }, [srtFile, characters]);
@@ -273,9 +271,7 @@ export default function Content() {
   };
 
   useEffect(() => {
-
     getComments(id as string).then((res) => {
-      console.log("댓글 목록 가져오기", res);
       setComments(res);
     });
   }, [id]);
@@ -287,7 +283,6 @@ export default function Content() {
 
     await likePost(id as string, userId as string);
     getLike(id as string).then((res) => {
-      console.log(res);
       const like = res.length;
       setLike(like);
     });
@@ -296,7 +291,6 @@ export default function Content() {
 
   useEffect(() => {
     getLike(id as string).then((res) => {
-      console.log(res);
       const userId = localStorage.getItem("userId");
       const like = res.length;
       setLike(like);

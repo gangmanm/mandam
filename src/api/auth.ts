@@ -14,12 +14,6 @@ export function sendEmail(email: string) {
         })
     })
     .then(response => response.json())
-    .then(data => {
-        console.log('Success:', data);
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-    });
 }
 
 export async function verifyCode(email: string, code: string) {
@@ -104,6 +98,5 @@ export async function checkUser() {
         })
     });
     const data = await response.json();
-    console.log(data);
     return data;
 }

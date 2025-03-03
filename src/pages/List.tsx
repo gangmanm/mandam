@@ -9,10 +9,7 @@ export default function List() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("getPosts");
     getPosts().then((data) => {
-      console.log(data);
-
       setPosts(data.reverse());
     });
   }, []);

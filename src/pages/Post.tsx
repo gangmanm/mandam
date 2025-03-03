@@ -20,7 +20,6 @@ export default function Post() {
 
   useEffect(() => {
     checkUser().then((data) => {
-      console.log(data);
       if (data.success) {
         setUserId(data.userId);
       } else {

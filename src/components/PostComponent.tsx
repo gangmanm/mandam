@@ -11,11 +11,9 @@ export default function PostComponent({ title, youtubeUrl, username, id }: { tit
     const defaultThumbnail = "/images/mandam.png";
 
     useEffect(() => {
-        console.log(youtubeUrl);
         const videoId = youtubeUrl.split("v=").slice(1)[0];
         const videoRealId = videoId.split("&")[0];
         setVideoId(videoRealId);
-        console.log(videoRealId);
         const thumbnailUrl = `https://img.youtube.com/vi/${videoRealId}/0.jpg`;
         setThumbnailUrl(thumbnailUrl);
       }, [youtubeUrl]);

@@ -47,7 +47,6 @@ const SignUp = () => {
   const handleVerifyCode = async () => {
     try {
       const res = await verifyCode(formData.email, formData.verificationCode);
-      console.log(res);
       if(res){
         setIsVerified(true);
         toast.success("이메일이 인증되었습니다.");
@@ -94,9 +93,7 @@ const SignUp = () => {
     }
 
     try {
-      // TODO: 회원가입 API 연동
       const res = await storeSignUp(formData.email, formData.password, formData.username);
-      console.log(res);
       if(res.success){
         toast.success("회원가입이 완료되었습니다.");
         navigate("/signin");

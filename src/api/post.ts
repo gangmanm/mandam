@@ -117,8 +117,6 @@ export const getFile = async (filePath: string) => {
       mode: "cors",
     });
 
-    console.log(response);
-
     if (!response.ok) {
       throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
     }
@@ -130,7 +128,6 @@ export const getFile = async (filePath: string) => {
   }
 };
 export const addComment = async (comment: string, postId: string, userId: string) => {
-  console.log(comment, postId, userId);
   try {
     const response = await fetch(`${SERVER_URL}/posts/comment`, {
       method: "POST",
