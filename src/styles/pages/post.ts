@@ -86,8 +86,6 @@ export const Input = styled.input`
   &:disabled {
     background-color: #555;
   }
-
-  color: black;
 `;
 
 export const FileInput = styled.div`

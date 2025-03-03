@@ -86,3 +86,23 @@ export async function signIn(email: string, password: string) {
         return false;
     }
 }   
+
+
+export async function checkUser() {
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+        return false;
+    }
+    const response = await fetch(`${SERVER_URL}/auth/check-user-uuid`, {
+        method: 'POST',
+        mode: 'cors', // CORS 문제를 해결하기 위한 설정
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            uuid: userId
+        })
+    });
+    const data = await response.json();
+    return data;
+}

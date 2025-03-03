@@ -72,13 +72,6 @@ export default function Content() {
     },
   };
 
-
-  useEffect(() => {
-    if (!userId) {
-        navigate("/signin");
-    }
-  }, []);
-
   useEffect(() => {
     getPost(id as string).then((res) => {
         console.log(res);

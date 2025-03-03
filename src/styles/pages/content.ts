@@ -180,13 +180,14 @@ export const VideoInfoContainer = styled.div`
   display: flex;
   background-color :rgb(26, 26, 26);
   margin-top: 20px;
-    flex-direction: column;
-  border-radius: 10px;
+ flex-direction: column;
+ padding: 20px;
 
    @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
     width: 100%;
     height: 40px;
     padding: 10px;
+    font-size: 12px;
 
   }
 `;

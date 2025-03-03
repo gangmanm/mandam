@@ -4,7 +4,6 @@ const SERVER_URL = SETTING === "dev" ? import.meta.env.VITE_DEV_SERVER_URL : imp
 interface Post  {
   title: string;
   File: File;
-  content: string;
   youtubeUrl: string;
   userId: string;
   text: string;

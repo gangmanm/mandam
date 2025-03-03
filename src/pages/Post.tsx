@@ -7,7 +7,7 @@ import Preview from "./Preview";
 import { heicTo } from "heic-to"
 import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-
+import { checkUser } from "../api/auth";
 export default function Post() {
   const navigate = useNavigate();
   const [userId, setUserId] = useState<string | null>(null);
@@ -16,16 +16,22 @@ export default function Post() {
   const [characters, setCharacters] = useState<{ img: File | null; name: string }[]>([]);
   const characterImageInputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [title, setTitle] = useState("");
 
   useEffect(() => {
-    const userId = localStorage.getItem("userId");
-    console.log(userId);
-
-    if (userId) {
-      setUserId(userId);
-    }
+    checkUser().then((data) => {
+      if (data) {
+        if (data.success) {
+          setUserId(data.userId);
+        } 
+      }
+      if (!data) {
+        toast.error("로그인을 먼저 진행해주세요");
+        navigate("/signin");
+      }
+    });
   }, []);
+  
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -47,13 +53,12 @@ export default function Post() {
 
   const handleSubmit = async () => {
     if (!youtubeUrl || !file) {
-      toast.error("유튜브 영상 링크와 영상 파일을 입력해주세요.");
+      toast.error("유튜브 영상 링크와 자막 파일을 입력해주세요.");
       return;
     }
 
     const post = {
-      title: "test",
-      content: "test",
+      title: title,
       File: file as File,
       youtubeUrl: youtubeUrl,
       userId: userId as string,
@@ -97,6 +102,10 @@ export default function Post() {
       </H.HeaderContainer>
 
       <S.ContentContainer>
+      <S.YoutubeContainer style={{marginBottom: "10px"}}>
+          <S.Label style={{backgroundColor: "white", color: "black"}}>글 제목</S.Label>
+          <S.Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="글 제목을 입력해주세요." />
+        </S.YoutubeContainer>
         <S.YoutubeContainer>
           <S.Label>유튜브 영상 링크</S.Label>
           <S.Input value={youtubeUrl} onChange={(e) => setYoutubeUrl(e.target.value)} placeholder="유튜브 영상 링크를 입력해주세요." />
@@ -111,7 +120,7 @@ export default function Post() {
           ) : (
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
               <FaFileUpload color="white" size={30} style={{ marginBottom: "10px" }} />
-              <span style={{ color: "white" }}>파일 업로드</span>
+              <span style={{ color: "white" }}>.srt 자막 파일 업로드</span>
               <S.FileInputInput type="file" ref={fileInputRef} onChange={handleFileChange} />
             </div>
           )}
