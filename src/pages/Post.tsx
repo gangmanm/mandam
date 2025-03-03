@@ -20,17 +20,14 @@ export default function Post() {
 
   useEffect(() => {
     checkUser().then((data) => {
-      if (data) {
-        if (data.success) {
-          setUserId(data.userId);
-        } 
-      }
-      if (!data) {
-        toast.error("로그인을 먼저 진행해주세요");
+      console.log(data);
+      if (data.success) {
+        setUserId(data.userId);
+      } else {
         navigate("/signin");
       }
     });
-  }, []);
+  }, [navigate]);
   
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -61,7 +58,7 @@ export default function Post() {
       title: title,
       File: file as File,
       youtubeUrl: youtubeUrl,
-      userId: userId as string,
+      userId: localStorage.getItem("userId") as string,
       text: "test",
     };
 
@@ -70,6 +67,12 @@ export default function Post() {
     characters.forEach(async (character) => {
       await createCharacter(character, response.postId);
     });
+
+    if(response.success){
+      toast.success("글 작성 완료");
+    } else {
+      toast.error("글 작성 실패");
+    }
 
     console.log(response);
   };

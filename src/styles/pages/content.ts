@@ -270,13 +270,14 @@ export const UserCommentTextContainer = styled.div`
 `;
 
 export const UserCommentText = styled.div`
+  width: calc(100% - 20px);
   font-size: 14px;
   font-weight: 600;
   color: white;
 `;
 
 export const UserCommentUsername = styled.div`
-  width: 100px;
+  width: 150px;
   height: 100%;
 
   font-size: 14px;

@@ -1,6 +1,6 @@
 import * as S from "../styles/pages/SignIn";
 import { useState } from "react";
-import { signIn } from "../api/auth";
+import { checkUser, signIn } from "../api/auth";
 import { useNavigate } from "react-router-dom";
 import { FaUser, FaLock } from "react-icons/fa";
 import { useEffect } from "react";
@@ -12,14 +12,25 @@ interface FormData {
 
 const SignIn = () => {
   const navigate = useNavigate();
-  const userId = localStorage.getItem("userId");
+  const [auth, setAuth] = useState<boolean>(false);
 
   useEffect(() => {
-    if (userId) {
-      navigate("/list");
+    const checkLogin = async () => {
+      const data = await checkUser();
+      if (data.success) {
+        navigate("/");
+        setAuth(true);
+      }
+    };
+
+    checkLogin();
+  }, [navigate]);
+
+  useEffect(() => {
+    if(!auth){
+      toast.error("로그인을 먼저 진행해주세요");
     }
   }, []);
-
 
   const [formData, setFormData] = useState<FormData>({
     email: "",

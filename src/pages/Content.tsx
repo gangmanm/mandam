@@ -11,7 +11,8 @@ import { FaTrash } from "react-icons/fa";
 import { checkUser } from "../api/auth";
 
 
-const SERVER_URL = "http://localhost:5017";
+const SERVER_URL = import.meta.env.VITE_SERVER_URL;
+
 interface Speaker {
   name: string;
   color: string;
@@ -235,11 +236,18 @@ export default function Content() {
 
   useEffect(() => {
     if (youtubeLink) {
-      const videoIdArray = youtubeLink.split("=");
-      setVideoId(videoIdArray[1].split("&")[0]);
-      const videoStartArray = youtubeLink.split("t=");
-      const videoStart = videoStartArray[1].split("s")[0];
-      setVideoStart(Number(videoStart));
+      if (youtubeLink.includes("youtube.com")) {
+        const videoIdArray = youtubeLink.split("=");
+
+        if (youtubeLink.includes("t=")) {
+          const videoStartArray = youtubeLink.split("t=");
+          const videoStart = videoStartArray[1].split("s")[0];
+          setVideoStart(Number(videoStart));
+        }
+        setVideoId(videoIdArray[1].split("&")[0]);
+      } else {
+        toast.error("유튜브 영상 링크가 올바르지 않습니다.");
+      }
     }
   }, [youtubeLink]);
 
@@ -343,9 +351,11 @@ export default function Content() {
             {comments.map((comment) => (
               <S.UserCommentTextContainer key={comment.id}>
                 <S.UserCommentUsername>{comment.user.username}</S.UserCommentUsername>
-                <S.UserCommentText>{comment.comment}
-                {comment.user_id === userId && <FaTrash style={{cursor: "pointer", marginLeft: "10px"}} onClick={() => handleDeleteComment(comment.id)} />} 
-                </S.UserCommentText>
+               <div style={{display: "flex", alignItems: "center"}}>
+                <S.UserCommentText>{comment.comment}           </S.UserCommentText>
+                {comment.user_id === userId && <FaTrash style={{cursor: "pointer", marginLeft: "10px", color: "white" , width: "15px", height: "15px"}} onClick={() => handleDeleteComment(comment.id)} />} 
+               </div>
+     
         
 
               </S.UserCommentTextContainer>
