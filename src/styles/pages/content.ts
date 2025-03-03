@@ -287,4 +287,9 @@ export const UserCommentUsername = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
+    width: 90px;
+    font-size: 12px;
+  }
 `;

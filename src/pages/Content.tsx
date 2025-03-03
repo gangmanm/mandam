@@ -73,7 +73,7 @@ export default function Content() {
       disablekb: 1, // YouTube 기본 키보드 컨트롤 비활성화
       fs: 0,
       enablejsapi: 1, // JavaScript API 활성화
-      start: videoStart || 0,
+      start: videoStart,
     },
   };
 
@@ -162,6 +162,11 @@ export default function Content() {
         const srtContent = await srtFile.text();
         const parsedSubtitles = parseSRT(srtContent);
         setSubtitles(parsedSubtitles);
+        
+        // 첫 번째 자막의 시작 시간을 비디오 시작 시간으로 설정
+        if (parsedSubtitles.length > 0) {
+          setVideoStart(parsedSubtitles[0].startTime);
+        }
       } catch (error) {
         console.error("Failed to fetch SRT:", error);
       }
@@ -178,6 +183,7 @@ export default function Content() {
       const currentVideoTime = player.getCurrentTime();
       currentTime.current = currentVideoTime;
 
+      
       const currentSub = subtitles.find(
         (sub) => currentVideoTime >= sub.startTime && currentVideoTime <= sub.endTime
       );
@@ -242,7 +248,6 @@ export default function Content() {
         if (youtubeLink.includes("t=")) {
           const videoStartArray = youtubeLink.split("t=");
           const videoStart = videoStartArray[1].split("s")[0];
-          setVideoStart(Number(videoStart));
         }
         setVideoId(videoIdArray[1].split("&")[0]);
       } else {
@@ -355,9 +360,6 @@ export default function Content() {
                 <S.UserCommentText>{comment.comment}           </S.UserCommentText>
                 {comment.user_id === userId && <FaTrash style={{cursor: "pointer", marginLeft: "10px", color: "white" , width: "15px", height: "15px"}} onClick={() => handleDeleteComment(comment.id)} />} 
                </div>
-     
-        
-
               </S.UserCommentTextContainer>
             ))}
          </S.UserCommentContainer>
@@ -407,11 +409,13 @@ export default function Content() {
               <S.CommentAddButton onClick={handleAddComment}>댓글 추가</S.CommentAddButton>
               </div>
               {comments.map((comment) => (
-                <S.UserCommentTextContainer key={comment.id}>
-                                  <S.UserCommentUsername>{comment.user.username}</S.UserCommentUsername>
-                  <S.UserCommentText>{comment.comment}</S.UserCommentText>
-  
-                </S.UserCommentTextContainer>
+                   <S.UserCommentTextContainer key={comment.id}>
+                   <S.UserCommentUsername>{comment.user.username}</S.UserCommentUsername>
+                  <div style={{display: "flex", alignItems: "center"}}>
+                   <S.UserCommentText>{comment.comment}           </S.UserCommentText>
+                   {comment.user_id === userId && <FaTrash style={{cursor: "pointer", marginLeft: "10px", color: "white" , width: "15px", height: "15px"}} onClick={() => handleDeleteComment(comment.id)} />} 
+                  </div>
+                 </S.UserCommentTextContainer>
               ))}
            </S.UserCommentContainer>
       )}
