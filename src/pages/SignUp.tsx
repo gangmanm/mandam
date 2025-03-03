@@ -94,7 +94,8 @@ const SignUp = () => {
 
     try {
       const res = await storeSignUp(formData.email, formData.password, formData.username);
-      if(res.success){
+      console.log("res", res);
+      if(res){
         toast.success("회원가입이 완료되었습니다.");
         navigate("/signin");
       }else{
