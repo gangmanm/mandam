@@ -89,6 +89,11 @@ export default function Edit() {
 
     const response = await editPost(post);
 
+    if(response.success){
+        toast.success("글 편집 완료");
+      } else {
+        toast.error("글 편집 실패");
+      }
     
     console.log(characters);
     for(const character of characters){
@@ -98,11 +103,6 @@ export default function Edit() {
     }
     
 
-    if(response.success){
-      toast.success("글 편집 완료");
-    } else {
-      toast.error("글 편집 실패");
-    }
 
     console.log(response);
   };

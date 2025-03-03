@@ -7,6 +7,9 @@ interface Post  {
   youtubeUrl?: string;
   userId: string;
   text: string;
+  id: string;
+  youtube_url: string;
+  characters?: Character[];
 }
 
 interface Character {
@@ -255,34 +258,44 @@ export const deletePost = async (postId: string) => {
 
 
 export const editPost = async (post: Post) => {
-  console.log(post);
+  console.log("Sending post data:", post);
 
   const formData = new FormData();
   formData.append("title", post.title);
   formData.append("userId", post.userId);
   formData.append("text", post.text);
-  formData.append("post_id", post.id);
+  formData.append("post_id", post.post_id);
   formData.append("youtube_url", post.youtube_url);
-  formData.append("File", post.File);
   
+  // File이 존재할 경우에만 추가
+  if (post.File instanceof File) {
+    formData.append("srtFile", post.File); // "File"에서 "srtFile"로 변경
+  }
+
   try {
     const response = await fetch(`${SERVER_URL}/posts/edit-post`, {
       method: "POST",
-      mode: "cors",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(post)
+      body: formData
     });
 
+    // 응답 상태 로깅
+    console.log("Response status:", response.status);
+
     if (!response.ok) {
-      throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
+      const errorData = await response.json();
+      throw new Error(errorData.message || `Server responded with ${response.status}`);
     }
 
-    return await response.json();
+    const result = await response.json();
+    console.log("Response data:", result);
+    return result;
+
   } catch (error) {
-    console.error("Error editing post:", error);
-    return { success: false, error: error.message };
+    console.error("Error details:", error);
+    return { 
+      success: false, 
+      error: error.message
+    };
   }
 };
 
