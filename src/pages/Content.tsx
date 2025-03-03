@@ -339,7 +339,6 @@ export default function Content() {
   };
 
   return (
-    userId ? (
     <S.MainContainer onKeyDown={(e) => e.stopPropagation()} tabIndex={-1}>
 
 <S.LeftContainer>
@@ -449,6 +448,5 @@ export default function Content() {
            </S.UserCommentContainer>
       )}
     </S.MainContainer>
-  ) : null
   )
 }
