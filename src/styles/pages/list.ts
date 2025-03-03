@@ -9,6 +9,8 @@ export const MainContainer = styled.div`
   overflow: scroll;
   scrollbar-width: none;
   -ms-overflow-style: none;
+
+  position: relative;
   &::-webkit-scrollbar {
     display: none;
   }
@@ -26,6 +28,12 @@ export const Header = styled.div`
   font-weight: 700;
   background-color: #1f1f1f;
   box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.5);
+
+  position:fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
 `;
 
 export const ContentContainer = styled.div`
@@ -43,6 +51,8 @@ export const ContentContainer = styled.div`
   }
 
   gap: 10px;
+
+  margin-top: 60px;
   @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
     display: flex;
     width: 100%;
