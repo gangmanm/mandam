@@ -10,6 +10,7 @@ export default function List() {
 
   useEffect(() => {
     getPosts().then((data) => {
+      console.log(data);
       setPosts(data.reverse());
     });
   }, []);
@@ -23,7 +24,7 @@ export default function List() {
       </S.Header>
       <S.ContentContainer>
         {posts.map((post) => (
-          post.youtube_url ? <PostComponent key={post.id} title={post.title} youtubeUrl={post.youtube_url} username={post.username} id={post.id} /> : null
+          post.youtube_url ? <PostComponent key={post.id} title={post.title} youtubeUrl={post.youtube_url} username={post.username} id={post.id} comments_count={post.comments_count} likes_count={post.likes_count} date={post.created_at} /> : null
         ))}
       </S.ContentContainer>
     </S.MainContainer>

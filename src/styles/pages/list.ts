@@ -129,3 +129,4 @@ export const SpeakerInfo = styled.div`
   display: flex;
   align-items: center;
 `;
+

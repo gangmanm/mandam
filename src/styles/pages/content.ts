@@ -256,6 +256,7 @@ export const CommentInput = styled.input`
   background-color: rgb(60, 60, 60);
   border: none;
   color: white;
+  padding-left: 10px;
 `;
 
 export const UserCommentTextContainer = styled.div`

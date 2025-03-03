@@ -1,7 +1,8 @@
 import * as S from "../styles/components/postComponent";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-export default function PostComponent({ title, youtubeUrl, username, id }: { title: string, youtubeUrl: string, username: string, id: string }) {
+import { FaComment, FaHeart } from "react-icons/fa";
+export default function PostComponent({ title, youtubeUrl, username, id, comments_count, likes_count, date }: { title: string, youtubeUrl: string, username: string, id: string, comments_count: number, likes_count: number, date: string }) {
     const navigate = useNavigate();
         
     const [videoId, setVideoId] = useState("");
@@ -26,6 +27,19 @@ export default function PostComponent({ title, youtubeUrl, username, id }: { tit
             <S.PostComponentTitle>{title}</S.PostComponentTitle>
             <S.PostComponentUsername>작성자 : {username}</S.PostComponentUsername>
         </S.PostComponentTitleContainer>
+        <S.PostComponentInfoContainer>
+            <S.PostComponentInfo>
+                <S.PostComponentInfoText>
+                    <FaComment style={{marginRight: "10px"}}/>
+                    {comments_count}
+                </S.PostComponentInfoText>
+                <S.PostComponentInfoText>
+                    <FaHeart style={{marginRight: "10px"}}/>
+                    {likes_count}
+                </S.PostComponentInfoText>
+            </S.PostComponentInfo>
+            <S.PostComponentDate>{date.toLocaleString().split("T")[0].split("-").join(".")}</S.PostComponentDate>
+        </S.PostComponentInfoContainer>
      </S.PostInfoContainer>
 
   </S.PostComponent>;
