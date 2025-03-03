@@ -209,3 +209,26 @@ export const getLike = async (postId: string) => {
     return { success: false, error: error.message };
   }
 };
+
+
+export const deleteComment = async (commentId: string) => {
+  try {
+    const response = await fetch(`${SERVER_URL}/posts/delete-comment`, {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ comment_id: commentId })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error deleting comment:", error);
+    return { success: false, error: error.message };
+  }
+};

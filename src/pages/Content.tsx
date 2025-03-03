@@ -6,8 +6,12 @@ import { getPost, getFile, getComments, likePost, getLike } from "../api/post";
 import { addComment } from "../api/post";
 import { FaHeart } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
-const SERVER_URL = "http://localhost:5017";
+import { deleteComment } from "../api/post";
+import { FaTrash } from "react-icons/fa";
+import { checkUser } from "../api/auth";
 
+
+const SERVER_URL = "http://localhost:5017";
 interface Speaker {
   name: string;
   color: string;
@@ -241,21 +245,29 @@ export default function Content() {
 
   // 댓글 추가
   const handleAddComment = async () => {
-    console.log("댓글 추가");
-    toast.success("댓글 추가됨");
+
     const userId = localStorage.getItem("userId");
-    await addComment(comment, id as string, userId as string); // addComment가 완료될 때까지 기다림
-    const res = await getComments(id as string); // 댓글 목록을 다시 가져옴
-    console.log(res);
-    setComments(res);
-    setComment("");
+    const res = await addComment(comment, id as string, userId as string); 
+    if (res.success) {
+      toast.success("댓글 추가 완료");
+      const res = await getComments(id as string);
+      setComments(res);
+      setComment("");
+    } else {
+      toast.error("댓글 추가 실패");
+    }
+    
   };
 
   useEffect(() => {
+
     getComments(id as string).then((res) => {
+      console.log("댓글 목록 가져오기", res);
       setComments(res);
     });
   }, [id]);
+
+
 
   const handleLikePost = async () => {
     const userId = localStorage.getItem("userId");
@@ -278,6 +290,15 @@ export default function Content() {
       setIsLiked(res.some((like: any) => like.user_id === userId));
     });
   }, [id]);
+
+  const handleDeleteComment = async (commentId: string) => {
+    const res = await deleteComment(commentId);
+    if (res.success) {
+      const res = await getComments(id as string);
+      toast.success("댓글 삭제 완료");
+      setComments(res);
+    }
+  };
 
   return (
     userId ? (
@@ -321,8 +342,11 @@ export default function Content() {
             </div>
             {comments.map((comment) => (
               <S.UserCommentTextContainer key={comment.id}>
-                                <S.UserCommentUsername>{comment.user.username}</S.UserCommentUsername>
-                <S.UserCommentText>{comment.comment}</S.UserCommentText>
+                <S.UserCommentUsername>{comment.user.username}</S.UserCommentUsername>
+                <S.UserCommentText>{comment.comment}
+                {comment.user_id === userId && <FaTrash style={{cursor: "pointer", marginLeft: "10px"}} onClick={() => handleDeleteComment(comment.id)} />} 
+                </S.UserCommentText>
+        
 
               </S.UserCommentTextContainer>
             ))}
