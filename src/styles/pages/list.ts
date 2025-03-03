@@ -6,11 +6,8 @@ export const MainContainer = styled.div`
 
   background-color: #000;
 
-  overflow: scroll;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-
   position: relative;
+  overflow: hidden;
   &::-webkit-scrollbar {
     display: none;
   }
@@ -38,11 +35,10 @@ export const Header = styled.div`
 
 export const ContentContainer = styled.div`
   width: 100%;
+  height: calc(100vh - 60px);
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-
   padding: 20px;
-  overflow: scroll;
+  overflow-y: auto;
 
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -51,11 +47,12 @@ export const ContentContainer = styled.div`
   }
 
   gap: 10px;
-
   margin-top: 60px;
+
   @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
     display: flex;
     width: 100%;
+    height: calc(100vh - 60px);
     flex-direction: column;
     padding: 10px;
   }
