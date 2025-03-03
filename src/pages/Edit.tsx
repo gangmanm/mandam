@@ -27,7 +27,7 @@ export default function Edit() {
   const characterImageInputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [title, setTitle] = useState("");
-  const SERVER_URL = "http://localhost:5017";
+  const SERVER_URL = import.meta.env.VITE_SERVER_URL;
   
   const id = window.location.pathname.split("/")[2];
   useEffect(() => {

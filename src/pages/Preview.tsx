@@ -40,7 +40,7 @@ export default function Preview({ youtubeLink, srtFile, characterImages , charac
   const [speakers, setSpeakers] = useState<Speaker[]>([]);
   const [videoId, setVideoId] = useState<string>("");
   const [videoStart, setVideoStart] = useState<number>(0);
-  const SERVER_URL = "http://localhost:5017";
+  const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 
   // SRT 타임코드를 초로 변환하는 함수
   const srtTimeToSeconds = (timeString: string): number => {
