@@ -363,8 +363,7 @@ export default function Content() {
 
         <S.VideoInfoContainer>
             <S.TitleContainer>
-                <div>{videoInfo.title}</div>
-                <div> 작성자 : {videoInfo.username}  | 작성일 : {videoInfo.created_at.toLocaleString().split("T")[0]}</div>
+                <div style={{whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "100%"}}>{videoInfo.title}</div>
                 <div style={{display: "flex", alignItems: "center"}}>
                     <FaHeart onClick={handleLikePost} color={isLiked ? "red" : "white"}/>
                     <div style={{marginLeft: "5px"}}>{like}</div>
