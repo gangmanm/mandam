@@ -746,3 +746,78 @@ export const CommentContainer = styled.div<{ $active: boolean }>`
     props.$active ? "0 8px 16px rgba(0,0,0,0.2)" : "0 4px 8px rgba(0,0,0,0.1)"};
 `;
 
+export const FileInputLabel = styled.label`
+  display: inline-block;
+  padding: 8px 16px;
+  background-color: #4a90e2;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #357abd;
+  }
+
+  &:active {
+    background-color: #2a5f9e;
+  }
+`;
+
+export const TimeInfo = styled.div`
+  margin-bottom: 10px;
+`;
+
+export const CharacterSelect = styled.select`
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  margin-right: 8px;
+  font-size: 14px;
+`;
+
+export const CharacterInputGroup = styled.div`
+  display: flex;
+  gap: 8px;
+  align-items: center;
+`;
+
+export const CharacterInput = styled.input`
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+`;
+
+export const AddCharacterButton = styled.button`
+  padding: 8px 16px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+
+  &:hover {
+    background-color: #45a049;
+  }
+`;
+
+
+
+export const SubtitleHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+`;
+
+export const SpeakerTag = styled.span`
+  background-color: #e3f2fd;
+  color: #1976d2;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+`;
+

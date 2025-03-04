@@ -89,6 +89,9 @@ export default function Create(){
   const [edit, setEdit] = useState(false);
   const commentsContainerRef = useRef<HTMLDivElement>(null);
   const activeCommentRef = useRef<HTMLDivElement>(null);
+  const [currentCharacter, setCurrentCharacter] = useState<string>("");
+  const [newCharacterName, setNewCharacterName] = useState<string>("");
+  const [isAddingCharacter, setIsAddingCharacter] = useState(false);
 
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
@@ -176,7 +179,8 @@ export default function Create(){
         id: Date.now(),
         startTime: currentTime,
         endTime: Math.min(currentTime + 5, duration),
-        text: ""
+        text: "",
+        speaker: currentCharacter
       };
       setSubtitles(prev => [...prev, newSubtitle].sort((a, b) => a.startTime - b.startTime));
     }
@@ -260,11 +264,23 @@ export default function Create(){
     if (e.ctrlKey || e.metaKey) {
       e.preventDefault();
       const delta = e.deltaY * -0.01;
-      const newZoom = Math.min(Math.max(zoom + delta, 1), 10); // 1~10배 줌 제한
+      
+      // zoom 범위를 1~50배로 확장
+      const newZoom = Math.min(Math.max(zoom * (1 - delta), 1), 300);
+      
+      if (timelineRef.current) {
+        const rect = timelineRef.current.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const timelinePosition = mouseX / rect.width;
+        
+        // 마우스 위치를 중심으로 줌
+        const newScrollLeft = (mouseX + scrollLeft) * (newZoom / zoom) - mouseX;
+        setScrollLeft(Math.max(0, newScrollLeft));
+      }
+      
       setZoom(newZoom);
     }
   };
-
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     setScrollLeft(e.currentTarget.scrollLeft);
   };
@@ -504,6 +520,74 @@ export default function Create(){
     return () => clearInterval(intervalId);
   }, [player, subtitles, currentSubtitle]);
 
+  const handleAddCharacter = () => {
+    if (newCharacterName.trim()) {
+      setCharacters(prev => [...prev, {
+        id: Date.now().toString(),
+        name: newCharacterName.trim(),
+        img_file_path: null,
+        post_id: ""
+      }]);
+      setNewCharacterName("");
+      setIsAddingCharacter(false);
+    }
+  };
+
+  // SRT 시간 문자열을 초 단위로 변환하는 함수
+  const srtTimeToSeconds = (timeStr: string): number => {
+    const [time, ms] = timeStr.split(',');
+    const [hours, minutes, seconds] = time.split(':').map(Number);
+    return hours * 3600 + minutes * 60 + seconds + parseInt(ms) / 1000;
+  };
+
+  // SRT 파일 처리 함수
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const text = await file.text();
+      const blocks = text.trim().split(/\n\s*\n/);
+      const newSubtitles: Subtitle[] = [];
+
+      blocks.forEach(block => {
+        const lines = block.trim().split('\n');
+        if (lines.length >= 3) {
+          // 시간 범위 파싱
+          const timeRange = lines[1].split(' --> ');
+          const startTime = srtTimeToSeconds(timeRange[0].trim());
+          const endTime = srtTimeToSeconds(timeRange[1].trim());
+          
+          // 자막 텍스트 (여러 줄일 수 있음)
+          const text = lines.slice(2).join('\n');
+          
+          newSubtitles.push({
+            id: Date.now() + Math.random(),
+            startTime,
+            endTime,
+            text,
+            speaker: currentCharacter // 현재 선택된 화자 적용
+          });
+        }
+      });
+
+      if (newSubtitles.length > 0) {
+        // 기존 자막과 새로운 자막을 합치고 시간순으로 정렬
+        setSubtitles(prev => [...prev, ...newSubtitles]
+          .sort((a, b) => a.startTime - b.startTime));
+        toast.success('SRT 파일을 성공적으로 불러왔습니다.');
+      } else {
+        toast.error('올바른 형식의 자막을 찾을 수 없습니다.');
+      }
+    } catch (error) {
+      console.error('SRT 파일 파싱 오류:', error);
+      toast.error('SRT 파일을 불러오는데 실패했습니다.');
+    }
+
+    // 파일 입력 초기화
+    e.target.value = '';
+  };
+
   return (
     <S.MainContainer>
       <S.LeftContainer>
@@ -537,14 +621,55 @@ export default function Create(){
 
         <S.SliderContainer>
           <S.TimeDisplay>
-            <span>
-              현재 시각: {formatTime(currentTime)} / 
-              전체 구간: {formatTime(range[0])} - {formatTime(range[1])}
-            </span>
+            <S.TimeInfo>
+              <span>
+                현재 시각: {formatTime(currentTime)} / 
+                전체 구간: {formatTime(range[0])} - {formatTime(range[1])}
+              </span>
+            </S.TimeInfo>
             <S.ButtonGroup>
+              <S.CharacterSelect
+                value={currentCharacter}
+                onChange={(e) => setCurrentCharacter(e.target.value)}
+              >
+                <option value="">화자 선택</option>
+                {characters.map(char => (
+                  <option key={char.id} value={char.name}>
+                    {char.name}
+                  </option>
+                ))}
+              </S.CharacterSelect>
+              {isAddingCharacter ? (
+                <S.CharacterInputGroup>
+                  <S.CharacterInput
+                    value={newCharacterName}
+                    onChange={(e) => setNewCharacterName(e.target.value)}
+                    placeholder="화자 이름 입력"
+                  />
+                  <S.AddCharacterButton onClick={handleAddCharacter}>
+                    추가
+                  </S.AddCharacterButton>
+                  <S.CancelButton onClick={() => setIsAddingCharacter(false)}>
+                    취소
+                  </S.CancelButton>
+                </S.CharacterInputGroup>
+              ) : (
+                <S.AddCharacterButton onClick={() => setIsAddingCharacter(true)}>
+                  화자 추가
+                </S.AddCharacterButton>
+              )}
               <S.AddButton onClick={handleAddSubtitleClick}>
                 자막 추가
               </S.AddButton>
+              <S.FileInputLabel>
+                SRT 불러오기
+                <input
+                  type="file"
+                  accept=".srt"
+                  onChange={handleFileUpload}
+                  style={{ display: 'none' }}
+                />
+              </S.FileInputLabel>
               <S.DownloadButton onClick={handleDownloadSrt}>
                 SRT 다운로드
               </S.DownloadButton>
@@ -600,9 +725,14 @@ export default function Create(){
                 key={subtitle.id}
                 isActive={currentTime >= subtitle.startTime && currentTime <= subtitle.endTime}
               >
-                <S.SubtitleTimeSpan>
-                  {formatTime(subtitle.startTime)} - {formatTime(subtitle.endTime)}
-                </S.SubtitleTimeSpan>
+                <S.SubtitleHeader>
+                  <S.SubtitleTimeSpan>
+                    {formatTime(subtitle.startTime)} - {formatTime(subtitle.endTime)}
+                  </S.SubtitleTimeSpan>
+                  {subtitle.speaker && (
+                    <S.SpeakerTag>{subtitle.speaker}</S.SpeakerTag>
+                  )}
+                </S.SubtitleHeader>
                 <S.SubtitleInput
                   value={subtitle.text}
                   onChange={(e) => {
@@ -636,7 +766,11 @@ export default function Create(){
                   key={index}
                   $active={isActive}
                   ref={isActive ? activeCommentRef : null}
-                  onClick={() => handleSubtitleClick(subtitle)}
+                  onClick={() => {
+                    if (player) {
+                      player.seekTo(subtitle.startTime);
+                    }
+                  }}
                 >
                   <S.CommentTextContainer>
                     <S.CommentText>{subtitle.text}</S.CommentText>
