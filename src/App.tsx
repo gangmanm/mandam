@@ -7,9 +7,10 @@ import SignIn from './pages/SignIn'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Post from './pages/Post'
 import Content from './pages/Content'
-import Edit from './pages/Edit'
-const AppContent = () => {
-  return (
+import Edit from './pages/Edit' 
+import Create from './pages/Create'
+    const AppContent = () => {
+      return (
     <>
       <BrowserRouter>
         <Routes>
@@ -20,6 +21,7 @@ const AppContent = () => {
          <Route path="/post" element={<Post />} />
          <Route path="/edit/:id" element={<Edit />} />
          <Route path="/content/:id" element={<Content />} />
+         <Route path="/create" element={<Create />} />
         </Routes>
       </BrowserRouter>
     </>
