@@ -465,7 +465,7 @@ export const CancelButton = styled(AddButton)`
 
 export const SubtitleList = styled.div`
   width: 100%;
-  height: 200px;
+  height: 100%;
   margin-top: 20px;
   user-select: none;
   overflow: scroll;

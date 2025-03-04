@@ -89,6 +89,8 @@ export default function Create(){
   const [edit, setEdit] = useState(false);
   const commentsContainerRef = useRef<HTMLDivElement>(null);
   const activeCommentRef = useRef<HTMLDivElement>(null);
+  const subtitleListRef = useRef<HTMLDivElement>(null);
+  const currentSubtitleRef = useRef<HTMLDivElement>(null);
 
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
@@ -175,7 +177,7 @@ export default function Create(){
       const newSubtitle: Subtitle = {
         id: Date.now(),
         startTime: currentTime,
-        endTime: Math.min(currentTime + 5, duration),
+        endTime: Math.min(currentTime + 0.5, duration),
         text: ""
       };
       setSubtitles(prev => [...prev, newSubtitle].sort((a, b) => a.startTime - b.startTime));
@@ -258,10 +260,19 @@ export default function Create(){
 
   const handleWheel = (e: React.WheelEvent) => {
     if (e.ctrlKey || e.metaKey) {
+      // 줌 기능
       e.preventDefault();
       const delta = e.deltaY * -0.01;
-      const newZoom = Math.min(Math.max(zoom + delta, 1), 10); // 1~10배 줌 제한
+      const newZoom = Math.min(Math.max(zoom + delta, 1), 400);
       setZoom(newZoom);
+    } else {
+      // 일반 스크롤 - 타임라인 이동
+      e.preventDefault();
+      if (timelineRef.current) {
+        const newScrollLeft = timelineRef.current.scrollLeft + e.deltaX + e.deltaY;
+        timelineRef.current.scrollLeft = newScrollLeft;
+        setScrollLeft(newScrollLeft);
+      }
     }
   };
 
@@ -399,7 +410,7 @@ export default function Create(){
     const timelineRect = timelineRef.current.getBoundingClientRect();
     const timelineWidth = timelineRect.width;
     const pixelOffset = e.clientX - markerDragState.startX;
-    const timeOffset = (pixelOffset / timelineWidth) * duration / zoom;
+    const timeOffset = (pixelOffset / timelineWidth) * duration * 2;
 
     const subtitleDuration = markerDragState.originalEndTime - markerDragState.originalStartTime;
     let newStartTime = Math.max(0, markerDragState.originalStartTime + timeOffset);
@@ -414,7 +425,7 @@ export default function Create(){
       s.id === markerDragState.subtitleId
         ? { ...s, startTime: newStartTime, endTime: newEndTime }
         : s
-    ));
+    ).sort((a, b) => a.startTime - b.startTime));
   };
 
   const handleMarkerMouseUp = () => {
@@ -491,9 +502,17 @@ export default function Create(){
       if (JSON.stringify(currentSub) !== JSON.stringify(currentSubtitle)) {
         setCurrentSubtitle(currentSub || null);
 
-        // 활성화된 자막으로 스크롤
+        // 활성화된 자막으로 스크롤 (오른쪽 목록)
         if (activeCommentRef.current && commentsContainerRef.current) {
           activeCommentRef.current.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+        }
+
+        // 활성화된 자막 입력창으로 스크롤 (왼쪽 목록)
+        if (currentSubtitleRef.current && subtitleListRef.current) {
+          currentSubtitleRef.current.scrollIntoView({
             behavior: "smooth",
             block: "center",
           });
@@ -503,6 +522,59 @@ export default function Create(){
 
     return () => clearInterval(intervalId);
   }, [player, subtitles, currentSubtitle]);
+
+  // SRT 시간 문자열을 초 단위로 변환하는 함수
+  const srtTimeToSeconds = (timeStr: string): number => {
+    const [time, ms] = timeStr.split(',');
+    const [hours, minutes, seconds] = time.split(':').map(Number);
+    return hours * 3600 + minutes * 60 + seconds + parseInt(ms) / 1000;
+  };
+
+  // SRT 파일 처리 함수
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const text = await file.text();
+      const blocks = text.trim().split(/\n\s*\n/);
+      const newSubtitles: Subtitle[] = [];
+
+      blocks.forEach(block => {
+        const lines = block.trim().split('\n');
+        if (lines.length >= 3) {
+          // 시간 범위 파싱
+          const timeRange = lines[1].split(' --> ');
+          const startTime = srtTimeToSeconds(timeRange[0].trim());
+          const endTime = srtTimeToSeconds(timeRange[1].trim());
+          
+          // 자막 텍스트 (여러 줄일 수 있음)
+          const text = lines.slice(2).join('\n');
+          
+          newSubtitles.push({
+            id: Date.now() + Math.random(),
+            startTime,
+            endTime,
+            text
+          });
+        }
+      });
+
+      if (newSubtitles.length > 0) {
+        setSubtitles(prev => [...prev, ...newSubtitles]
+          .sort((a, b) => a.startTime - b.startTime));
+        toast.success('SRT 파일을 성공적으로 불러왔습니다.');
+      } else {
+        toast.error('올바른 형식의 자막을 찾을 수 없습니다.');
+      }
+    } catch (error) {
+      console.error('SRT 파일 파싱 오류:', error);
+      toast.error('SRT 파일을 불러오는데 실패했습니다.');
+    }
+
+    // 파일 입력 초기화
+    e.target.value = '';
+  };
 
   return (
     <S.MainContainer>
@@ -545,6 +617,15 @@ export default function Create(){
               <S.AddButton onClick={handleAddSubtitleClick}>
                 자막 추가
               </S.AddButton>
+              <FileInputLabel>
+                SRT 불러오기
+                <input
+                  type="file"
+                  accept=".srt"
+                  onChange={handleFileUpload}
+                  style={{ display: 'none' }}
+                />
+              </FileInputLabel>
               <S.DownloadButton onClick={handleDownloadSrt}>
                 SRT 다운로드
               </S.DownloadButton>
@@ -594,11 +675,16 @@ export default function Create(){
             </S.TimelineContainer>
           </S.TimelineWrapper>
 
-          <S.SubtitleList>
+  
+        </S.SliderContainer>
+      </S.LeftContainer>
+      {youtubeUrl && (
+            <S.SubtitleList ref={subtitleListRef}>
             {subtitles.map((subtitle) => (
               <S.SubtitleItem 
                 key={subtitle.id}
                 isActive={currentTime >= subtitle.startTime && currentTime <= subtitle.endTime}
+                ref={currentTime >= subtitle.startTime && currentTime <= subtitle.endTime ? currentSubtitleRef : null}
               >
                 <S.SubtitleTimeSpan>
                   {formatTime(subtitle.startTime)} - {formatTime(subtitle.endTime)}
@@ -623,32 +709,6 @@ export default function Create(){
               </S.SubtitleItem>
             ))}
           </S.SubtitleList>
-        </S.SliderContainer>
-      </S.LeftContainer>
-      {youtubeUrl && (
-        <S.RightContainer>
-          <S.AllCommentsContainer ref={commentsContainerRef}>
-            {subtitles.map((subtitle, index) => {
-              const isActive = currentTime >= subtitle.startTime && currentTime <= subtitle.endTime;
-
-              return (
-                <S.CommentContainer
-                  key={index}
-                  $active={isActive}
-                  ref={isActive ? activeCommentRef : null}
-                  onClick={() => handleSubtitleClick(subtitle)}
-                >
-                  <S.CommentTextContainer>
-                    <S.CommentText>{subtitle.text}</S.CommentText>
-                    <S.CommentTime>
-                      {formatTime(subtitle.startTime)} - {formatTime(subtitle.endTime)}
-                    </S.CommentTime>
-                  </S.CommentTextContainer>
-                </S.CommentContainer>
-              );
-            })}
-          </S.AllCommentsContainer>
-        </S.RightContainer>
       )}
     </S.MainContainer>
   );
@@ -676,5 +736,23 @@ export const TimeMarker = styled.div`
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+  }
+`;
+
+export const FileInputLabel = styled.label`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #45a049;
   }
 `;
