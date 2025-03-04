@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import * as S from "../styles/pages/create"
 import YouTube from "react-youtube";
@@ -41,6 +41,7 @@ interface MarkerDragState {
 }
 
 export default function Create(){
+  const location = useLocation();
   const navigate = useNavigate();
   const [videoId, setVideoId] = useState<string>("");
   const [youtubeUrl, setYoutubeUrl] = useState("");
@@ -91,6 +92,12 @@ export default function Create(){
   const activeCommentRef = useRef<HTMLDivElement>(null);
   const subtitleListRef = useRef<HTMLDivElement>(null);
   const currentSubtitleRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (location.state?.youtubeUrl) {
+      setYoutubeUrl(location.state.youtubeUrl);
+    }
+  }, [location]);
 
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
@@ -675,8 +682,13 @@ export default function Create(){
             </S.TimelineContainer>
           </S.TimelineWrapper>
 
-  
+          <div>
+          등장인물은 [등장인물 이름] 형식으로 자막 앞에 표기합니다 {'/n'}
+          Ctrl + 스크롤 을 통해 타임라인을 확대/축소 할 수 있습니다 
+        </div>
         </S.SliderContainer>
+
+     
       </S.LeftContainer>
       {youtubeUrl && (
             <S.SubtitleList ref={subtitleListRef}>

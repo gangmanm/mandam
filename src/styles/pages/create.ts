@@ -23,9 +23,12 @@ export const LeftContainer = styled.div`
   align-items: center;
 
   padding: 20px;
-  background-color: rgb(44, 44, 44);
+  background-color: rgb(31, 31, 31);
   overflow-y: scroll;
 
+  &::-webkit-scrollbar {
+    display: none;
+  }
   @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
     width: 100%;
     padding: 0px;
@@ -261,6 +264,7 @@ export const YoutubeContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-bottom: 10px;
 `;
 
 export const Label = styled.label`
@@ -292,14 +296,13 @@ export const SliderContainer = styled.div`
   height: 50%;
   padding: 20px;
   margin-top: 20px;
-  background: rgba(0, 0, 0, 0.05);
+  background: rgba(147, 147, 147, 0.05);
   border-radius: 8px;
 
   .range-slider {
     height: 5px;
     background: #ddd;
     border-radius: 5px;
-    margin: 20px 0;
   }
 
   .range-slider .range-slider__range {
@@ -320,6 +323,7 @@ export const SliderContainer = styled.div`
 `;
 
 export const TimeDisplay = styled.div`
+  width: 100%;
   display: flex;
   justify-content: space-between;
   margin-bottom: 10px;
@@ -466,11 +470,15 @@ export const CancelButton = styled(AddButton)`
 export const SubtitleList = styled.div`
   width: 100%;
   height: 100%;
-  margin-top: 20px;
-  user-select: none;
-  overflow: scroll;
-`;
+  padding: 20px;
+  background-color:rgb(0, 0, 0);
+  overflow-y: auto;
 
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`;
 
 export const SubtitleItem = styled.div<{ isActive?: boolean }>`
   display: flex;
@@ -481,21 +489,20 @@ export const SubtitleItem = styled.div<{ isActive?: boolean }>`
   background-color: ${props => props.isActive ? '#fff3f3' : '#ffffff'};
   border: 1px solid ${props => props.isActive ? '#ff0000' : '#e0e0e0'};
   margin-bottom: 8px;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background-color: ${props => props.isActive ? '#ffe5e5' : '#f5f5f5'};
-  }
+  width: 100%;
 `;
 
 export const SubtitleTimeSpan = styled.span<{ isActive?: boolean }>`
   min-width: 120px;
+  flex-shrink: 0;
   color: ${props => props.isActive ? '#ff0000' : '#666666'};
 `;
 
-export const SubtitleInput = styled.input<{ isActive?: boolean }>`
+export const SubtitleInput = styled.textarea<{ isActive?: boolean }>`
+  height: 100%;
   flex: 1;
-  padding: 4px 8px;
+  min-width: 0;
+  padding: 8px;
   border: 1px solid ${props => props.isActive ? '#ff0000' : '#e0e0e0'};
   border-radius: 4px;
   font-size: 14px;
@@ -507,10 +514,10 @@ export const SubtitleInput = styled.input<{ isActive?: boolean }>`
 `;
 
 export const DeleteButton = styled.button`
+  flex-shrink: 0;
   background: none;
   border: none;
   color: #f44336;
-  font-size: 20px;
   cursor: pointer;
   padding: 0 5px;
 
@@ -637,7 +644,7 @@ export const TimeMarker = styled.div`
   position: absolute;
   width: 16px;
   height: 16px;
-  background-color: #ff0000;
+  background-color:rgb(0, 0, 0);
   border-radius: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
@@ -670,9 +677,9 @@ export const DownloadButton = styled.button`
 `;
 
 export const RightContainer = styled.div`
-  width: 30%;
+  width: 100%;
   height: 100%;
-  background-color: #f5f5f5;
+  background-color:rgb(0, 0, 0);
   padding: 20px;
   overflow-y: auto;
 `;
