@@ -7,6 +7,7 @@ import RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
 import React from "react";
 import styled from "styled-components";
+import { autoSavePost } from "../api/post";
 
 interface Subtitle {
   id: number;
@@ -358,6 +359,21 @@ export default function Create(){
     });
   };
 
+  const autoSave = () => {
+    // 현재 자막을 SRT 파일로 생성
+    const srtFile = generateSrt();
+    
+    const autoSave = {
+      fileName: projectName,
+      userId: localStorage.getItem("userId"),
+      File: srtFile  // 새로 생성된 SRT 파일 사용
+    }
+    
+    // 자동 저장 요청 전송
+    autoSavePost(autoSave);
+    toast.success("자동 저장되었습니다.");
+  };
+
   const handleSubtitleItemMouseMove = (e: MouseEvent) => {
     if (!subtitleDragState.isDragging || !timelineRef.current) return;
 
@@ -633,6 +649,9 @@ export default function Create(){
                 <S.ProjectNameLabel>자막 파일 명</S.ProjectNameLabel>
                 <S.ProjectNameInput type="text" value={projectName} onChange={(e) => setProjectName(e.target.value)} />
               </S.ProjectNameContainer>
+              <S.AddButton onClick={autoSave}>
+                자동 저장
+              </S.AddButton>
               <S.AddButton onClick={handleAddSubtitleClick}>
                 자막 추가
               </S.AddButton>

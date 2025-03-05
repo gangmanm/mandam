@@ -322,3 +322,27 @@ export const deleteCharacter = async (id: string) => {
     return { success: false, error: error.message };
   }
 };
+
+export const autoSavePost = async (autoSave: AutoSave) => {
+  try {
+    const formData = new FormData();
+    formData.append("file_name", autoSave.fileName);
+    formData.append("uuid", autoSave.userId);
+    formData.append("file", autoSave.File);
+    
+    const response = await fetch(`${SERVER_URL}/posts/auto-save-file`, {
+      method: "POST",
+      mode: "cors",
+      body: formData
+    });
+
+    if (!response.ok) {
+      throw new Error(`Server responded with ${response.status}: ${response.statusText}`);  
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error auto saving post:", error);
+    return { success: false, error: error.message };
+  }
+};

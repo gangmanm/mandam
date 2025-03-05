@@ -43,7 +43,7 @@ export const Label = styled.label`
 `;
 
 export const Input = styled.input`
-  width: calc(100% - 20px);
+  width: 90%;
   padding: 10px;
   font-size: 16px;
 color:white;
@@ -63,7 +63,7 @@ export const EmailWrapper = styled.div`
 `;
 
 export const VerificationButton = styled.button`  
-  width: 150px;
+  width: 100px;
   background-color: #444;
   color: #e0e0e0;
   border: none;

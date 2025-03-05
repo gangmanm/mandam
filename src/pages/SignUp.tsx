@@ -144,7 +144,7 @@ const SignUp = () => {
               onClick={handleSendVerification}
               disabled={isVerified}
             >
-              인증코드 전송
+              코드 전송
             </S.VerificationButton>
           </S.EmailWrapper>
         </S.InputGroup>

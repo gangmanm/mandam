@@ -26,12 +26,6 @@ const SignIn = () => {
     checkLogin();
   }, [navigate]);
 
-  useEffect(() => {
-    if(!auth){
-      toast.error("로그인을 먼저 진행해주세요");
-    }
-  }, []);
-
   const [formData, setFormData] = useState<FormData>({
     email: "",
     password: "",
