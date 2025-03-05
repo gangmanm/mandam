@@ -73,7 +73,8 @@ export default function Content() {
       controls: 1,
       disablekb: 1,
       fs: 0,
-      enablejsapi: 1
+      enablejsapi: 1,
+      start: videoStart
     },
   };
 
@@ -211,6 +212,12 @@ export default function Content() {
     }
     event.target.playVideo();
   };
+
+  useEffect(() => {
+    if (subtitles.length > 0) {
+      setVideoStart(subtitles[0].startTime);
+    }
+  }, [subtitles]);
 
   // window 레벨에서 이벤트 리스너 추가
   useEffect(() => {
