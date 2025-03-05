@@ -93,6 +93,8 @@ export default function Create(){
   const subtitleListRef = useRef<HTMLDivElement>(null);
   const currentSubtitleRef = useRef<HTMLDivElement>(null);
   const [projectName, setProjectName] = useState("");
+
+
   useEffect(() => {
     if (location.state?.youtubeUrl) {
       setYoutubeUrl(location.state.youtubeUrl);
@@ -259,6 +261,12 @@ export default function Create(){
       if (youtubeUrl.includes("youtube.com")) {
         const videoIdArray = youtubeUrl.split("=");
         setVideoId(videoIdArray[1].split("&")[0]);
+      } else if (youtubeUrl.includes("youtu.be")) {
+
+        console.log(youtubeUrl);
+        // youtu.be 형식의 URL 처리
+        const videoIdArray = youtubeUrl.split("/")[3].split("?")[0];
+        setVideoId(videoIdArray);
       } else {
         toast.error("유튜브 영상 링크가 올바르지 않습니다.");
       }
@@ -622,7 +630,7 @@ export default function Create(){
             </span>
             <S.ButtonGroup>
               <S.ProjectNameContainer>
-                <S.ProjectNameLabel>프로젝트 이름</S.ProjectNameLabel>
+                <S.ProjectNameLabel>자막 파일 명</S.ProjectNameLabel>
                 <S.ProjectNameInput type="text" value={projectName} onChange={(e) => setProjectName(e.target.value)} />
               </S.ProjectNameContainer>
               <S.AddButton onClick={handleAddSubtitleClick}>

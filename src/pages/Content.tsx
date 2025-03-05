@@ -246,12 +246,13 @@ export default function Content() {
     if (youtubeLink) {
       if (youtubeLink.includes("youtube.com")) {
         const videoIdArray = youtubeLink.split("=");
-
-        if (youtubeLink.includes("t=")) {
-          const videoStartArray = youtubeLink.split("t=");
-          const videoStart = videoStartArray[1].split("s")[0];
-        }
         setVideoId(videoIdArray[1].split("&")[0]);
+      } else if (youtubeLink.includes("youtu.be")) {
+
+        console.log(youtubeLink);
+        // youtu.be 형식의 URL 처리
+        const videoIdArray = youtubeLink.split("/")[3].split("?")[0];
+        setVideoId(videoIdArray);
       } else {
         toast.error("유튜브 영상 링크가 올바르지 않습니다.");
       }
