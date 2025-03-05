@@ -119,7 +119,7 @@ export default function Post() {
         <div style={{display: "flex", gap: "10px"}}>
         <H.Title onClick={() => navigate("/create", { 
           state: { youtubeUrl: youtubeUrl } 
-        })}>자막 파일 만들기</H.Title>$
+        })}>자막 파일 만들기</H.Title>
         <H.Title onClick={handleSubmit}>글 작성하기</H.Title>
    
         </div>
