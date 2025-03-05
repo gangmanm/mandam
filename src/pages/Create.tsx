@@ -644,17 +644,18 @@ export default function Create(){
               현재 시각: {formatTime(currentTime)} / 
               전체 구간: {formatTime(range[0])} - {formatTime(range[1])}
             </span>
-            <S.ButtonGroup>
-              <S.ProjectNameContainer>
+           
+          </S.TimeDisplay>
+          <S.ProjectNameContainer>
                 <S.ProjectNameLabel>자막 파일 명</S.ProjectNameLabel>
                 <S.ProjectNameInput type="text" value={projectName} onChange={(e) => setProjectName(e.target.value)} />
               </S.ProjectNameContainer>
+          <S.ButtonGroup>
+        
               <S.AddButton onClick={autoSave}>
-                자동 저장
+                자막 파일 저장
               </S.AddButton>
-              <S.AddButton onClick={handleAddSubtitleClick}>
-                자막 추가
-              </S.AddButton>
+             
               <FileInputLabel>
                 자막 파일 (SRT) 불러오기
                 <input
@@ -667,9 +668,10 @@ export default function Create(){
               <S.DownloadButton onClick={handleDownloadSrt}>
                 자막 파일 다운로드
               </S.DownloadButton>
+              <S.AddButton onClick={handleAddSubtitleClick}>
+                자막 추가
+              </S.AddButton>
             </S.ButtonGroup>
-          </S.TimeDisplay>
-
           <S.TimelineWrapper
             onWheel={handleWheel}
             onScroll={handleScroll}
@@ -787,7 +789,7 @@ export const FileInputLabel = styled.label`
   align-items: center;
   justify-content: center;
   padding: 8px 16px;
-  background-color:rgb(182, 18, 18);
+  background-color:rgb(0, 0, 0);
   color: white;
   border: none;
   border-radius: 4px;
@@ -796,6 +798,6 @@ export const FileInputLabel = styled.label`
   transition: background-color 0.2s;
   text-wrap: nowrap;
   &:hover {
-    background-color: #45a049;
+   background-color:rgb(74, 74, 74);
   }
 `;

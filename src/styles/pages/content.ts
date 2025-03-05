@@ -228,7 +228,7 @@ export const UserCommentContainer = styled.div`
   @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
     width: 100%;
     padding: 10px;
-    background-color:rgb(165, 165, 165);
+    background-color:rgb(34, 34, 34);
   }
 `;
 

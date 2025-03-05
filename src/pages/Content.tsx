@@ -62,6 +62,7 @@ export default function Content() {
   const [isLiked, setIsLiked] = useState<boolean>(false);
   const userId = localStorage.getItem("userId");
   const [playerKey, setPlayerKey] = useState(0);
+  const [isCommentVisible, setIsCommentVisible] = useState(false);
   const opts = {
     height: "100%",
     width: "100%",
@@ -270,6 +271,31 @@ export default function Content() {
   const handleAddComment = async () => {
 
     const userId = localStorage.getItem("userId");
+
+    if(!userId){
+      toast.error(
+        <div style={{display: "flex", alignItems: "center", gap: "10px"}}>
+          <span>댓글을 작성하려면 로그인을 진행해주세요</span>
+          <button 
+            onClick={() => navigate('/signin')}
+            style={{
+              padding: "5px 10px",
+              backgroundColor: "rgb(182, 18, 18)",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+              cursor: "pointer",
+              whiteSpace: "nowrap"
+            }}
+          >
+            로그인
+          </button>
+        </div>,
+        { autoClose: false }
+      );
+      return;
+    }
+
     const res = await addComment(comment, id as string, userId as string); 
     if (res.success) {
       toast.success("댓글 추가 완료");
@@ -374,8 +400,10 @@ export default function Content() {
 
         <S.VideoInfoContainer>
             <S.TitleContainer>
+                
                 <div style={{whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "100%"}}>{videoInfo.title}</div>
                 <div style={{display: "flex", alignItems: "center"}}>
+                    {window.innerWidth < 768 && <div style={{marginRight: "10px"}} onClick={() => setIsCommentVisible(!isCommentVisible)}>댓글 {isCommentVisible ? "닫기" : "보기"}</div>}
                     <FaHeart onClick={handleLikePost} color={isLiked ? "red" : "white"}/>
                     <div style={{marginLeft: "5px"}}>{like}</div>
                     {userId === localStorage.getItem("userId") && <FaTrash style={{cursor: "pointer", marginLeft: "10px", color: "white" , width: "15px", height: "15px"}} onClick={() => handleDeletePost(id as string)} />}
@@ -442,7 +470,7 @@ export default function Content() {
 
       
     <ToastContainer />
-    {window.innerWidth < 768 && (
+    {window.innerWidth < 768 && isCommentVisible && (
               <S.UserCommentContainer>
               <div style={{display: "flex", justifyContent: "space-between"}}>
               <S.CommentInput value={comment} onChange={(e) => setComment(e.target.value)} />

@@ -446,7 +446,7 @@ export const EditButton = styled.button`
 
 export const AddButton = styled.button`
   padding: 8px 16px;
-  background-color: #4CAF50;
+  background-color:rgb(17, 17, 17);
   color: white;
   border: none;
   border-radius: 4px;
@@ -454,7 +454,7 @@ export const AddButton = styled.button`
   text-wrap: nowrap;
 
   &:hover {
-    background-color: #45a049;
+    background-color:rgb(74, 74, 74);
   }
 `;
 
@@ -526,7 +526,7 @@ export const DeleteButton = styled.button`
 `;
 
 export const ButtonGroup = styled.div`
-  width: 70%;
+  width: 100%;
   height: 40px;
   display: flex;
   justify-content : flex-end;
@@ -665,7 +665,7 @@ export const TimeMarker = styled.div`
 
 export const DownloadButton = styled.button`
   padding: 8px 16px;
-  background-color:rgb(138, 53, 10);
+  background-color:rgb(0, 0, 0);
   color: white;
   border: none;
   border-radius: 4px;
@@ -674,7 +674,7 @@ export const DownloadButton = styled.button`
   transition: background-color 0.2s;
   text-wrap: nowrap;
   &:hover {
-    background-color:rgb(238, 42, 21);
+     background-color:rgb(74, 74, 74);
   }
 `;
 
@@ -758,8 +758,8 @@ export const CommentContainer = styled.div<{ $active: boolean }>`
 
 
 export const ProjectNameContainer = styled.div`
-  width: 60%;
-  height: 40px;
+  width: 100%;
+  height: 30px;
 
   display: flex;
   align-items: center;
@@ -769,7 +769,7 @@ export const ProjectNameContainer = styled.div`
 
 export const ProjectNameLabel = styled.label`
   width: 160px;
-  height: 40px;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -780,7 +780,7 @@ export const ProjectNameLabel = styled.label`
 
 export const ProjectNameInput = styled.input`
   width: calc(100% - 40px);
-  padding: 10px;
+  height: 100%;
   border-radius: 4px;
   font-size: 16px;
   color: #f1faee;
