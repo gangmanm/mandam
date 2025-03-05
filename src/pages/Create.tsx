@@ -92,7 +92,7 @@ export default function Create(){
   const activeCommentRef = useRef<HTMLDivElement>(null);
   const subtitleListRef = useRef<HTMLDivElement>(null);
   const currentSubtitleRef = useRef<HTMLDivElement>(null);
-
+  const [projectName, setProjectName] = useState("");
   useEffect(() => {
     if (location.state?.youtubeUrl) {
       setYoutubeUrl(location.state.youtubeUrl);
@@ -621,6 +621,10 @@ export default function Create(){
               전체 구간: {formatTime(range[0])} - {formatTime(range[1])}
             </span>
             <S.ButtonGroup>
+              <S.ProjectNameContainer>
+                <S.ProjectNameLabel>프로젝트 이름</S.ProjectNameLabel>
+                <S.ProjectNameInput type="text" value={projectName} onChange={(e) => setProjectName(e.target.value)} />
+              </S.ProjectNameContainer>
               <S.AddButton onClick={handleAddSubtitleClick}>
                 자막 추가
               </S.AddButton>
@@ -763,7 +767,7 @@ export const FileInputLabel = styled.label`
   cursor: pointer;
   font-size: 14px;
   transition: background-color 0.2s;
-
+  text-wrap: nowrap;
   &:hover {
     background-color: #45a049;
   }

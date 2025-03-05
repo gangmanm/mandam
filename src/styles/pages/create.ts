@@ -1,6 +1,4 @@
-import { styled } from "styled-components";
-import * as S from "../styles/pages/create";
-
+import styled from "styled-components";
 export const MainContainer = styled.div`
   width: 100vw;
   height: 100vh;
@@ -453,6 +451,7 @@ export const AddButton = styled.button`
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  text-wrap: nowrap;
 
   &:hover {
     background-color: #45a049;
@@ -527,7 +526,10 @@ export const DeleteButton = styled.button`
 `;
 
 export const ButtonGroup = styled.div`
+  width: 70%;
+  height: 40px;
   display: flex;
+  justify-content : flex-end;
   gap: 10px;
 `;
 
@@ -670,7 +672,7 @@ export const DownloadButton = styled.button`
   cursor: pointer;
   font-size: 14px;
   transition: background-color 0.2s;
-
+  text-wrap: nowrap;
   &:hover {
     background-color:rgb(238, 42, 21);
   }
@@ -753,3 +755,38 @@ export const CommentContainer = styled.div<{ $active: boolean }>`
     props.$active ? "0 8px 16px rgba(0,0,0,0.2)" : "0 4px 8px rgba(0,0,0,0.1)"};
 `;
 
+
+
+export const ProjectNameContainer = styled.div`
+  width: 60%;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+`;
+
+export const ProjectNameLabel = styled.label`
+  width: 160px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+
+  background-color: #e63946;
+`;
+
+export const ProjectNameInput = styled.input`
+  width: calc(100% - 40px);
+  padding: 10px;
+  border-radius: 4px;
+  font-size: 16px;
+  color: #f1faee;
+  background-color: #333;
+  border: 1px solid #555;
+  &:disabled {
+    background-color: #555;
+  }
+`;
