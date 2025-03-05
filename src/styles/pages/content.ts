@@ -38,7 +38,13 @@ export const VideoContainer = styled.div`
   
   @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
     width: 100%;
-    height: 100%;
+    height: 220px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    background-color: #fff;
+    padding: 10px;
   }
 `;
 
@@ -124,7 +130,7 @@ export const AllCommentsContainer = styled.div`
 
   @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
     width: 100%;
-    height: 60%;
+    height: 100%;
     padding: 10px;
   }
 `;
@@ -189,6 +195,8 @@ export const VideoInfoContainer = styled.div`
     padding: 10px;
     font-size: 12px;
 
+    margin-top: 220px;
+    position: fixed;
   }
 `;
 
