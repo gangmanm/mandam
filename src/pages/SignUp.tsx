@@ -116,6 +116,7 @@ const SignUp = () => {
             <FaUser />
           </S.Label>
           <S.Input
+            $width="200px"
             type="text"
             name="username"
             placeholder='닉네임'
@@ -131,6 +132,7 @@ const SignUp = () => {
           </S.Label>
           <S.EmailWrapper>
             <S.Input
+              $width="130px"
               type="email"
               name="email"
               placeholder='이메일'
@@ -139,14 +141,15 @@ const SignUp = () => {
               disabled={isVerified}
               required
             />
-            <S.VerificationButton
+
+          </S.EmailWrapper>
+          <S.VerificationButton
               type="button"
               onClick={handleSendVerification}
               disabled={isVerified}
             >
               코드 전송
             </S.VerificationButton>
-          </S.EmailWrapper>
         </S.InputGroup>
 
         {isEmailSent && (
@@ -156,6 +159,7 @@ const SignUp = () => {
             </S.Label>
             <S.EmailWrapper>
               <S.Input
+                $width="130px"
                 type="text"
                 name="verificationCode"
                 placeholder='인증코드'
@@ -180,6 +184,7 @@ const SignUp = () => {
             <FaLock />
           </S.Label>
           <S.Input
+            $width="200px"
             type="password"
             name="password"
             placeholder='비밀번호'
@@ -194,6 +199,7 @@ const SignUp = () => {
             <FaLock />
           </S.Label>
           <S.Input
+            $width="200px"
             type="password"
             name="passwordConfirm"
             placeholder='비밀번호 확인'

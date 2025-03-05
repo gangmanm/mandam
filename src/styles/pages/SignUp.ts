@@ -28,7 +28,7 @@ export const InputGroup = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 20px;
-  width: 100%;
+  width: 300px;
   background-color: #2a2a2a;
   border-radius: 8px;
   padding: 5px;
@@ -42,11 +42,11 @@ export const Label = styled.label`
   justify-content: center;
 `;
 
-export const Input = styled.input`
-  width: 90%;
+export const Input = styled.input<{ $width: string }>`
+  width: ${(props) => props.$width};
   padding: 10px;
   font-size: 16px;
-color:white;
+  color: white;
   &:disabled {
     background-color: #555;
   }
@@ -64,6 +64,7 @@ export const EmailWrapper = styled.div`
 
 export const VerificationButton = styled.button`  
   width: 100px;
+  height: 40px;
   background-color: #444;
   color: #e0e0e0;
   border: none;
