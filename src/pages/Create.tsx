@@ -625,7 +625,7 @@ export default function Create(){
                 자막 추가
               </S.AddButton>
               <FileInputLabel>
-                SRT 불러오기
+                자막 파일 (SRT) 불러오기
                 <input
                   type="file"
                   accept=".srt"
@@ -634,7 +634,7 @@ export default function Create(){
                 />
               </FileInputLabel>
               <S.DownloadButton onClick={handleDownloadSrt}>
-                SRT 다운로드
+                자막 파일 다운로드
               </S.DownloadButton>
             </S.ButtonGroup>
           </S.TimeDisplay>
@@ -756,7 +756,7 @@ export const FileInputLabel = styled.label`
   align-items: center;
   justify-content: center;
   padding: 8px 16px;
-  background-color: #4CAF50;
+  background-color:rgb(182, 18, 18);
   color: white;
   border: none;
   border-radius: 4px;

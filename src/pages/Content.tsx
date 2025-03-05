@@ -61,6 +61,7 @@ export default function Content() {
   const [like, setLike] = useState<number>(0);
   const [isLiked, setIsLiked] = useState<boolean>(false);
   const userId = localStorage.getItem("userId");
+  const [playerKey, setPlayerKey] = useState(0);
   const opts = {
     height: "100%",
     width: "100%",
@@ -69,11 +70,10 @@ export default function Content() {
       rel: 0,
       modestbranding: 1,
       showinfo: 0,
-      controls: 1, // 컨트롤을 활성화하여 키보드 이벤트 충돌 방지
-      disablekb: 1, // YouTube 기본 키보드 컨트롤 비활성화
+      controls: 1,
+      disablekb: 1,
       fs: 0,
-      enablejsapi: 1, // JavaScript API 활성화
-      start: videoStart,
+      enablejsapi: 1
     },
   };
 
@@ -205,6 +205,10 @@ export default function Content() {
 
   const onPlayerReady = (event: any) => {
     setPlayer(event.target);
+    // 첫 자막의 시작 시간으로 이동 후 재생
+    if (subtitles.length > 0) {
+      event.target.seekTo(subtitles[0].startTime);
+    }
     event.target.playVideo();
   };
 

@@ -663,7 +663,7 @@ export const TimeMarker = styled.div`
 
 export const DownloadButton = styled.button`
   padding: 8px 16px;
-  background-color: #4CAF50;
+  background-color:rgb(138, 53, 10);
   color: white;
   border: none;
   border-radius: 4px;
@@ -672,7 +672,7 @@ export const DownloadButton = styled.button`
   transition: background-color 0.2s;
 
   &:hover {
-    background-color: #45a049;
+    background-color:rgb(238, 42, 21);
   }
 `;
 
