@@ -2,13 +2,14 @@ import * as S from "../styles/pages/post";
 import { useState, useRef, useEffect } from "react";
 import { FaFileUpload, FaPlus } from "react-icons/fa";
 import * as H from "../styles/components/header";
-import { createPost, createCharacter, getPost, editPost, deleteCharacter, getFile } from "../api/post";
+import { createPost, createCharacter, getPost, editPost, deleteCharacter, getFile, getAutoSave } from "../api/post";
 import Preview from "./Preview";
 import { heicTo } from "heic-to"
 import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { checkUser } from "../api/auth";
 import 'react-toastify/dist/ReactToastify.css';
+import Dropdown from 'react-dropdown';
 
 interface Character {
   img?: File;
@@ -28,7 +29,13 @@ export default function Edit() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [title, setTitle] = useState("");
   const SERVER_URL = import.meta.env.VITE_SERVER_URL;
-  
+  const [autoSaveFiles, setAutoSaveFiles] = useState<{ file_name: string, file_path: string, created_at: string }[]>([]);
+
+  const dropdownOptions = autoSaveFiles.map(file => ({
+    value: file.file_path,
+    label: `${file.file_name} (${new Date(file.created_at).toLocaleString()})`
+  }));
+
   const id = window.location.pathname.split("/")[2];
   useEffect(() => {
     getPost(id).then((data: any ) => {
@@ -161,12 +168,39 @@ export default function Edit() {
     };
   }, []);
 
+  const handleLoadAutoSave = async (filePath: string) => {
+    getFile(filePath).then((res) => {
+      setFile(res as File);
+    })
+   
+  };
+
+  const pullAutoSave = async () => {
+    const userId = localStorage.getItem("userId");
+    if (!userId) return;
+    const autoSave = await getAutoSave(userId);
+    setAutoSaveFiles(autoSave.data.reverse());
+
+    if (autoSave.success) {
+      console.log(autoSave);
+    }
+  }
+
+  useEffect(() => {
+    pullAutoSave();
+  }, []);
+
   return (
     <S.Container>
       <S.LeftContainer>
       <H.HeaderContainer>
         <H.Title onClick={() => navigate("/list")}>글 목록</H.Title>
+        <div style={{display: "flex", gap: "10px"}}>
+        <H.Title onClick={() => navigate("/create", { 
+          state: { youtubeUrl: youtubeUrl } 
+        })}>자막 파일 만들기</H.Title>
         <H.Title onClick={handleSubmit}>글 편집하기</H.Title>
+        </div>
       </H.HeaderContainer>
 
       <S.ContentContainer>
@@ -178,7 +212,12 @@ export default function Edit() {
           <S.Label>유튜브 영상 링크</S.Label>
           <S.Input value={youtubeUrl} onChange={(e) => setYoutubeUrl(e.target.value)} placeholder="유튜브 영상 링크를 입력해주세요." />
         </S.YoutubeContainer>
-
+        <Dropdown
+            options={dropdownOptions}
+            onChange={(option: any) => handleLoadAutoSave(option.value)}
+            placeholder="자동 저장된 파일 선택"
+            className="auto-save-dropdown"
+          />
         <S.FileInput onDrop={handleDrop} onClick={handleClick}>
           {file ? (
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>

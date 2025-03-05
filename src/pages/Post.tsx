@@ -2,12 +2,13 @@ import * as S from "../styles/pages/post";
 import { useState, useRef, useEffect } from "react";
 import { FaFileUpload, FaPlus } from "react-icons/fa";
 import * as H from "../styles/components/header";
-import { createPost, createCharacter } from "../api/post";
+import { createPost, createCharacter, getAutoSave, getFile } from "../api/post";
 import Preview from "./Preview";
 import { heicTo } from "heic-to"
 import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { checkUser } from "../api/auth";
+import Dropdown from 'react-dropdown';
 export default function Post() {
   const navigate = useNavigate();
   const [userId, setUserId] = useState<string | null>(null);
@@ -17,6 +18,12 @@ export default function Post() {
   const characterImageInputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [title, setTitle] = useState("");
+  const [autoSaveFiles, setAutoSaveFiles] = useState<{ file_name: string, file_path: string, created_at: string }[]>([]);
+
+  const dropdownOptions = autoSaveFiles.map(file => ({
+    value: file.file_path,
+    label: `${file.file_name} (${new Date(file.created_at).toLocaleString()})`
+  }));
 
   useEffect(() => {
     checkUser().then((data) => {
@@ -111,6 +118,29 @@ export default function Post() {
     }, []);
   
 
+    const pullAutoSave = async () => {
+      const userId = localStorage.getItem("userId");
+      if (!userId) return;
+      const autoSave = await getAutoSave(userId);
+      setAutoSaveFiles(autoSave.data.reverse());
+  
+      if (autoSave.success) {
+        console.log(autoSave);
+      }
+    }
+  
+    useEffect(() => {
+      pullAutoSave();
+    }, []);
+
+    const handleLoadAutoSave = async (filePath: string) => {
+      getFile(filePath).then((res) => {
+        setFile(res as File);
+      })
+     
+    };
+  
+    
   return (
     <S.Container>
       <S.LeftContainer>
@@ -135,11 +165,19 @@ export default function Post() {
           <S.Input value={youtubeUrl} onChange={(e) => setYoutubeUrl(e.target.value)} placeholder="유튜브 영상 링크를 입력해주세요." />
         </S.YoutubeContainer>
 
+        <Dropdown
+            options={dropdownOptions}
+            onChange={(option: any) => handleLoadAutoSave(option.value)}
+            placeholder="자동 저장된 파일 선택"
+            className="auto-save-dropdown"
+          />
+
         <S.FileInput onDrop={handleDrop} onClick={handleClick}>
           {file ? (
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
               <FaFileUpload color="white" size={30} style={{ marginBottom: "10px" }} />
-              <span style={{ color: "white" }}>{file.name}</span>
+              <span style={{ color: "white" }}>파일 업로드 완료</span>
+              <S.FileInputInput type="file" ref={fileInputRef} onChange={handleFileChange} />
             </div>
           ) : (
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>

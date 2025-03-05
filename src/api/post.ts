@@ -346,3 +346,27 @@ export const autoSavePost = async (autoSave: AutoSave) => {
     return { success: false, error: error.message };
   }
 };
+
+export const getAutoSave = async (userId: string) => {
+  try {
+    const response = await fetch(`${SERVER_URL}/posts/get-auto-save-file`, {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        uuid: userId
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error getting auto save:", error);   
+    return { success: false, error: error.message };
+  }
+};  

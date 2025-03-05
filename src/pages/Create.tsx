@@ -3,11 +3,13 @@ import { useEffect, useState, useRef } from "react";
 import * as S from "../styles/pages/create"
 import YouTube from "react-youtube";
 import { toast } from "react-toastify";
-import RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
 import React from "react";
 import styled from "styled-components";
-import { autoSavePost } from "../api/post";
+import { autoSavePost, getAutoSave, getFile } from "../api/post";
+import Dropdown from 'react-dropdown';
+import 'react-dropdown/style.css';
+import { FaPlus } from "react-icons/fa";
 
 interface Subtitle {
   id: number;
@@ -94,7 +96,12 @@ export default function Create(){
   const subtitleListRef = useRef<HTMLDivElement>(null);
   const currentSubtitleRef = useRef<HTMLDivElement>(null);
   const [projectName, setProjectName] = useState("");
+  const [autoSaveFiles, setAutoSaveFiles] = useState<{ file_name: string, file_path: string, created_at: string }[]>([]);
 
+  const dropdownOptions = autoSaveFiles.map(file => ({
+    value: file.file_path,
+    label: `${file.file_name} (${new Date(file.created_at).toLocaleString()})`
+  }));
 
   useEffect(() => {
     if (location.state?.youtubeUrl) {
@@ -511,7 +518,7 @@ export default function Create(){
       const url = URL.createObjectURL(srtFile);
       const link = document.createElement('a');
       link.href = url;
-      link.download = 'subtitles.srt';
+      link.download = `${projectName}.srt`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -607,6 +614,59 @@ export default function Create(){
     e.target.value = '';
   };
 
+  const pullAutoSave = async () => {
+    const userId = localStorage.getItem("userId");
+    if (!userId) return;
+    const autoSave = await getAutoSave(userId);
+    setAutoSaveFiles(autoSave.data.reverse());
+
+    if (autoSave.success) {
+      console.log(autoSave);
+    }
+  }
+
+  useEffect(() => {
+    pullAutoSave();
+  }, []);
+
+  const handleLoadAutoSave = async (filePath: string) => {
+    const selectedFile = autoSaveFiles.find(file => file.file_path === filePath);
+    if (!selectedFile) return;
+
+    setProjectName(selectedFile.file_name);
+    try {
+      const response = await getFile(selectedFile.file_path);
+      const text = await response.text();
+      const blocks = text.trim().split(/\n\s*\n/);
+      const newSubtitles: Subtitle[] = [];
+
+      blocks.forEach(block => {
+        const lines = block.trim().split('\n');
+        if (lines.length >= 3) {
+          const timeRange = lines[1].split(' --> ');
+          const startTime = srtTimeToSeconds(timeRange[0].trim());
+          const endTime = srtTimeToSeconds(timeRange[1].trim());
+          const text = lines.slice(2).join('\n');
+          
+          newSubtitles.push({
+            id: Date.now() + Math.random(),
+            startTime,
+            endTime,
+            text
+          });
+        }
+      });
+
+      if (newSubtitles.length > 0) {
+        setSubtitles(newSubtitles.sort((a, b) => a.startTime - b.startTime));
+        toast.success('자동 저장된 파일을 불러왔습니다.');
+      }
+    } catch (error) {
+      console.error('파일 불러오기 오류:', error);
+      toast.error('파일을 불러오는데 실패했습니다.');
+    }
+  };
+
   return (
     <S.MainContainer>
       <S.LeftContainer>
@@ -618,6 +678,37 @@ export default function Create(){
             placeholder="유튜브 영상 링크를 입력해주세요." 
           />
         </S.YoutubeContainer>
+
+
+        <S.AutoSaveContainer>
+
+          <Dropdown 
+            options={dropdownOptions}
+            onChange={(option: any) => handleLoadAutoSave(option.value)}
+            placeholder="자동 저장된 파일 선택"
+            className="auto-save-dropdown"
+          />
+          <FileInputLabel>
+                자막 파일 (SRT) 불러오기
+                <input
+                  type="file"
+                  accept=".srt"
+                  onChange={handleFileUpload}
+                  style={{ display: 'none' }}
+                />
+              </FileInputLabel>
+              <S.DownloadButton onClick={handleDownloadSrt}>
+                자막 파일 다운로드
+              </S.DownloadButton>
+        </S.AutoSaveContainer>
+        <S.ProjectNameContainer>
+                <S.ProjectNameInput placeholder="자막 파일 명" type="text" value={projectName} onChange={(e) => setProjectName(e.target.value)} />
+                <S.AddButton onClick={autoSave}>
+                자막 파일 저장
+              </S.AddButton>
+              </S.ProjectNameContainer>
+        
+     
 
         <S.VideoContainer tabIndex={0} onFocus={(e) => e.currentTarget.blur()}>
           {youtubeUrl && (   
@@ -646,31 +737,11 @@ export default function Create(){
             </span>
            
           </S.TimeDisplay>
-          <S.ProjectNameContainer>
-                <S.ProjectNameLabel>자막 파일 명</S.ProjectNameLabel>
-                <S.ProjectNameInput type="text" value={projectName} onChange={(e) => setProjectName(e.target.value)} />
-              </S.ProjectNameContainer>
+         
           <S.ButtonGroup>
         
-              <S.AddButton onClick={autoSave}>
-                자막 파일 저장
-              </S.AddButton>
-             
-              <FileInputLabel>
-                자막 파일 (SRT) 불러오기
-                <input
-                  type="file"
-                  accept=".srt"
-                  onChange={handleFileUpload}
-                  style={{ display: 'none' }}
-                />
-              </FileInputLabel>
-              <S.DownloadButton onClick={handleDownloadSrt}>
-                자막 파일 다운로드
-              </S.DownloadButton>
-              <S.AddButton onClick={handleAddSubtitleClick}>
-                자막 추가
-              </S.AddButton>
+       
+              <FaPlus style={{cursor: "pointer", fontSize: "20px", color: "white"}} onClick={handleAddSubtitleClick}/>
             </S.ButtonGroup>
           <S.TimelineWrapper
             onWheel={handleWheel}

@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import Dropdown from 'react-dropdown';
 export const MainContainer = styled.div`
   width: 100vw;
   height: 100vh;
@@ -445,6 +446,7 @@ export const EditButton = styled.button`
 `;
 
 export const AddButton = styled.button`
+  margin-left: 10px;
   padding: 8px 16px;
   background-color:rgb(17, 17, 17);
   color: white;
@@ -779,6 +781,7 @@ export const ProjectNameLabel = styled.label`
 `;
 
 export const ProjectNameInput = styled.input`
+padding-left: 10px;
   width: calc(100% - 40px);
   height: 100%;
   border-radius: 4px;
@@ -788,5 +791,62 @@ export const ProjectNameInput = styled.input`
   border: 1px solid #555;
   &:disabled {
     background-color: #555;
+  }
+`;
+
+export const AutoSaveContainer = styled.div`
+  margin-bottom: 20px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+`;
+
+export const Select = styled.select`
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+  font-size: 14px;
+  cursor: pointer;
+  
+  &:hover {
+    border-color: #888;
+  }
+  
+  &:focus {
+    outline: none;
+    border-color: #000;
+  }
+  
+  option {
+    padding: 8px;
+  }
+`;
+
+export const StyledDropdown = styled(Dropdown)`
+  .Dropdown-control {
+    height: 30px;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .Dropdown-menu {
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
+  .Dropdown-option {
+    min-height: 30px;
+    padding: 8px 10px;
+    line-height: 1.2;
+    word-break: break-all;
   }
 `;
