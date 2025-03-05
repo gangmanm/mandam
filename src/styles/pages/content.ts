@@ -36,7 +36,7 @@ export const VideoContainer = styled.div`
   
   @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
     width: 100%;
-    height: 100%;
+    height: 300px;
     min-height: 200px;
   }
 `;
