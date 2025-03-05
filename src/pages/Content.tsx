@@ -193,6 +193,7 @@ export default function Content() {
 
         // 활성화된 자막으로 스크롤
         if (activeCommentRef.current && commentsContainerRef.current) {
+          activeCommentRef.current.style.scrollMarginBottom = "200px"; // 스크롤 마진을 추가
           activeCommentRef.current.scrollIntoView({
             behavior: "smooth",
             block: "center",
