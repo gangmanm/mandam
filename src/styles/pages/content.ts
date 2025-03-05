@@ -9,6 +9,7 @@ export const MainContainer = styled.div`
 
   @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
     width: 100vw;
+    height: 100vh;
     flex-direction: column;
     padding: 0px;
   }
@@ -25,7 +26,7 @@ export const LeftContainer = styled.div`
 
   @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
     width: 100%;
-    height: 50%;
+    height: 40%;
     padding: 0px;
   }
 `;
@@ -38,7 +39,6 @@ export const VideoContainer = styled.div`
   @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
     width: 100%;
     height: 100%;
-    min-height: 200px;
   }
 `;
 
@@ -124,7 +124,7 @@ export const AllCommentsContainer = styled.div`
 
   @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
     width: 100%;
-    height: 50%;
+    height: 60%;
     padding: 10px;
   }
 `;
