@@ -132,6 +132,8 @@ export const AllCommentsContainer = styled.div`
     width: 100%;
     height: 100%;
     padding: 10px;
+
+    margin-top: 220px;
   }
 `;
 
