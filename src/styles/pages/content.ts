@@ -99,7 +99,6 @@ export const AllCommentsContainer = styled.div`
   flex-direction: column;
   gap: 15px;
   overflow: auto;
-  margin-top: 20px;
   padding-right: 15px;
 
   /* 스크롤바 스타일링 */
