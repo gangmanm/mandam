@@ -9,6 +9,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { deleteComment } from "../api/post";
 import { FaTrash } from "react-icons/fa";
 import { checkUser } from "../api/auth";
+import ClipLoader from "react-spinners/ClipLoader";
 
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL;
@@ -63,6 +64,8 @@ export default function Content() {
   const userId = localStorage.getItem("userId");
   const [playerKey, setPlayerKey] = useState(0);
   const [isCommentVisible, setIsCommentVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  
   const opts = {
     height: "100%",
     width: "100%",
@@ -87,6 +90,7 @@ export default function Content() {
       });
       setCharacters(res.characters);
       setVideoInfo(res);
+      setIsLoading(false);
     });
   }, [id]);
 
@@ -378,9 +382,14 @@ export default function Content() {
 
   return (
     <S.MainContainer onKeyDown={(e) => e.stopPropagation()} tabIndex={-1}>
-
-<S.LeftContainer>
-      <S.VideoContainer tabIndex={0} onFocus={(e) => e.currentTarget.blur()}>
+      {isLoading ? (
+        <S.LoadingContainer>
+          <ClipLoader color="#ffffff" size={50} />
+        </S.LoadingContainer>
+      ) : (
+        <>
+          <S.LeftContainer>
+            <S.VideoContainer tabIndex={0} onFocus={(e) => e.currentTarget.blur()}>
         {youtubeLink && (
           <YouTube
             videoId={videoId}
@@ -486,6 +495,8 @@ export default function Content() {
                  </S.UserCommentTextContainer>
               ))}
            </S.UserCommentContainer>
+      )}
+        </>
       )}
     </S.MainContainer>
   )

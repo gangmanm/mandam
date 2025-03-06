@@ -6,7 +6,6 @@ export const MainContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: linear-gradient(to bottom, #1a1a1a, #2a2a2a);
   padding: 20px;
   @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
     width: 100%;

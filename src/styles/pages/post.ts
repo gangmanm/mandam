@@ -7,7 +7,6 @@ export const Container = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  background-color: #1a1a1a;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 
   @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
@@ -28,6 +27,7 @@ export const MainContainer = styled.div`
   height: 100%;
   display: flex;
   align-items: center;
+  background-color: black;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
     width: 100%;
@@ -40,13 +40,22 @@ export const LeftContainer = styled.div`
   width: 50%;
   height: 100%;
   display: flex;
-  flex-direction: column;
+  padding: 20px;
   align-items: center;
   justify-content: center;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
     width: 100%;
   }
+`;
+
+export const AutoSaveContainer = styled.div`
+  width: 100%;
+  height: 40px;
+  display: flex;
+    margin-top: 10px;
+  align-items: center;
+  justify-content: center;
 `;
 
 export const HeaderContainer = styled.div`
@@ -105,7 +114,7 @@ export const Input = styled.input`
 export const FileInput = styled.div`
   width: 100%;
   height: 200px;
-  margin-top: 20px;
+  margin-top: 10px;
 
   display: flex;
   flex-direction: column;
@@ -137,7 +146,7 @@ export const CharacterBox = styled.div`
   align-items: center;
 
   background-color: #2b2b2b;
-  margin-top: 20px;
+  margin-top: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 `;
 
@@ -325,5 +334,113 @@ export const RightContainer = styled.div`
   @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
     width: 100%;
     min-height: 700px;
+  }
+`;
+
+export const StyledDropdown = styled.div`
+  .auto-save-dropdown {
+    width: 100%;
+    
+    .Dropdown-control {
+      width: 100%;
+      height: 40px;
+      background-color: #333;
+      border: 1px solid #555;
+      color: #f1faee;
+      display: flex;
+      align-items: center;
+      padding: 0 15px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background-color: #444;
+        border-color: #666;
+      }
+    }
+
+    .Dropdown-menu {
+      width: 100%;
+      background-color: #333;
+      border: 1px solid #555;
+      border-top: none;
+      max-height: 200px;
+      overflow-y: auto;
+
+      &::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: #222;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: #555;
+        border-radius: 4px;
+        
+        &:hover {
+          background: #666;
+        }
+      }
+    }
+
+    .Dropdown-option {
+      padding: 12px 15px;
+      color: #f1faee;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background-color: #444;
+      }
+
+      &.is-selected {
+        background-color: #457b9d;
+      }
+    }
+
+    .Dropdown-arrow {
+      border-color: #f1faee transparent transparent;
+      transition: all 0.2s ease;
+    }
+
+    .is-open .Dropdown-arrow {
+      border-color: transparent transparent #f1faee;
+    }
+  }
+`;
+
+export const DropdownContainer = styled.div`
+  width: 100%;
+`;
+
+export const Button = styled.button`
+  flex: 1;
+  height: 40px;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  text-wrap: nowrap;
+  padding: 0 10px;
+  margin-left: 10px;
+  &:hover {
+    background: linear-gradient(135deg, #2d2d2d 0%, #404040 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  &:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   }
 `;

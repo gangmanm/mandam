@@ -1,7 +1,6 @@
 import * as S from "../styles/pages/post";
 import { useState, useRef, useEffect } from "react";
 import { FaFileUpload, FaPlus } from "react-icons/fa";
-import * as H from "../styles/components/header";
 import { createPost, createCharacter, getPost, editPost, deleteCharacter, getFile, getAutoSave } from "../api/post";
 import Preview from "./Preview";
 import { heicTo } from "heic-to"
@@ -193,22 +192,33 @@ export default function Edit() {
   return (
     <S.Container>
       <NavBar />
+      <S.MainContainer>
       <S.LeftContainer>
+
       <S.ContentContainer>
       <S.YoutubeContainer style={{marginBottom: "10px"}}>
           <S.Label style={{backgroundColor: "white", color: "black"}}>글 제목</S.Label>
           <S.Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="글 제목을 입력해주세요." />
+          <S.Button onClick={handleSubmit}>
+            글 편집하기
+          </S.Button>
         </S.YoutubeContainer>
         <S.YoutubeContainer>
           <S.Label>유튜브 영상 링크</S.Label>
           <S.Input value={youtubeUrl} onChange={(e) => setYoutubeUrl(e.target.value)} placeholder="유튜브 영상 링크를 입력해주세요." />
         </S.YoutubeContainer>
+        <S.AutoSaveContainer>
+        <S.DropdownContainer>
+          <S.StyledDropdown>
         <Dropdown
             options={dropdownOptions}
             onChange={(option: any) => handleLoadAutoSave(option.value)}
             placeholder="자동 저장된 파일 선택"
             className="auto-save-dropdown"
           />
+          </S.StyledDropdown>
+          </S.DropdownContainer>
+          </S.AutoSaveContainer>
         <S.FileInput onDrop={handleDrop} onClick={handleClick}>
           {file ? (
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
@@ -273,9 +283,11 @@ export default function Edit() {
             ))}
           </S.CharcterContainer>
         </S.CharacterBox>
-      </S.ContentContainer>
+
       {isModalOpen && <CharacterAddModal onAddCharacter={handleAddCharacter} handleModalClose={handleModalClose} />}
+      </S.ContentContainer>
       </S.LeftContainer>
+
       <S.RightContainer>
         {youtubeUrl && <Preview youtubeLink={youtubeUrl} srtFile={file as File} characters={characters} characterImages={newCharacters} edit={true} />}
       </S.RightContainer>
@@ -284,6 +296,9 @@ export default function Edit() {
         closeOnClick
         theme="light"
       />
+      
+      </S.MainContainer>
+            
     </S.Container>
   );
 }

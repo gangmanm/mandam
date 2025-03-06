@@ -154,19 +154,27 @@ export default function Post() {
       <S.YoutubeContainer style={{marginBottom: "10px"}}>
           <S.Label style={{backgroundColor: "white", color: "black"}}>글 제목</S.Label>
           <S.Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="글 제목을 입력해주세요." />
+          <S.Button onClick={handleSubmit}>
+            글 작성하기
+          </S.Button>
         </S.YoutubeContainer>
         <S.YoutubeContainer>
           <S.Label>유튜브 영상 링크</S.Label>
           <S.Input value={youtubeUrl} onChange={(e) => setYoutubeUrl(e.target.value)} placeholder="유튜브 영상 링크를 입력해주세요." />
         </S.YoutubeContainer>
 
-        <Dropdown
-            options={dropdownOptions}
-            onChange={(option: any) => handleLoadAutoSave(option.value)}
-            placeholder="자동 저장된 파일 선택"
-            className="auto-save-dropdown"
+        <S.AutoSaveContainer>
+          <S.DropdownContainer>
+            <S.StyledDropdown>
+              <Dropdown
+                options={dropdownOptions}
+                onChange={(option: any) => handleLoadAutoSave(option.value)}
+                placeholder="저장된 파일 선택"
+                className="auto-save-dropdown"
           />
-
+          </S.StyledDropdown>
+          </S.DropdownContainer>
+</S.AutoSaveContainer>
         <S.FileInput onDrop={handleDrop} onClick={handleClick}>
           {file ? (
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>

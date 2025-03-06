@@ -4,8 +4,8 @@ export const MainContainer = styled.div`
   width: 100vw;
   height: 100vh;
   display: flex;
+  flex-direction: column;
   overflow : hidden;
-  padding: 30px;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
     width: 100vw;
@@ -22,7 +22,7 @@ export const LeftContainer = styled.div`
   align-items: center;
 
   padding: 20px;
-  background-color: rgb(31, 31, 31);
+  background-color: rgb(0, 0, 0);
   overflow-y: scroll;
 
   &::-webkit-scrollbar {
@@ -665,20 +665,36 @@ export const TimeMarker = styled.div`
   }
 `;
 
-export const DownloadButton = styled.button`
-  padding: 8px 16px;
-  background-color:rgb(0, 0, 0);
+export const Button = styled.button`
+  flex: 1;
+  height: 40px;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
-  transition: background-color 0.2s;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   text-wrap: nowrap;
+  padding: 0 10px;
   &:hover {
-     background-color:rgb(74, 74, 74);
+    background: linear-gradient(135deg, #2d2d2d 0%, #404040 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  &:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   }
 `;
+
 
 export const RightContainer = styled.div`
   width: 100%;
@@ -761,12 +777,13 @@ export const CommentContainer = styled.div<{ $active: boolean }>`
 
 export const ProjectNameContainer = styled.div`
   width: 100%;
-  height: 30px;
+  height: 40px;
 
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 10px;
+  gap: 10px;
 `;
 
 export const ProjectNameLabel = styled.label`
@@ -795,7 +812,7 @@ padding-left: 10px;
 `;
 
 export const AutoSaveContainer = styled.div`
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   width: 100%;
   display: flex;
   align-items: center;
@@ -826,27 +843,86 @@ export const Select = styled.select`
   }
 `;
 
-export const StyledDropdown = styled(Dropdown)`
-  .Dropdown-control {
-    height: 30px;
-    display: flex;
-    align-items: center;
-    padding: 0 10px;
-    font-size: 14px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+export const ContentContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+`;
 
-  .Dropdown-menu {
-    max-height: 300px;
-    overflow-y: auto;
-  }
 
-  .Dropdown-option {
-    min-height: 30px;
-    padding: 8px 10px;
-    line-height: 1.2;
-    word-break: break-all;
+export const DropdownContainer = styled.div`
+  width: 100%;
+`;
+
+export const StyledDropdown = styled.div`
+  .auto-save-dropdown {
+    width: 100%;
+    
+    .Dropdown-control {
+      width: 100%;
+      height: 40px;
+      background-color: #333;
+      border: 1px solid #555;
+      color: #f1faee;
+      display: flex;
+      align-items: center;
+      padding: 0 15px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background-color: #444;
+        border-color: #666;
+      }
+    }
+
+    .Dropdown-menu {
+      width: 100%;
+      background-color: #333;
+      border: 1px solid #555;
+      border-top: none;
+      max-height: 200px;
+      overflow-y: auto;
+
+      &::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: #222;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: #555;
+        border-radius: 4px;
+        
+        &:hover {
+          background: #666;
+        }
+      }
+    }
+
+    .Dropdown-option {
+      padding: 12px 15px;
+      color: #f1faee;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background-color: #444;
+      }
+
+      &.is-selected {
+        background-color: #457b9d;
+      }
+    }
+
+    .Dropdown-arrow {
+      border-color: #f1faee transparent transparent;
+      transition: all 0.2s ease;
+    }
+
+    .is-open .Dropdown-arrow {
+      border-color: transparent transparent #f1faee;
+    }
   }
 `;

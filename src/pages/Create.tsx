@@ -11,6 +11,7 @@ import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
 import { FaPlus } from "react-icons/fa";
 import NavBar from "../components/NavBar";
+import { StyledDropdown } from "../styles/pages/post";
 interface Subtitle {
   id: number;
   startTime: number;
@@ -669,7 +670,10 @@ export default function Create(){
 
   return (
     <S.MainContainer>
-      <NavBar />
+                  <NavBar />
+      <S.ContentContainer>
+
+
       <S.LeftContainer>
         <S.YoutubeContainer>
           <S.Label>유튜브 영상 링크</S.Label>
@@ -683,13 +687,17 @@ export default function Create(){
 
         <S.AutoSaveContainer>
 
-          <Dropdown 
-            options={dropdownOptions}
-            onChange={(option: any) => handleLoadAutoSave(option.value)}
-            placeholder="자동 저장된 파일 선택"
-            className="auto-save-dropdown"
-          />
-          <FileInputLabel>
+<S.DropdownContainer>
+        <S.StyledDropdown>
+            <Dropdown
+              options={dropdownOptions}
+              onChange={(option: any) => handleLoadAutoSave(option.value)}
+              placeholder="저장된 파일 선택"
+              className="auto-save-dropdown"
+            />
+          </S.StyledDropdown>
+          </S.DropdownContainer>
+          <S.Button>
                 자막 파일 (SRT) 불러오기
                 <input
                   type="file"
@@ -697,16 +705,16 @@ export default function Create(){
                   onChange={handleFileUpload}
                   style={{ display: 'none' }}
                 />
-              </FileInputLabel>
-              <S.DownloadButton onClick={handleDownloadSrt}>
+              </S.Button>
+              <S.Button onClick={handleDownloadSrt}>
                 자막 파일 다운로드
-              </S.DownloadButton>
+              </S.Button>
         </S.AutoSaveContainer>
         <S.ProjectNameContainer>
                 <S.ProjectNameInput placeholder="자막 파일 명" type="text" value={projectName} onChange={(e) => setProjectName(e.target.value)} />
-                <S.AddButton onClick={autoSave}>
+                <S.Button onClick={autoSave}>
                 자막 파일 저장
-              </S.AddButton>
+              </S.Button>
               </S.ProjectNameContainer>
         
      
@@ -787,14 +795,16 @@ export default function Create(){
             </S.TimelineContainer>
           </S.TimelineWrapper>
 
-          <div>
-          등장인물은 [등장인물 이름] 형식으로 자막 앞에 표기합니다 {'/n'}
-          Ctrl + 스크롤 을 통해 타임라인을 확대/축소 할 수 있습니다 
+          <div style={{color: "white"}}>
+          <li>등장인물은 [등장인물 이름] 형식으로 자막 앞에 표기합니다</li>
+          <li>Ctrl + 스크롤 을 통해 타임라인을 확대/축소 할 수 있습니다</li>
+          <li>+ 클릭하여 자막을 추가할 수 있습니다</li>
         </div>
         </S.SliderContainer>
 
      
       </S.LeftContainer>
+
       {youtubeUrl && (
             <S.SubtitleList ref={subtitleListRef}>
             {subtitles.map((subtitle) => (
@@ -827,6 +837,8 @@ export default function Create(){
             ))}
           </S.SubtitleList>
       )}
+            </S.ContentContainer>
+
     </S.MainContainer>
   );
 }
