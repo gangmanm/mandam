@@ -36,16 +36,19 @@ export const PostInfoContainer = styled.div`
 
 export const PostComponentTitleContainer = styled.div`
   width: 100%;
-  height: 50%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px;
+  font-size: 14px;
+  margin-left: 10px;
 `;
 
 export const PostComponentTitle = styled.div`
-  font-size: 16px;
-  font-weight: 700;
+  font-size: clamp(14px, 1vw, 16px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
   color: #fff;
 `;
 

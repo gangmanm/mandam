@@ -44,8 +44,12 @@ export default function PostComponent({ title, youtubeUrl, username, id, comment
      <S.PostInfoContainer>
         <S.PostComponentTitleContainer>
             <S.PostComponentTitle>{title}</S.PostComponentTitle>
-            <S.PostComponentUsername>작성자 : {username}</S.PostComponentUsername>
+
         </S.PostComponentTitleContainer>
+        <S.PostComponentTitleContainer>
+        <S.PostComponentUsername>작성자 : {username}</S.PostComponentUsername>
+        </S.PostComponentTitleContainer>
+
         <S.PostComponentInfoContainer>
             <S.PostComponentInfo>
                 <S.PostComponentInfoText>

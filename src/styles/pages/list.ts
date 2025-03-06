@@ -127,3 +127,29 @@ export const LoadingContainer = styled.div`
   z-index: 1000;
 `;
 
+export const PostTitle = styled.div`
+  font-size: clamp(10px, 1vw, 11px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+export const PostDate = styled.div`
+  font-size: clamp(12px, 1.5vw, 16px);
+  color: #666;
+  white-space: nowrap;
+`;
+
+export const PostContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  gap: 20px;
+  
+  @media (max-width: 768px) {
+    gap: 10px;
+    padding: 10px;
+  }
+`;
+
