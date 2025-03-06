@@ -40,7 +40,6 @@ export const LeftContainer = styled.div`
   width: 50%;
   height: 100%;
   display: flex;
-  padding: 20px;
   align-items: center;
   justify-content: center;
 
