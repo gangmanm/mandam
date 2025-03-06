@@ -971,3 +971,38 @@ export const WarningText = styled.p`
   line-height: 1.6;
   margin: 0;
 `;
+
+export const FileInputLabel = styled.label`
+  flex: 1;
+  height: 40px;
+  background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  text-wrap: nowrap;
+  padding: 0 10px;
+  
+  &:hover {
+    background: linear-gradient(135deg, #34495e 0%, #2980b9 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  &:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  }
+
+  input {
+    display: none;
+  }
+`;

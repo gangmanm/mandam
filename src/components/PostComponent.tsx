@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaComment, FaHeart, FaTrash } from "react-icons/fa";
 import { deletePost } from "../api/post";
+import { toast } from "react-toastify";
 export default function PostComponent({ title, youtubeUrl, username, id, comments_count, likes_count, date }: { title: string, youtubeUrl: string, username: string, id: string, comments_count: number, likes_count: number, date: string }) {
     const navigate = useNavigate();
         
@@ -13,13 +14,23 @@ export default function PostComponent({ title, youtubeUrl, username, id, comment
     const defaultThumbnail = "/images/mandam.png";
 
     useEffect(() => {
-        const videoId = youtubeUrl.split("v=").slice(1)[0];
-        const videoRealId = videoId.split("&")[0];
-        setVideoId(videoRealId);
-        const thumbnailUrl = `https://img.youtube.com/vi/${videoRealId}/0.jpg`;
-        setThumbnailUrl(thumbnailUrl);
-      }, [youtubeUrl]);
+        if(youtubeUrl){
+            if (youtubeUrl.includes("youtube.com")) {
+                const videoId = youtubeUrl.split("v=").slice(1)[0];
+                const videoRealId = videoId.split("&")[0];
+                setVideoId(videoRealId);
+                const thumbnailUrl = `https://img.youtube.com/vi/${videoRealId}/0.jpg`;
+                setThumbnailUrl(thumbnailUrl);
+            } else if (youtubeUrl.includes("youtu.be")) {
+                const videoIdArray = youtubeUrl.split("/")[3].split("?")[0];
+                setVideoId(videoIdArray);
+                const thumbnailUrl = `https://img.youtube.com/vi/${videoIdArray}/0.jpg`;
+                setThumbnailUrl(thumbnailUrl);
+            }
+        }
+    }, [youtubeUrl]);
 
+     
       const handleDeletePost = async (postId: string) => {
         const response = await deletePost(postId);
         if (response.success) {

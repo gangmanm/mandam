@@ -717,15 +717,16 @@ export default function Create(){
             />
           </S.StyledDropdown>
           </S.DropdownContainer>
-          <S.Button>
-                자막 파일 (SRT) 불러오기
-                <input
-                  type="file"
-                  accept=".srt"
-                  onChange={handleFileUpload}
-                  style={{ display: 'none' }}
-                />
-              </S.Button>
+          <S.FileInputLabel htmlFor="srtFileInput">
+            자막 파일 (SRT) 불러오기
+            <input
+              id="srtFileInput"
+              type="file"
+              accept=".srt"
+              onChange={handleFileUpload}
+              style={{ display: 'none' }}
+            />
+          </S.FileInputLabel>
               <S.Button onClick={handleDownloadSrt}>
                 자막 파일 다운로드
               </S.Button>

@@ -15,7 +15,10 @@ export default function List() {
   useEffect(() => {
     getPosts().then((data) => {
       console.log(data);
-      setPosts(data.reverse());
+      const sortedPosts = data.sort((a: any, b: any) => {
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      });
+      setPosts(sortedPosts);
       setIsLoading(false);
     });
   }, []);

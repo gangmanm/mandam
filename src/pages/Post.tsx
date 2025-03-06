@@ -62,6 +62,7 @@ export default function Post() {
       return;
     }
 
+    console.log("file",file);
     const post = {
       title: title,
       File: file as File,
@@ -136,10 +137,23 @@ export default function Post() {
     }, []);
 
     const handleLoadAutoSave = async (filePath: string) => {
-      getFile(filePath).then((res) => {
-        setFile(res as File);
-      })
-     
+      try {
+        const selectedFile = autoSaveFiles.find(file => file.file_path === filePath);
+        if (!selectedFile) return;
+
+        const response = await getFile(filePath);
+        const text = await response.text();
+        
+        // 텍스트를 Blob으로 변환 후 File 객체 생성
+        const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+        const file = new File([blob], selectedFile.file_name + '.srt', { type: 'text/plain;charset=utf-8' });
+        
+        setFile(file);
+        toast.success('자동 저장된 파일을 불러왔습니다.');
+      } catch (error) {
+        console.error('파일 불러오기 오류:', error);
+        toast.error('파일을 불러오는데 실패했습니다.');
+      }
     };
   
     
@@ -170,7 +184,6 @@ export default function Post() {
                 options={dropdownOptions}
                 onChange={(option: any) => handleLoadAutoSave(option.value)}
                 placeholder="저장된 파일 선택"
-                className="auto-save-dropdown"
           />
           </S.StyledDropdown>
           </S.DropdownContainer>
