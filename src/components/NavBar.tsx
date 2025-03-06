@@ -13,7 +13,7 @@ export default function NavBar() {
     { id: 1, title: "글 목록", path: "/list" },
     { id: 2, title: "글 작성하기", path: "/post" },
     { id: 3, title: "자막 만들기", path: "/create" },
-    { id: 4, title: "마이 페이지", path: "/mypage" },
+    { id: 4, title: "로그인", path: "/signin" },
   ];
 
   const slideVariants = {

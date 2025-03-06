@@ -926,3 +926,48 @@ export const StyledDropdown = styled.div`
     }
   }
 `;
+
+export const MobileWarningContainer = styled.div`
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #000000;
+  padding: 20px;
+`;
+
+export const WarningBox = styled.div`
+  background: linear-gradient(145deg, #1a1a1a, #2d2d2d);
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  max-width: 90%;
+  animation: fadeIn 0.5s ease-in-out;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+`;
+
+export const WarningTitle = styled.h2`
+  color: #ff4444;
+  font-size: 24px;
+  margin-bottom: 15px;
+  font-weight: bold;
+`;
+
+export const WarningText = styled.p`
+  color: #ffffff;
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0;
+`;

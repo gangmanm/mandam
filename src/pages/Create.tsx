@@ -12,6 +12,8 @@ import 'react-dropdown/style.css';
 import { FaPlus } from "react-icons/fa";
 import NavBar from "../components/NavBar";
 import { StyledDropdown } from "../styles/pages/post";
+import { useMediaQuery } from 'react-responsive';
+
 interface Subtitle {
   id: number;
   startTime: number;
@@ -98,6 +100,7 @@ export default function Create(){
   const currentSubtitleRef = useRef<HTMLDivElement>(null);
   const [projectName, setProjectName] = useState("");
   const [autoSaveFiles, setAutoSaveFiles] = useState<{ file_name: string, file_path: string, created_at: string }[]>([]);
+  const isMobile = useMediaQuery({ maxWidth: 768 });
 
   const dropdownOptions = autoSaveFiles.map(file => ({
     value: file.file_path,
@@ -667,6 +670,23 @@ export default function Create(){
       toast.error('파일을 불러오는데 실패했습니다.');
     }
   };
+
+  if (isMobile) {
+    return (
+      <S.MobileWarningContainer>
+        <S.WarningBox>
+          <S.WarningTitle>PC 환경 권장</S.WarningTitle>
+          <S.WarningText>
+            자막 만들기 기능은
+            
+            <br />PC 환경에 최적화되어 있습니다.
+            <br />
+            원활한 이용을 위해 PC로 접속해 주세요.
+          </S.WarningText>
+        </S.WarningBox>
+      </S.MobileWarningContainer>
+    );
+  }
 
   return (
     <S.MainContainer>
