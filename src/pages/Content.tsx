@@ -415,9 +415,9 @@ export default function Content() {
                     {window.innerWidth < 768 && <div style={{marginRight: "10px"}} onClick={() => setIsCommentVisible(!isCommentVisible)}>댓글 {isCommentVisible ? "닫기" : "보기"}</div>}
                     <FaHeart onClick={handleLikePost} color={isLiked ? "red" : "white"}/>
                     <div style={{marginLeft: "5px"}}>{like}</div>
-                    {userId === localStorage.getItem("userId") && <FaTrash style={{cursor: "pointer", marginLeft: "10px", color: "white" , width: "15px", height: "15px"}} onClick={() => handleDeletePost(id as string)} />}
+                    {userId && userId === localStorage.getItem("userId") && <FaTrash style={{cursor: "pointer", marginLeft: "10px", color: "white" , width: "15px", height: "15px"}} onClick={() => handleDeletePost(id as string)} />}
                     <div style={{marginLeft: "10px"}}>
-                    <FaEdit style={{cursor: "pointer", color: "white" , width: "15px", height: "15px"}} onClick={() => handleEditPost()} />
+                    {userId && userId === localStorage.getItem("userId") && <FaEdit style={{cursor: "pointer", color: "white" , width: "15px", height: "15px"}} onClick={() => handleEditPost()} />}
                   </div>
                 </div>
             </S.TitleContainer>
