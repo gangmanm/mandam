@@ -12,6 +12,7 @@ export const MainContainer = styled.div`
   @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
     width: 100vw;
     height: 100vh;
+    overflow-y: hidden;
   }
   background-color: black;
 `;
