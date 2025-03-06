@@ -83,7 +83,6 @@ const container: React.CSSProperties = {
     display: "flex",
     flexDirection: "column",
     width: "100%",
-    height: "400px",
     position: "relative",
     gap: "10px",
     padding: "10px"

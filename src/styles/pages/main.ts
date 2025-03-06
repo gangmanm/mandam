@@ -60,7 +60,7 @@ export const Link = styled.div`
   height: 50px;
 
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
   font-size: 15px;
   color: white;
