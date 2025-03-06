@@ -48,6 +48,9 @@ export default function Main() {
           <TypewriterText />
         </S.TextContainer>
         <MainInfo />
+        <S.Link onClick={handleRouteToList}>
+          만담 보러가기 &gt;
+        </S.Link>
       </S.ContentContainer>
     </S.MainContainer>
   );
