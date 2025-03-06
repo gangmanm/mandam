@@ -33,7 +33,7 @@ export default function NavBar() {
     <S.NavBarContainer>
       <S.NavBarContent>
         <S.RightSection>
-          <S.Title>만담</S.Title>
+          <S.Title onClick={() => navigate("/")}>만담</S.Title>
         </S.RightSection>
         <S.LeftSection>
           <S.IconContainer onClick={() => setIsOpen(!isOpen)}>

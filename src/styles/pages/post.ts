@@ -28,6 +28,12 @@ export const MainContainer = styled.div`
   height: 100%;
   display: flex;
   align-items: center;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+  }
 `;
 
 export const LeftContainer = styled.div`
