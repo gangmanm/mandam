@@ -4,6 +4,7 @@ export const Container = styled.div`
   width: 100vw;
   height: 100vh;
   display: flex;
+  flex-direction: column;
   justify-content: flex-start;
   align-items: center;
   background-color: #1a1a1a;
@@ -20,6 +21,13 @@ export const Container = styled.div`
   &::-webkit-scrollbar {
     display: none;
   }
+`;
+
+export const MainContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
 `;
 
 export const LeftContainer = styled.div`

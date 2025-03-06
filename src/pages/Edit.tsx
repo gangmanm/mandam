@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { checkUser } from "../api/auth";
 import 'react-toastify/dist/ReactToastify.css';
 import Dropdown from 'react-dropdown';
-
+import NavBar from "../components/NavBar";
 interface Character {
   img?: File;
   name: string;
@@ -192,17 +192,8 @@ export default function Edit() {
 
   return (
     <S.Container>
+      <NavBar />
       <S.LeftContainer>
-      <H.HeaderContainer>
-        <H.Title onClick={() => navigate("/list")}>글 목록</H.Title>
-        <div style={{display: "flex", gap: "10px"}}>
-        <H.Title onClick={() => navigate("/create", { 
-          state: { youtubeUrl: youtubeUrl } 
-        })}>자막 파일 만들기</H.Title>
-        <H.Title onClick={handleSubmit}>글 편집하기</H.Title>
-        </div>
-      </H.HeaderContainer>
-
       <S.ContentContainer>
       <S.YoutubeContainer style={{marginBottom: "10px"}}>
           <S.Label style={{backgroundColor: "white", color: "black"}}>글 제목</S.Label>

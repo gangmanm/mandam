@@ -10,7 +10,7 @@ import { autoSavePost, getAutoSave, getFile } from "../api/post";
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
 import { FaPlus } from "react-icons/fa";
-
+import NavBar from "../components/NavBar";
 interface Subtitle {
   id: number;
   startTime: number;
@@ -669,6 +669,7 @@ export default function Create(){
 
   return (
     <S.MainContainer>
+      <NavBar />
       <S.LeftContainer>
         <S.YoutubeContainer>
           <S.Label>유튜브 영상 링크</S.Label>

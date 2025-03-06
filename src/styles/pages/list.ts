@@ -36,7 +36,6 @@ export const Header = styled.div`
 export const ContentContainer = styled.div`
     display: flex;
     width: 100%;
-    margin-top: 60px;
     flex-direction: column;
     padding: 10px;
     gap: 10px;

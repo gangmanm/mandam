@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import PostComponent from "../components/PostComponent";
 import { useNavigate } from "react-router-dom";
 import * as H from "../styles/components/header";
+import NavBar from "../components/NavBar";
 
 export default function List() {
   const [posts, setPosts] = useState<any[]>([]);
@@ -17,12 +18,7 @@ export default function List() {
   }, []);
   return (
     <S.MainContainer>
-      <S.Header>
-          <H.Title>글 목록</H.Title>
-        <H.Title onClick={() => {
-          navigate("/post");
-        }}>새로운 글 작성하기</H.Title>
-      </S.Header>
+      <NavBar />
       <S.ContentContainer>
         {posts.map((post) => (
           post.youtube_url ? <PostComponent key={post.id} title={post.title} youtubeUrl={post.youtube_url} username={post.username} id={post.id} comments_count={post.comments_count} likes_count={post.likes_count} date={post.created_at} /> : null
