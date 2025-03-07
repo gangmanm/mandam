@@ -144,36 +144,6 @@ export default function Post() {
 
     console.log(response);
   };
-  const handleCharacterImageClick = (index: number) => {
-    characterImageInputRefs.current[index]?.click();
-  };
-
-  const [youtubeUrl, setYoutubeUrl] = useState("");
-
-  const handleModalOpen = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleModalClose = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleAddCharacter = (character: { img: File; name: string }) => {
-    setCharacters((prev) => [
-      ...prev,
-      { img: character.img, name: character.name },
-    ]);
-    handleModalClose();
-
-    setTimeout(() => {
-      toast.success("영상 등장인물이 추가되었습니다.", {
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "light",
-      });
-    }, 0);
-  };
 
   // cleanup에서 toast.dismiss() 제거
   useEffect(() => {

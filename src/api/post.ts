@@ -379,6 +379,34 @@ export const deleteCharacter = async (id: string) => {
   }
 };
 
+export const editCharacter = async (character: Character) => {
+  try {
+    const formData = new FormData();
+    formData.append("character_id", character.id);
+    formData.append("name", character.name);
+    formData.append("img", character.img);
+
+    const response = await fetch(`${SERVER_URL}/posts/edit-character`, {
+      method: "POST",
+      body: formData
+    });
+
+    if (!response.ok) {
+      throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error editing character:", error);
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+  }
+};
+
+
+
+
+
+
 export const autoSavePost = async (autoSave: AutoSave) => {
   try {
     const formData = new FormData();

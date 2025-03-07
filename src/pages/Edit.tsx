@@ -1,7 +1,7 @@
 import * as S from "../styles/pages/post";
 import { useState, useRef, useEffect } from "react";
 import { FaFileUpload, FaPlus } from "react-icons/fa";
-import { createPost, createCharacter, getPost, editPost, deleteCharacter, getFile, getAutoSave } from "../api/post";
+import { createPost, createCharacter, getPost, editPost, deleteCharacter, getFile, getAutoSave, editCharacter } from "../api/post";
 import Preview from "./Preview";
 import { heicTo } from "heic-to"
 import { ToastContainer, toast } from "react-toastify";
@@ -11,6 +11,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Dropdown from 'react-dropdown';
 import NavBar from "../components/NavBar";
 interface Character {
+  id?: string;
   img?: File;
   name: string;
   isDelete?: boolean;
@@ -36,17 +37,65 @@ export default function Edit() {
   }));
 
   const id = window.location.pathname.split("/")[2];
-  useEffect(() => {
-    getPost(id).then((data: any ) => {
-      console.log(data);
+
+  const extractCharactersFromSrt = async (file: File) => {
+    try {
+      const text = await file.text();
+      const lines = text.split('\n');
+      const speakers = new Set<string>();
+      
+      lines.forEach(line => {
+        // [캐릭터 이름] 형식 추출
+        const speakerMatch = line.match(/^\[([^\]]+)\]/);
+        if (speakerMatch) {
+          const speaker = speakerMatch[1].trim();
+          speakers.add(speaker);
+        }
+      });
+
+      // 추출된 화자들을 characters 배열로 변환
+      const extractedCharacters = Array.from(speakers).map(name => ({
+        name: name,
+        img: null,
+        isDelete: false
+      }));
+
+      return extractedCharacters;
+    } catch (error) {
+      console.error('자막 파일 파싱 오류:', error);
+      return [];
+    }
+  };
+
+
+  useEffect(() => {   
+    getPost(id).then(async (data: any) => {
       setTitle(data.title);
       setYoutubeUrl(data.youtube_url);
-      getFile(data.file_path).then((res) => {
-        setFile(res as File);
-      })    
-      setCharacters(data.characters);
+      
+      const fileResponse = await getFile(data.file_path);
+      setFile(fileResponse as File);
+      
+      // 기존 캐릭터 설정
+      const existingCharacters = data.characters.map((char: any) => ({
+        ...char,
+        isDelete: false
+      }));
+      
+      // 자막에서 새로운 캐릭터 추출
+      const extractedCharacters = await extractCharactersFromSrt(fileResponse as File);
+      
+      // 기존 캐릭터와 새로 추출된 캐릭터 병합
+      const existingNames = new Set(existingCharacters.map(char => char.name));
+      const newCharacters = extractedCharacters.filter(char => !existingNames.has(char.name));
+      
+      setCharacters([...existingCharacters, ...newCharacters]);
+      
+      if (newCharacters.length > 0) {
+        toast.success(`${newCharacters.length}개의 새로운 등장인물이 추가되었습니다.`);
+      }
     });
-  }, []);
+  }, [id]);
 
   useEffect(() => {
     checkUser().then((data) => {
@@ -59,17 +108,45 @@ export default function Edit() {
   }, [navigate]);
   
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       const selectedFile = event.target.files[0];
       setFile(selectedFile);
+
+      // 새 파일에서 캐릭터 추출
+      const extractedCharacters = await extractCharactersFromSrt(selectedFile);
+      
+      // 기존 캐릭터와 새로 추출된 캐릭터 병합
+      setCharacters(prev => {
+        const existingNames = new Set(prev.map(char => char.name));
+        const newCharacters = extractedCharacters.filter(char => !existingNames.has(char.name));
+        return [...prev, ...newCharacters];
+      });
+
+      if (extractedCharacters.length > 0) {
+        toast.success(`${extractedCharacters.length}개의 새로운 등장인물이 추가되었습니다.`);
+      }
     }
   };
 
-  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+
+  const handleDrop = async (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     if (event.dataTransfer.files && event.dataTransfer.files[0]) {
-      setFile(event.dataTransfer.files[0]);
+      const selectedFile = event.dataTransfer.files[0];
+      setFile(selectedFile);
+
+      const extractedCharacters = await extractCharactersFromSrt(selectedFile);
+      
+      setCharacters(prev => {
+        const existingNames = new Set(prev.map(char => char.name));
+        const newCharacters = extractedCharacters.filter(char => !existingNames.has(char.name));
+        return [...prev, ...newCharacters];
+      });
+
+      if (extractedCharacters.length > 0) {
+        toast.success(`${extractedCharacters.length}개의 새로운 등장인물이 추가되었습니다.`);
+      }
     }
   };
 
@@ -83,48 +160,62 @@ export default function Edit() {
       return;
     }
 
-    const post = {
-      post_id: id,
-      title: title,
-      File: file as File,
-      userId: localStorage.getItem("userId") as string,
-      youtube_url: youtubeUrl,
-      text: "test",
-    };
-    console.log("post", post);
+    try {
+      // 1. 게시글 수정
+      const post = {
+        post_id: id,
+        title: title,
+        File: file as File,
+        userId: localStorage.getItem("userId") as string,
+        youtube_url: youtubeUrl,
+        text: "test",
+      };
 
-    const response = await editPost(post);
+      const response = await editPost(post);
 
-    if(response.success){
-        toast.success("글 편집 완료");
-      } else {
+      if (!response.success) {
         toast.error("글 편집 실패");
+        return;
       }
-    
-    console.log(characters);
-    for(const character of characters){
-      if(character.isDelete){
-        deleteCharacter(character.id);
+
+      // 2. 캐릭터 처리
+      for (const character of characters) {
+        // 삭제된 캐릭터
+        if (character.isDelete && character.id) {
+          await deleteCharacter(character.id);
+          continue;
+        }
+
+        // 이미지가 변경된 기존 캐릭터
+        if (character.id && character.img) {
+          await editCharacter({
+            id: character.id,
+            name: character.name,
+            img: character.img,
+            post_id: id
+          });
+          continue;
+        }
+
+        // 새로 추가된 캐릭터
+        if (!character.id && !character.isDelete && character.img) {
+          await createCharacter({
+            img: character.img,
+            name: character.name
+          }, id); 
+        }
       }
+
+      toast.success("글 편집 완료");
+      navigate(`/content/${id}`);
+
+    } catch (error) {
+      console.error("글 편집 오류:", error);
+      toast.error("글 편집 중 오류가 발생했습니다.");
     }
-    
-
-
-    console.log(response);
   };
-  const handleCharacterImageClick = (index: number) => {
-    characterImageInputRefs.current[index]?.click();
-  };
-
   const [youtubeUrl, setYoutubeUrl] = useState("");
 
-  const handleModalOpen = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleModalClose = () => {
-    setIsModalOpen(false);
-  };
 
   const handleRemoveCharacter = (index: number) => {
     setCharacters(prev => prev.map((char, idx) => {
@@ -139,26 +230,6 @@ export default function Edit() {
     }));
   };
 
-  const handleAddCharacter = async (character: { img: File; name: string }) => {  
-    setNewCharacters((prev) => [...prev, { img: character.img, name: character.name }]);
-    handleModalClose();
-    const res = await createCharacter(character, id);       
-
-    if(res.success){
-
-      window.location.reload();
-      toast.success("영상 등장인물이 추가되었습니다.", {
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "light"
-      });
-
-
-    } else {
-      toast.error("영상 등장인물 추가 실패");
-    }
-  };
 
   // cleanup에서 toast.dismiss() 제거
   useEffect(() => {
@@ -202,6 +273,47 @@ export default function Edit() {
   useEffect(() => {
     pullAutoSave();
   }, []);
+
+  // 이미지 변경 처리 함수 추가
+  const handleCharacterImageChange = async (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      try {
+        let imageFile: File;
+        const file = event.target.files[0];
+
+        // HEIC/HEIF 이미지 처리
+        if (file.type === "image/heic" || file.type === "image/heif") {
+          const jpeg = await heicTo({
+            blob: file,
+            type: "image/jpeg",
+            quality: 0.5,
+          });
+          imageFile = new File([jpeg as Blob], file.name.replace(/\.[^/.]+$/, ".jpg"), {
+            type: "image/jpeg",
+          });
+        } else {
+          imageFile = file;
+        }
+
+        // characters 배열 업데이트
+        setCharacters(prev => 
+          prev.map((char, i) => 
+            i === index ? { ...char, img: imageFile } : char
+          )
+        );
+
+        toast.success("캐릭터 이미지가 변경되었습니다.");
+      } catch (error) {
+        console.error("이미지 처리 오류:", error);
+        toast.error("이미지 처리 중 오류가 발생했습니다.");
+      }
+    }
+  };
+
+  // characterImageInputRefs 초기화를 위한 useEffect 추가
+  useEffect(() => {
+    characterImageInputRefs.current = characters.map(() => null);
+  }, [characters.length]);
 
   return (
     <S.Container>
@@ -253,7 +365,6 @@ export default function Edit() {
         <S.CharacterBox>
           <S.CharacterBoxTitle>
             <div>영상 등장인물</div>
-            <div onClick={handleModalOpen}>+</div>
           </S.CharacterBoxTitle>
 
           <S.CharcterContainer>
@@ -261,12 +372,28 @@ export default function Edit() {
               .filter(char => !char.isDelete)
               .map((character, index) => (
                 <S.CharacterBoxItem key={index}>
-                  {character.img_file_path && (
-                    <S.CharacterBoxItemImage
-                      src={`${SERVER_URL}/posts/get-file?file_path=${character.img_file_path}`}
-                      onClick={() => handleCharacterImageClick(index)}
-                    /> 
-                  )}
+                  <S.CharacterBoxItemImageWrapper
+                    onClick={() => characterImageInputRefs.current[index]?.click()}
+                  >
+                    {character.img ? (
+                      <S.CharacterBoxItemImage
+                        src={URL.createObjectURL(character.img)}
+                      />
+                    ) : character.img_file_path ? (
+                      <S.CharacterBoxItemImage
+                        src={`${SERVER_URL}/posts/get-file?file_path=${character.img_file_path}`}
+                      />
+                    ) : (
+                      <FaPlus size={20} color="gray" />
+                    )}
+                  </S.CharacterBoxItemImageWrapper>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    ref={el => characterImageInputRefs.current[index] = el}
+                    style={{ display: 'none' }}
+                    onChange={(e) => handleCharacterImageChange(index, e)}
+                  />
                   <S.CharacterBoxItemNameInput
                     placeholder="이름"
                     value={character.name}
@@ -297,13 +424,11 @@ export default function Edit() {
             ))}
           </S.CharcterContainer>
         </S.CharacterBox>
-
-      {isModalOpen && <CharacterAddModal onAddCharacter={handleAddCharacter} handleModalClose={handleModalClose} />}
       </S.ContentContainer>
       </S.LeftContainer>
 
       <S.RightContainer>
-        {youtubeUrl && <Preview youtubeLink={youtubeUrl} srtFile={file as File} characters={characters} characterImages={newCharacters} edit={true} />}
+        {youtubeUrl && <Preview youtubeLink={youtubeUrl} srtFile={file as File} characters={characters} edit={true} />}
       </S.RightContainer>
       <ToastContainer
         autoClose={1000}
@@ -316,48 +441,3 @@ export default function Edit() {
     </S.Container>
   );
 }
-
-const CharacterAddModal = ({ onAddCharacter, handleModalClose }: { onAddCharacter: (character: { img: File; name: string }) => void, handleModalClose: () => void }) => {
-  const [img, setImg] = useState<File | null>(null);
-  const [name, setName] = useState("");
-  const imageInputRef = useRef<HTMLInputElement | null>(null);
-  const SERVER_URL = import.meta.env.VITE_SERVER_URL;
-
-  const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      if (event.target.files[0].type === "image/heic" || event.target.files[0].type === "image/heif") {
-        const jpeg = await heicTo({
-          blob: event.target.files[0],
-          type: "image/jpeg",
-          quality: 0.5
-        });
-        setImg(new File([jpeg as Blob], event.target.files[0].name.replace(/\.[^/.]+$/, ".jpg"), { type: "image/jpeg" }));
-      } else {
-        setImg(event.target.files[0]);
-      }
-    }
-  };
-
-  return (
-    <S.CharacterAddModal>
-      <S.CharacterAddModalTitle>
-        캐릭터 추가
-        <div onClick={() => handleModalClose()}>X</div>
-      </S.CharacterAddModalTitle>
-      <S.CharacterBox>
-        <S.CharacterBoxItemImageWrapper onClick={() => imageInputRef.current?.click()}>
-          {img ? (
-            <S.CharacterBoxItemImage src={URL.createObjectURL(img as Blob)} />
-          ) : (
-            <FaPlus size={20} color="gray" />
-          )}
-        </S.CharacterBoxItemImageWrapper>
-        <input type="file" ref={imageInputRef} style={{ display: "none" }} onChange={handleImageChange} />
-        <S.CharacterBoxItemNameInput type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="이름 입력" />
-        <S.CancelButton onClick={() => img && name && onAddCharacter({ img, name })}>
-          추가하기
-        </S.CancelButton>
-      </S.CharacterBox>
-    </S.CharacterAddModal>
-  );
-};
