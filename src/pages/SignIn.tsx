@@ -1,10 +1,11 @@
-import * as S from "../styles/pages/SignIn";
+import * as S from "../styles/pages/signIn";
 import { useState } from "react";
 import { checkUser, signIn } from "../api/auth";
 import { useNavigate } from "react-router-dom";
 import { FaUser, FaLock } from "react-icons/fa";
 import { useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
+
 interface FormData {
   email: string;
   password: string;
@@ -18,12 +19,25 @@ const SignIn = () => {
     const checkLogin = async () => {
       const data = await checkUser();
       if (data.success) {
-        navigate("/");
+        navigate("/list");
         setAuth(true);
       }
     };
 
     checkLogin();
+  }, [navigate]);
+
+  useEffect(() => {
+    const handlePopState = (e: PopStateEvent) => {
+      e.preventDefault();
+      navigate("/list");
+    };
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
   }, [navigate]);
 
   const [formData, setFormData] = useState<FormData>({
@@ -33,19 +47,19 @@ const SignIn = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const res = await signIn(formData.email, formData.password);
-    if(res.success){
+    if (res.success) {
       localStorage.setItem("userId", res.data.uuid);
       navigate("/list");
-    }else{
+    } else {
       toast.error("이메일과 비밀번호를 확인해주세요.");
     }
   };
@@ -59,13 +73,13 @@ const SignIn = () => {
             <FaUser />
           </S.Label>
           <S.Input
-              type="email"
-              name="email"
-              placeholder='이메일'
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
+            type="email"
+            name="email"
+            placeholder="이메일"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
         </S.InputGroup>
 
         <S.InputGroup>
@@ -75,7 +89,7 @@ const SignIn = () => {
           <S.Input
             type="password"
             name="password"
-            placeholder='비밀번호'
+            placeholder="비밀번호"
             value={formData.password}
             onChange={handleChange}
             required

@@ -2,7 +2,7 @@ import * as S from "../styles/pages/main";
 import { useNavigate } from "react-router-dom";
 import NavBar from "../components/NavBar";
 import styled from "styled-components";
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
 import MainInfo from "../components/MainInfo";
 
 export default function Main() {
@@ -17,7 +17,7 @@ export default function Main() {
 
     return (
       <S.SubTitleText>
-        {text.split('\n').map((line, lineIndex) => (
+        {text.split("\n").map((line, lineIndex) => (
           <motion.div key={`line-${lineIndex}`}>
             {Array.from(line).map((char, charIndex) => (
               <motion.span
@@ -27,10 +27,10 @@ export default function Main() {
                 transition={{
                   duration: 0.1,
                   delay: (lineIndex * line.length + charIndex) * 0.1,
-                  ease: "linear"
+                  ease: "linear",
                 }}
               >
-                {char === ' ' ? '\u00A0' : char}
+                {char === " " ? "\u00A0" : char}
               </motion.span>
             ))}
           </motion.div>
@@ -40,7 +40,7 @@ export default function Main() {
   };
 
   return (
-    <S.MainContainer> 
+    <S.MainContainer>
       <NavBar />
       <S.ContentContainer>
         <S.TextContainer>
@@ -48,9 +48,7 @@ export default function Main() {
           <TypewriterText />
         </S.TextContainer>
         <MainInfo />
-        <S.Link onClick={handleRouteToList}>
-          만담 보러가기 &gt;
-        </S.Link>
+        <S.Link onClick={handleRouteToList}>만담 보러가기 &gt;</S.Link>
       </S.ContentContainer>
     </S.MainContainer>
   );

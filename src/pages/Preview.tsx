@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import * as S from "../styles/pages/preview";
-import { useSearchParams } from "next/navigation";
 import YouTube from "react-youtube";
 import { ToastContainer, toast } from "react-toastify";
 
@@ -23,12 +22,23 @@ interface PreviewProps {
   youtubeLink: string;
   srtFile: File;
   characterImages?: { image: File; name: string }[];
-  characters?: { img_file_path: string | null; name: string , id : string , post_id : string}[];
+  characters?: {
+    img_file_path: string | null;
+    name: string;
+    id: string;
+    post_id: string;
+  }[];
   edit?: boolean;
 }
 
-export default function Preview({ youtubeLink, srtFile, characterImages , characters , edit}: PreviewProps) {
-     const currentTime = useRef<number>(0);
+export default function Preview({
+  youtubeLink,
+  srtFile,
+  characterImages,
+  characters,
+  edit,
+}: PreviewProps) {
+  const currentTime = useRef<number>(0);
 
   const [subtitles, setSubtitles] = useState<CommentaryItem[]>([]);
   const [currentSubtitle, setCurrentSubtitle] = useState<CommentaryItem | null>(
@@ -53,20 +63,17 @@ export default function Preview({ youtubeLink, srtFile, characterImages , charac
     return "#" + Math.floor(Math.random() * 16777215).toString(16);
   };
 
-
-
   // speakers 데이터 로드
   useEffect(() => {
-
     console.log(characterImages);
-    if(edit && characters){
+    if (edit && characters) {
       const speakers = characters.map((character) => ({
         name: character.name,
         color: getRandomColor(),
         image: `${SERVER_URL}/posts/get-file?file_path=${character.img_file_path}`,
       }));
       setSpeakers(speakers);
-    }else if(characterImages){
+    } else if (characterImages) {
       const speakers = characterImages.map((character) => ({
         name: character.name,
         color: getRandomColor(),
@@ -79,30 +86,32 @@ export default function Preview({ youtubeLink, srtFile, characterImages , charac
   // SRT 파일 파싱
   const parseSRT = (srtContent: string): CommentaryItem[] => {
     if (!srtContent) return [];
-  
+
     // 자막 블록을 자막 번호와 시간 코드 사이의 공백을 기준으로 분리
     const blocks = srtContent.split(/\n\s*\n/);
     let currentSpeaker: string | undefined;
-  
+
     return blocks
       .map((block) => {
         if (!block.trim()) return null; // 빈 블록 무시
-  
+
         const lines = block.split("\n");
         if (lines.length < 2) return null; // 유효하지 않은 블록 무시
-  
+
         const [startTime, endTime] = lines[1]
           .split(" --> ")
           .map(srtTimeToSeconds);
         const text = lines.slice(2).join("\n");
-  
+
         // 화자 정보 추출
         const speakerMatch = text.match(/^\[(.*?)\]/);
         if (speakerMatch) {
           currentSpeaker = speakerMatch[1];
         }
-        const cleanText = speakerMatch ? text.replace(/^\[(.*?)\]\s*/, "") : text;
-  
+        const cleanText = speakerMatch
+          ? text.replace(/^\[(.*?)\]\s*/, "")
+          : text;
+
         return {
           startTime,
           endTime,
@@ -132,7 +141,6 @@ export default function Preview({ youtubeLink, srtFile, characterImages , charac
     fetchSRT();
   }, [srtFile]);
 
-
   // 현재 자막 업데이트
   useEffect(() => {
     if (!player || !subtitles.length) return;
@@ -142,7 +150,8 @@ export default function Preview({ youtubeLink, srtFile, characterImages , charac
       currentTime.current = currentVideoTime;
 
       const currentSub = subtitles.find(
-        (sub) => currentVideoTime >= sub.startTime && currentVideoTime <= sub.endTime
+        (sub) =>
+          currentVideoTime >= sub.startTime && currentVideoTime <= sub.endTime
       );
 
       if (JSON.stringify(currentSub) !== JSON.stringify(currentSubtitle)) {
@@ -165,7 +174,6 @@ export default function Preview({ youtubeLink, srtFile, characterImages , charac
     setPlayer(event.target);
     event.target.playVideo();
   };
-
 
   // window 레벨에서 이벤트 리스너 추가
   useEffect(() => {
@@ -222,7 +230,6 @@ export default function Preview({ youtubeLink, srtFile, characterImages , charac
     },
   };
 
-
   useEffect(() => {
     if (youtubeLink) {
       if (youtubeLink.includes("youtube.com")) {
@@ -240,10 +247,8 @@ export default function Preview({ youtubeLink, srtFile, characterImages , charac
     }
   }, [youtubeLink]);
 
-
   return (
     <S.MainContainer onKeyDown={(e) => e.stopPropagation()} tabIndex={-1}>
-
       <S.VideoContainer tabIndex={0} onFocus={(e) => e.currentTarget.blur()}>
         {youtubeLink && (
           <YouTube

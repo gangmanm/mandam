@@ -1,17 +1,6 @@
-import { motion, useInView, useAnimation, Variant } from "motion/react";
+import { motion, useInView, useAnimation } from "motion/react";
 import { useEffect, useRef } from "react";
-
-type AnimatedTextProps = {
-  text: string | string[];
-  el?: keyof JSX.IntrinsicElements;
-  className?: string;
-  once?: boolean;
-  repeatDelay?: number;
-  animation?: {
-    hidden: Variant;
-    visible: Variant;
-  };
-};
+import { AnimatedTextProps } from "../types";
 
 const defaultAnimations = {
   hidden: {

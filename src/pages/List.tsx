@@ -9,14 +9,15 @@ import ClipLoader from "react-spinners/ClipLoader";
 
 export default function List() {
   const [posts, setPosts] = useState<any[]>([]);
-  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     getPosts().then((data) => {
       console.log(data);
       const sortedPosts = data.sort((a: any, b: any) => {
-        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        return (
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        );
       });
       setPosts(sortedPosts);
       setIsLoading(false);
@@ -32,20 +33,20 @@ export default function List() {
         </S.LoadingContainer>
       ) : (
         <S.ContentContainer>
-          {posts.map((post) => (
-            post.youtube_url ? 
-              <PostComponent 
-                key={post.id} 
-                title={post.title} 
-                youtubeUrl={post.youtube_url} 
-                username={post.username} 
-                id={post.id} 
-                comments_count={post.comments_count} 
-                likes_count={post.likes_count} 
-                date={post.created_at} 
-              /> 
-            : null
-          ))}
+          {posts.map((post) =>
+            post.youtube_url ? (
+              <PostComponent
+                key={post.id}
+                title={post.title}
+                youtubeUrl={post.youtube_url}
+                username={post.username}
+                id={post.id}
+                comments_count={post.comments_count}
+                likes_count={post.likes_count}
+                date={post.created_at}
+              />
+            ) : null
+          )}
         </S.ContentContainer>
       )}
     </S.MainContainer>

@@ -2,7 +2,7 @@ import * as S from "../styles/components/navBar";
 import { FaList, FaTimes } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
-import { useMediaQuery } from 'react-responsive';
+import { useMediaQuery } from "react-responsive";
 import { useNavigate } from "react-router-dom";
 
 export default function NavBar() {
@@ -26,7 +26,7 @@ export default function NavBar() {
       initial: { y: "-100%" },
       animate: { y: 0 },
       exit: { y: "-100%" },
-    }
+    },
   };
 
   return (
@@ -45,13 +45,23 @@ export default function NavBar() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={isMobile ? slideVariants.mobile.initial : slideVariants.desktop.initial}
-            animate={isMobile ? slideVariants.mobile.animate : slideVariants.desktop.animate}
-            exit={isMobile ? slideVariants.mobile.exit : slideVariants.desktop.exit}
+            initial={
+              isMobile
+                ? slideVariants.mobile.initial
+                : slideVariants.desktop.initial
+            }
+            animate={
+              isMobile
+                ? slideVariants.mobile.animate
+                : slideVariants.desktop.animate
+            }
+            exit={
+              isMobile ? slideVariants.mobile.exit : slideVariants.desktop.exit
+            }
             transition={{ type: "spring", damping: 20 }}
             style={{
               position: "fixed",
-              ...(isMobile 
+              ...(isMobile
                 ? {
                     top: 0,
                     left: 0,
@@ -64,8 +74,7 @@ export default function NavBar() {
                     left: 0,
                     width: "250px",
                     height: "100vh",
-                  }
-              ),
+                  }),
               backgroundColor: "#1a1a1a",
               zIndex: 99,
               padding: isMobile ? "20px" : "60px 20px 20px 20px",
@@ -77,7 +86,11 @@ export default function NavBar() {
             {menuItems.map((item) => (
               <motion.div
                 key={item.id}
-                initial={{ opacity: 0, x: isMobile ? 0 : -20, y: isMobile ? -20 : 0 }}
+                initial={{
+                  opacity: 0,
+                  x: isMobile ? 0 : -20,
+                  y: isMobile ? -20 : 0,
+                }}
                 animate={{ opacity: 1, x: 0, y: 0 }}
                 transition={{ delay: item.id * 0.1 }}
                 style={{
@@ -91,7 +104,7 @@ export default function NavBar() {
                   backgroundColor: "rgba(255,255,255,0.1)",
                 }}
                 onClick={() => navigate(item.path)}
-              >     
+              >
                 {item.title}
               </motion.div>
             ))}
