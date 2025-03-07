@@ -27,10 +27,12 @@ export interface CommentaryItem {
   comment: string;
 }
 
-
-export interface Character {   
+export interface Character {
+  id?: string;
+  img?: File;
   name: string;
-  img_file_path: string;
+  isDelete?: boolean;
+  img_file_path?: string;
 }
 
 export interface Comment {
@@ -65,4 +67,20 @@ export interface CommentState {
 export interface LikeState {
   count: number;
   isLiked: boolean;
+}
+
+export interface Post {
+  id? : string;
+  post_id: string;
+  title: string;
+  File: File;
+  userId: string;
+  youtube_url: string;
+  text: string;
+}
+
+export interface AutoSave {
+  id: string;
+  post_id: string;
+  created_at: string;
 }

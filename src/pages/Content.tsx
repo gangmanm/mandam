@@ -15,7 +15,6 @@ import { FaEdit, FaHeart } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import { deleteComment } from "../api/post";
 import { FaTrash } from "react-icons/fa";
-import ClipLoader from "react-spinners/ClipLoader";
 import { CommentaryItem } from "../types";
 import { useParseSrt } from "../hooks/useParseSrt";
 import UserCommentSection from "../components/UserCommentSection";

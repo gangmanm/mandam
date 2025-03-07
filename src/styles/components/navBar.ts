@@ -45,6 +45,11 @@ export const Title = styled.div`
   color: white;
   font-size: 24px;
   font-weight: 700;
+  cursor: pointer;
+
+  &:hover {
+    color:rgb(154, 43, 43);
+  }
 `;
 
 export const IconContainer = styled.div`

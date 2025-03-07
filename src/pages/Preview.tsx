@@ -54,7 +54,9 @@ export default function Preview({
   useEffect(() => {
     if (edit && characters && characters.length > 0) {  // characters가 존재하고 비어있지 않은지 확인
       const speakers = characters.map((character) => {
-        if (character.img_file_path) {
+
+
+        if (character.img_file_path && !character.img) {
           return {
             name: character.name,
             color: getRandomColor(),
@@ -77,7 +79,7 @@ export default function Preview({
       });
       setSpeakers(speakers);
     }
-  }, [characters, edit]); // srtFile 제거하고 edit 추가
+  }, [characters]); // srtFile 제거하고 edit 추가
 
   // SRT 파일 로드
   useEffect(() => {

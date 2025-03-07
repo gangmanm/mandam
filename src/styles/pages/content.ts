@@ -221,7 +221,7 @@ export const VideoInfoContainer = styled.div`
     width: 100%;
     height: 40px;
     padding: 10px;
-    margin-top: 180px;
+    margin-top: 170px;
     font-size: 12px;
     position: fixed;
   }

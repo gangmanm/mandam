@@ -11,7 +11,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Dropdown from 'react-dropdown';
 import NavBar from "../components/NavBar";
 import Loading from "../components/Loading";
-
+import { Post } from "../types";
 interface Character {
   id?: string;
   img?: File;
@@ -28,7 +28,6 @@ export default function Edit() {
   const [characters, setCharacters] = useState<Character[]>([]);
   const [newCharacters, setNewCharacters] = useState<{ img: File | null; name: string }[]>([]);
   const characterImageInputRefs = useRef<(HTMLInputElement | null)[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [title, setTitle] = useState("");
   const SERVER_URL = import.meta.env.VITE_SERVER_URL;
   const [autoSaveFiles, setAutoSaveFiles] = useState<{ file_name: string, file_path: string, created_at: string }[]>([]);
@@ -41,6 +40,17 @@ export default function Edit() {
 
   const id = window.location.pathname.split("/")[2];
 
+
+  useEffect(() => {
+    checkUser().then((data) => {
+      if (data.success) {
+        setUserId(data.userId);
+      } else {
+        navigate("/signin");
+      }
+    });
+  }, [navigate]);
+
   const extractCharactersFromSrt = async (file: File) => {
     try {
       const text = await file.text();
@@ -48,7 +58,7 @@ export default function Edit() {
       const speakers = new Set<string>();
       
       lines.forEach(line => {
-        // [캐릭터 이름] 형식 추출
+
         const speakerMatch = line.match(/^\[([^\]]+)\]/);
         if (speakerMatch) {
           const speaker = speakerMatch[1].trim();
@@ -56,7 +66,6 @@ export default function Edit() {
         }
       });
 
-      // 추출된 화자들을 characters 배열로 변환
       const extractedCharacters = Array.from(speakers).map(name => ({
         name: name,
         img: null,
@@ -80,7 +89,7 @@ export default function Edit() {
       setFile(fileResponse as File);
       
       // 기존 캐릭터 설정
-      const existingCharacters = data.characters.map((char: any) => ({
+      const existingCharacters = data.characters.map((char: Character) => ({
         ...char,
         isDelete: false
       }));
@@ -89,26 +98,15 @@ export default function Edit() {
       const extractedCharacters = await extractCharactersFromSrt(fileResponse as File);
       
       // 기존 캐릭터와 새로 추출된 캐릭터 병합
-      const existingNames = new Set(existingCharacters.map(char => char.name));
+      const existingNames = new Set(existingCharacters.map((char: Character) => char.name));
       const newCharacters = extractedCharacters.filter(char => !existingNames.has(char.name));
       
       setCharacters([...existingCharacters, ...newCharacters]);
       setIsLoading(false);
-      if (newCharacters.length > 0) {
-        toast.success(`${newCharacters.length}개의 새로운 등장인물이 추가되었습니다.`);
-      }
     });
   }, [id]);
 
-  useEffect(() => {
-    checkUser().then((data) => {
-      if (data.success) {
-        setUserId(data.userId);
-      } else {
-        navigate("/signin");
-      }
-    });
-  }, [navigate]);
+
   
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -132,7 +130,7 @@ export default function Edit() {
         ...(characterImages.get(newChar.name) || {}), // 기존 이미지 정보가 있으면 유지
       }));
 
-      setCharacters(newCharacterList);
+      setCharacters(newCharacterList as Character[]);
 
       if (extractedCharacters.length > 0) {
         toast.success(`${extractedCharacters.length}개의 등장인물이 설정되었습니다.`);
@@ -163,7 +161,7 @@ export default function Edit() {
         ...(characterImages.get(newChar.name) || {}), // 기존 이미지 정보가 있으면 유지
       }));
 
-      setCharacters(newCharacterList);
+      setCharacters(newCharacterList as Character[]);
 
       if (extractedCharacters.length > 0) {
         toast.success(`${extractedCharacters.length}개의 등장인물이 설정되었습니다.`);
@@ -192,7 +190,7 @@ export default function Edit() {
         text: "test",
       };
 
-      const response = await editPost(post);
+      const response = await editPost(post as Post);
 
       if (!response.success) {
         toast.error("글 편집 실패");
@@ -289,7 +287,7 @@ export default function Edit() {
       }));
 
       setFile(file);
-      setCharacters(newCharacterList);
+      setCharacters(newCharacterList as Character[]);
     } catch (error) {
       console.error('파일 불러오기 오류:', error);
     }
