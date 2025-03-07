@@ -40,17 +40,74 @@ export default function Post() {
     });
   }, [navigate]);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      const selectedFile = event.target.files[0];
-      setFile(selectedFile);
+  const extractCharactersFromSrt = async (file: File) => {
+    try {
+      const text = await file.text();
+      const lines = text.split('\n');
+      const speakers = new Set<string>();
+      
+      lines.forEach(line => {
+        // [캐릭터 이름] 형식 추출
+        const speakerMatch = line.match(/^\[([^\]]+)\]/);
+        if (speakerMatch) {
+          const speaker = speakerMatch[1].trim();
+          speakers.add(speaker);
+        }
+      });
+
+      // 추출된 화자들을 characters 배열로 변환
+      const extractedCharacters = Array.from(speakers).map(name => ({
+        img: null,
+        name: name
+      }));
+
+      return extractedCharacters;
+    } catch (error) {
+      console.error('자막 파일 파싱 오류:', error);
+      return [];
     }
   };
 
-  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      const selectedFile = event.target.files[0];
+      setFile(selectedFile);
+
+      // 자막 파일에서 캐릭터 추출
+      const extractedCharacters = await extractCharactersFromSrt(selectedFile);
+      
+      // 기존 캐릭터와 중복되지 않게 새로운 캐릭터 추가
+      setCharacters(prev => {
+        const existingNames = new Set(prev.map(char => char.name));
+        const newCharacters = extractedCharacters.filter(char => !existingNames.has(char.name));
+        return [...prev, ...newCharacters];
+      });
+
+      if (extractedCharacters.length > 0) {
+        toast.success(`${extractedCharacters.length}개의 등장인물이 자동으로 추가되었습니다.`);
+      }
+    }
+  };
+
+  const handleDrop = async (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     if (event.dataTransfer.files && event.dataTransfer.files[0]) {
-      setFile(event.dataTransfer.files[0]);
+      const selectedFile = event.dataTransfer.files[0];
+      setFile(selectedFile);
+
+      // 자막 파일에서 캐릭터 추출
+      const extractedCharacters = await extractCharactersFromSrt(selectedFile);
+      
+      // 기존 캐릭터와 중복되지 않게 새로운 캐릭터 추가
+      setCharacters(prev => {
+        const existingNames = new Set(prev.map(char => char.name));
+        const newCharacters = extractedCharacters.filter(char => !existingNames.has(char.name));
+        return [...prev, ...newCharacters];
+      });
+
+      if (extractedCharacters.length > 0) {
+        toast.success(`${extractedCharacters.length}개의 등장인물이 자동으로 추가되었습니다.`);
+      }
     }
   };
 
@@ -142,25 +199,77 @@ export default function Post() {
 
   const handleLoadAutoSave = async (filePath: string) => {
     try {
-      const selectedFile = autoSaveFiles.find(
-        (file) => file.file_path === filePath
-      );
+      const selectedFile = autoSaveFiles.find(file => file.file_path === filePath);
       if (!selectedFile) return;
 
       const response = await getFile(filePath);
       const text = await response.text();
+      
+      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+      const file = new File([blob], selectedFile.file_name + '.srt', { type: 'text/plain;charset=utf-8' });
+      
+      setFile(file);
 
-      // 텍스트를 Blob으로 변환 후 File 객체 생성
-      const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
-      const file = new File([blob], selectedFile.file_name + ".srt", {
-        type: "text/plain;charset=utf-8",
+      // 자막 파일에서 캐릭터 추출
+      const extractedCharacters = await extractCharactersFromSrt(file);
+      
+      // 기존 캐릭터와 중복되지 않게 새로운 캐릭터 추가
+      setCharacters(prev => {
+        const existingNames = new Set(prev.map(char => char.name));
+        const newCharacters = extractedCharacters.filter(char => !existingNames.has(char.name));
+        return [...prev, ...newCharacters];
       });
 
-      setFile(file);
-      toast.success("자동 저장된 파일을 불러왔습니다.");
+      if (extractedCharacters.length > 0) {
+        toast.success(`${extractedCharacters.length}개의 등장인물이 자동으로 추가되었습니다.`);
+      }
+      
+      toast.success('자동 저장된 파일을 불러왔습니다.');
     } catch (error) {
-      console.error("파일 불러오기 오류:", error);
-      toast.error("파일을 불러오는데 실패했습니다.");
+      console.error('파일 불러오기 오류:', error);
+      toast.error('파일을 불러오는데 실패했습니다.');
+    }
+  };
+
+  // characterImageInputRefs 초기화 로직 추가
+  useEffect(() => {
+    characterImageInputRefs.current = characters.map(() => null);
+  }, [characters.length]);
+
+  // 캐릭터 이미지 변경 함수 추가
+  const handleCharacterImageChange = async (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+      
+      try {
+        let imageFile: File;
+        
+        // HEIC/HEIF 이미지 처리
+        if (file.type === "image/heic" || file.type === "image/heif") {
+          const jpeg = await heicTo({
+            blob: file,
+            type: "image/jpeg",
+            quality: 0.5,
+          });
+          imageFile = new File([jpeg as Blob], file.name.replace(/\.[^/.]+$/, ".jpg"), {
+            type: "image/jpeg",
+          });
+        } else {
+          imageFile = file;
+        }
+
+        // characters 배열 업데이트
+        setCharacters(prev =>
+          prev.map((char, i) =>
+            i === index ? { ...char, img: imageFile } : char
+          )
+        );
+
+        toast.success("캐릭터 이미지가 추가되었습니다.");
+      } catch (error) {
+        console.error("이미지 처리 오류:", error);
+        toast.error("이미지 처리 중 오류가 발생했습니다.");
+      }
     }
   };
 
@@ -249,24 +358,36 @@ export default function Post() {
             <S.CharacterBox>
               <S.CharacterBoxTitle>
                 <div>영상 등장인물</div>
-                <div onClick={handleModalOpen}>+</div>
               </S.CharacterBoxTitle>
 
               <S.CharcterContainer>
                 {characters.map((character, index) => (
                   <S.CharacterBoxItem key={index}>
-                    {character.img && (
-                      <S.CharacterBoxItemImage
-                        src={URL.createObjectURL(character.img)}
-                        onClick={() => handleCharacterImageClick(index)}
-                      />
-                    )}
+                    <S.CharacterBoxItemImageWrapper
+                      onClick={() => characterImageInputRefs.current[index]?.click()}
+                    >
+                      {character.img ? (
+                        <S.CharacterBoxItemImage
+                          src={URL.createObjectURL(character.img)}
+                          alt={character.name}
+                        />
+                      ) : (
+                        <FaPlus size={20} color="gray" />
+                      )}
+                    </S.CharacterBoxItemImageWrapper>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      ref={el => characterImageInputRefs.current[index] = el}
+                      style={{ display: 'none' }}
+                      onChange={(e) => handleCharacterImageChange(index, e)}
+                    />
                     <S.CharacterBoxItemNameInput
                       placeholder="이름"
                       value={character.name}
                       onChange={(e) => {
                         const newName = e.target.value;
-                        setCharacters((prev) =>
+                        setCharacters(prev =>
                           prev.map((char, i) =>
                             i === index ? { ...char, name: newName } : char
                           )
@@ -287,12 +408,6 @@ export default function Post() {
               </S.CharcterContainer>
             </S.CharacterBox>
           </S.ContentContainer>
-          {isModalOpen && (
-            <CharacterAddModal
-              onAddCharacter={handleAddCharacter}
-              handleModalClose={handleModalClose}
-            />
-          )}
         </S.LeftContainer>
         <S.RightContainer>
           {youtubeUrl && (
@@ -311,78 +426,3 @@ export default function Post() {
     </S.Container>
   );
 }
-const CharacterAddModal = ({
-  onAddCharacter,
-  handleModalClose,
-}: {
-  onAddCharacter: (character: { img: File; name: string }) => void;
-  handleModalClose: () => void;
-}) => {
-  const [img, setImg] = useState<File | null>(null);
-  const [name, setName] = useState("");
-  const imageInputRef = useRef<HTMLInputElement | null>(null);
-
-  const handleImageChange = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    if (event.target.files && event.target.files[0]) {
-      if (
-        event.target.files[0].type === "image/heic" ||
-        event.target.files[0].type === "image/heif"
-      ) {
-        const jpeg = await heicTo({
-          blob: event.target.files[0],
-          type: "image/jpeg",
-          quality: 0.5,
-        });
-        setImg(
-          new File(
-            [jpeg as Blob],
-            event.target.files[0].name.replace(/\.[^/.]+$/, ".jpg"),
-            { type: "image/jpeg" }
-          )
-        );
-      } else {
-        setImg(event.target.files[0]);
-      }
-    }
-  };
-
-  return (
-    <S.CharacterAddModal>
-      <S.CharacterAddModalTitle>
-        캐릭터 추가
-        <div onClick={() => handleModalClose()}>X</div>
-      </S.CharacterAddModalTitle>
-      <S.CharacterBox>
-        <S.CharacterBoxItemImageWrapper
-          onClick={() => imageInputRef.current?.click()}
-        >
-          {img ? (
-            <S.CharacterBoxItemImage src={URL.createObjectURL(img)} />
-          ) : (
-            <FaPlus size={20} color="gray" />
-          )}
-        </S.CharacterBoxItemImageWrapper>
-
-        <input
-          type="file"
-          ref={imageInputRef}
-          style={{ display: "none" }}
-          onChange={handleImageChange}
-        />
-        <S.CharacterBoxItemNameInput
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="이름 입력"
-        />
-        <S.CancelButton
-          onClick={() => img && name && onAddCharacter({ img, name })}
-        >
-          추가하기
-        </S.CancelButton>
-      </S.CharacterBox>
-    </S.CharacterAddModal>
-  );
-};

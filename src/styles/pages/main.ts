@@ -23,10 +23,11 @@ export const ContentContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-
-  margin-top: 100px;
+  justify-content: center;
   padding: 10px;
   color: white;
+
+  margin-bottom: 100px;
 `;
 
 
