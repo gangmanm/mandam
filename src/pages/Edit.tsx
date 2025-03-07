@@ -356,7 +356,7 @@ export default function Edit() {
 
   // useEffect 수정
   useEffect(() => {
-    characterImageInputRefs.current = new Array(filteredCharacters.length).fill(null);
+    characterImageInputRefs.current = filteredCharacters.map((_, i) => characterImageInputRefs.current[i] || null);
   }, [filteredCharacters.length]);
 
   return (
@@ -439,7 +439,6 @@ export default function Edit() {
                     padding: '2px',
                     borderRadius: '50%'
                   }}>
-                    <FaEdit size={12} color="white" />
                   </div>
                 </S.CharacterBoxItemImageWrapper>
                 <input
