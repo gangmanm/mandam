@@ -319,6 +319,7 @@ export default function Edit() {
     <S.Container>
       <NavBar />
       <S.MainContainer>
+
       <S.LeftContainer>
 
       <S.ContentContainer>

@@ -13,6 +13,7 @@ import NavBar from "../components/NavBar";
 export default function Post() {
   const navigate = useNavigate();
   const [userId, setUserId] = useState<string | null>(null);
+  const [youtubeUrl, setYoutubeUrl] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [characters, setCharacters] = useState<

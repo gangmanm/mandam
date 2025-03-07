@@ -24,7 +24,7 @@ export const Container = styled.div`
 
 export const MainContainer = styled.div`
   width: 100%;
-  height: 100%;
+  height: calc(100% - 60px);
   display: flex;
   align-items: center;
   background-color: black;
