@@ -2,10 +2,8 @@ import * as S from "../styles/pages/list";
 import { getPosts } from "../api/post";
 import { useEffect, useState } from "react";
 import PostComponent from "../components/PostComponent";
-import { useNavigate } from "react-router-dom";
-import * as H from "../styles/components/header";
 import NavBar from "../components/NavBar";
-import ClipLoader from "react-spinners/ClipLoader";
+import Loading from "../components/Loading";
 
 export default function List() {
   const [posts, setPosts] = useState<any[]>([]);
@@ -28,9 +26,7 @@ export default function List() {
     <S.MainContainer>
       <NavBar />
       {isLoading ? (
-        <S.LoadingContainer>
-          <ClipLoader color="#ffffff" size={50} />
-        </S.LoadingContainer>
+        <Loading />
       ) : (
         <S.ContentContainer>
           {posts.map((post) =>

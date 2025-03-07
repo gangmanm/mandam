@@ -16,12 +16,12 @@ interface Speaker {
 interface PreviewProps {
   youtubeLink: string;
   srtFile: File;
-  characterImages?: { image: File; name: string }[];
   characters?: {
-    img_file_path: string | null;
+    img_file_path?: string | null;
     name: string;
     id: string;
     post_id: string;
+    img?: File;
   }[];
   edit?: boolean;
 }
@@ -29,7 +29,6 @@ interface PreviewProps {
 export default function Preview({
   youtubeLink,
   srtFile,
-  characterImages,
   characters,
   edit,
 }: PreviewProps) {
@@ -53,23 +52,32 @@ export default function Preview({
 
   // speakers 데이터 로드
   useEffect(() => {
-    console.log(characterImages);
-    if (edit && characters) {
-      const speakers = characters.map((character) => ({
-        name: character.name,
-        color: getRandomColor(),
-        image: `${SERVER_URL}/posts/get-file?file_path=${character.img_file_path}`,
-      }));
-      setSpeakers(speakers);
-    } else if (characterImages) {
-      const speakers = characterImages.map((character) => ({
-        name: character.name,
-        color: getRandomColor(),
-        image: URL.createObjectURL(character.image),
-      }));
+    if (edit && characters && characters.length > 0) {  // characters가 존재하고 비어있지 않은지 확인
+      const speakers = characters.map((character) => {
+        if (character.img_file_path) {
+          return {
+            name: character.name,
+            color: getRandomColor(),
+            image: `${SERVER_URL}/posts/get-file?file_path=${character.img_file_path}`,
+          };
+        } else if (character.img) {  // character.img가 있는 경우 추가
+          return {
+            name: character.name,
+            color: getRandomColor(),
+            image: URL.createObjectURL(character.img),
+          };
+        } else {
+          // 이미지가 없는 경우의 기본값 처리
+          return {
+            name: character.name,
+            color: getRandomColor(),
+            image: '', // 또는 기본 이미지 URL
+          };
+        }
+      });
       setSpeakers(speakers);
     }
-  }, [srtFile, characterImages]);
+  }, [characters, edit]); // srtFile 제거하고 edit 추가
 
   // SRT 파일 로드
   useEffect(() => {

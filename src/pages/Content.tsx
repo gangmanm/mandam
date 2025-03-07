@@ -21,7 +21,8 @@ import { useParseSrt } from "../hooks/useParseSrt";
 import UserCommentSection from "../components/UserCommentSection";
 import { VideoState, CommentState, LikeState } from "../types";
 const SERVER_URL = import.meta.env.VITE_SERVER_URL;
-
+import Loading from "../components/Loading";
+import NavBar from "../components/NavBar";
 export default function Content() {
   const { id } = useParams();
   const currentTime = useRef<number>(0);
@@ -102,7 +103,10 @@ export default function Content() {
         setSrtFile(res);
       });
       setCharacters(res.characters);
-      setIsLoading(false);
+
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 2000);
     });
   }, [id]);
 
@@ -356,12 +360,11 @@ export default function Content() {
 
   return (
     <S.MainContainer onKeyDown={(e) => e.stopPropagation()} tabIndex={-1}>
+      <NavBar />
       {isLoading ? (
-        <S.LoadingContainer>
-          <ClipLoader color="#ffffff" size={50} />
-        </S.LoadingContainer>
+        <Loading />
       ) : (
-        <>
+          <S.ContentContainer>
           <S.LeftContainer>
             <S.VideoContainer
               tabIndex={0}
@@ -449,7 +452,7 @@ export default function Content() {
               )}
             </S.VideoInfoContainer>
           </S.LeftContainer>
-
+  
           <S.AllCommentsContainer ref={commentsContainerRef}>
             {subtitles.map((subtitle, index) => {
               const isActive =
@@ -491,8 +494,9 @@ export default function Content() {
               text
             })} handleAddComment={handleAddComment} />
           )}
-        </>
+        </S.ContentContainer>
       )}
+
     </S.MainContainer>
   );
 }

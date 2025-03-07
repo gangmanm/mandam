@@ -4,8 +4,8 @@ export const MainContainer = styled.div`
   width: 100vw;
   height: 100vh;
   display: flex;
+  flex-direction: column;
   overflow : hidden;
-  padding: 30px;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
     width: 100vw;
@@ -15,6 +15,17 @@ export const MainContainer = styled.div`
   }
 `;
 
+export const ContentContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  padding: 30px;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
+    flex-direction: column;
+    padding: 0px;
+  }
+`;
 
 export const LoadingContainer = styled.div`
   width: 100%;
@@ -116,12 +127,13 @@ export const AllScenesContainer = styled.div`
 
 export const AllCommentsContainer = styled.div`
   width: 100%;
-  height: 100%;
+  height: 90%;
   display: flex;
   flex-direction: column;
   gap: 15px;
   overflow: auto;
   padding-right: 15px;
+  margin-top: 20px;
 
   /* 스크롤바 스타일링 */
   &::-webkit-scrollbar {
@@ -202,7 +214,6 @@ export const VideoInfoContainer = styled.div`
   height: 400px;
   display: flex;
   background-color :rgb(26, 26, 26);
-  margin-top: 20px;
  flex-direction: column;
  padding: 20px;
 
@@ -210,9 +221,8 @@ export const VideoInfoContainer = styled.div`
     width: 100%;
     height: 40px;
     padding: 10px;
+    margin-top: 180px;
     font-size: 12px;
-
-    margin-top: 220px;
     position: fixed;
   }
 `;
