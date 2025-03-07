@@ -4,18 +4,13 @@ import React, { useState, useEffect, useRef } from "react";
 import * as S from "../styles/pages/preview";
 import YouTube from "react-youtube";
 import { ToastContainer, toast } from "react-toastify";
+import { CommentaryItem } from "../types";
+import { useParseSrt } from "../hooks/useParseSrt";
 
 interface Speaker {
   name: string;
   color: string;
   image: string;
-}
-
-interface CommentaryItem {
-  startTime: number;
-  endTime: number;
-  text: string;
-  speaker?: string;
 }
 
 interface PreviewProps {
@@ -52,13 +47,6 @@ export default function Preview({
   const [videoStart, setVideoStart] = useState<number>(0);
   const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 
-  // SRT 타임코드를 초로 변환하는 함수
-  const srtTimeToSeconds = (timeString: string): number => {
-    const [time, milliseconds] = timeString.split(",");
-    const [hours, minutes, seconds] = time.split(":").map(Number);
-    return hours * 3600 + minutes * 60 + seconds + Number(milliseconds) / 1000;
-  };
-
   const getRandomColor = () => {
     return "#" + Math.floor(Math.random() * 16777215).toString(16);
   };
@@ -83,45 +71,6 @@ export default function Preview({
     }
   }, [srtFile, characterImages]);
 
-  // SRT 파일 파싱
-  const parseSRT = (srtContent: string): CommentaryItem[] => {
-    if (!srtContent) return [];
-
-    // 자막 블록을 자막 번호와 시간 코드 사이의 공백을 기준으로 분리
-    const blocks = srtContent.split(/\n\s*\n/);
-    let currentSpeaker: string | undefined;
-
-    return blocks
-      .map((block) => {
-        if (!block.trim()) return null; // 빈 블록 무시
-
-        const lines = block.split("\n");
-        if (lines.length < 2) return null; // 유효하지 않은 블록 무시
-
-        const [startTime, endTime] = lines[1]
-          .split(" --> ")
-          .map(srtTimeToSeconds);
-        const text = lines.slice(2).join("\n");
-
-        // 화자 정보 추출
-        const speakerMatch = text.match(/^\[(.*?)\]/);
-        if (speakerMatch) {
-          currentSpeaker = speakerMatch[1];
-        }
-        const cleanText = speakerMatch
-          ? text.replace(/^\[(.*?)\]\s*/, "")
-          : text;
-
-        return {
-          startTime,
-          endTime,
-          text: cleanText,
-          speaker: currentSpeaker,
-        };
-      })
-      .filter((item): item is CommentaryItem => item !== null); // null 값 필터링
-  };
-
   // SRT 파일 로드
   useEffect(() => {
     const fetchSRT = async () => {
@@ -131,7 +80,7 @@ export default function Preview({
 
       try {
         const srtContent = await srtFile.text();
-        const parsedSubtitles = parseSRT(srtContent);
+        const parsedSubtitles = useParseSrt(srtContent);
         setSubtitles(parsedSubtitles);
       } catch (error) {
         console.error("Failed to fetch SRT:", error);

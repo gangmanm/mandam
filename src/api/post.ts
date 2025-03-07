@@ -53,6 +53,7 @@ export const createPost = async (post: Post) => {
   }
 };
 
+
 export const createCharacter = async (character: Character, postId: number) => {
   try {
     const formData = new FormData();
@@ -72,8 +73,13 @@ export const createCharacter = async (character: Character, postId: number) => {
     
     return await response.json(); 
   } catch (error) {
-    console.error("Error creating character:", error);
-    return { success: false, error: error.message };
+    if (error instanceof Error) {
+      console.error("Error creating character:", error);
+      return { success: false, error: error.message };
+    } else {
+      console.error("Unknown error creating character:", error);
+      return { success: false, error: "Unknown error occurred" };
+    }
   }
 };
 
@@ -90,8 +96,13 @@ export const getPosts = async () => {
 
     return await response.json();
   } catch (error) {
-    console.error("Error getting posts:", error);
-    return { success: false, error: error.message };
+    if (error instanceof Error) {
+      console.error("Error getting posts:", error);
+      return { success: false, error: error.message };
+    } else {
+      console.error("Unknown error getting posts:", error);
+      return { success: false, error: "Unknown error occurred" };
+    }
   }
 };
 
@@ -108,8 +119,13 @@ export const getPost = async (id: string) => {
 
     return await response.json();
   } catch (error) {
-    console.error("Error getting post:", error);
-    return { success: false, error: error.message };
+    if (error instanceof Error) {
+      console.error("Error getting post:", error);
+      return { success: false, error: error.message };
+    } else {
+      console.error("Unknown error getting post:", error);
+      return { success: false, error: "Unknown error occurred" };
+    }
   }
 };
 
@@ -126,8 +142,13 @@ export const getFile = async (filePath: string) => {
 
     return await response.blob();
   } catch (error) {
-    console.error("Error getting file:", error);
-    return { success: false, error: error.message };
+    if (error instanceof Error) {
+      console.error("Error getting file:", error);
+      return { success: false, error: error.message };
+    } else {
+      console.error("Unknown error getting file:", error);
+      return { success: false, error: "Unknown error occurred" };
+    }
   }
 };
 export const addComment = async (comment: string, postId: string, userId: string) => {
@@ -147,8 +168,13 @@ export const addComment = async (comment: string, postId: string, userId: string
 
     return await response.json();
   } catch (error) {
-    console.error("Error adding comment:", error);
-    return { success: false, error: error.message };
+    if (error instanceof Error) {
+      console.error("Error adding comment:", error);
+      return { success: false, error: error.message };
+    } else {
+      console.error("Unknown error adding comment:", error);
+      return { success: false, error: "Unknown error occurred" };
+    }
   }
 };
 
@@ -165,8 +191,13 @@ export const getComments = async (postId: string) => {
 
     return await response.json();
   } catch (error) {
-    console.error("Error getting comments:", error);
-    return { success: false, error: error.message };
+    if (error instanceof Error) {
+      console.error("Error getting comments:", error);
+      return { success: false, error: error.message };
+    } else {
+      console.error("Unknown error getting comments:", error);
+      return { success: false, error: "Unknown error occurred" };
+    }
   }
 };
 
@@ -187,8 +218,13 @@ export const likePost = async (postId: string, userId: string) => {
 
     return await response.json();
   } catch (error) {
-    console.error("Error liking post:", error);
-    return { success: false, error: error.message };
+    if (error instanceof Error) {
+      console.error("Error liking post:", error);
+      return { success: false, error: error.message };
+    } else {
+      console.error("Unknown error liking post:", error);
+      return { success: false, error: "Unknown error occurred" };
+    }
   }
 };
 
@@ -205,8 +241,13 @@ export const getLike = async (postId: string) => {
 
     return await response.json();
   } catch (error) {
-    console.error("Error getting like:", error);
-    return { success: false, error: error.message };
+    if (error instanceof Error) {
+      console.error("Error getting like:", error);
+      return { success: false, error: error.message };
+    } else {
+      console.error("Unknown error getting like:", error);
+      return { success: false, error: "Unknown error occurred" };
+    }
   }
 };
 
@@ -228,8 +269,13 @@ export const deleteComment = async (commentId: string) => {
 
     return await response.json();
   } catch (error) {
-    console.error("Error deleting comment:", error);
-    return { success: false, error: error.message };
+    if (error instanceof Error) {
+      console.error("Error deleting comment:", error);
+      return { success: false, error: error.message };
+    } else {
+      console.error("Unknown error deleting comment:", error);
+      return { success: false, error: "Unknown error occurred" };
+    }
   }
 };
 
@@ -251,8 +297,13 @@ export const deletePost = async (postId: string) => {
 
     return await response.json();
   } catch (error) {
-    console.error("Error deleting post:", error);
-    return { success: false, error: error.message };
+    if (error instanceof Error) {
+      console.error("Error deleting post:", error);
+      return { success: false, error: error.message };
+    } else {
+      console.error("Unknown error deleting post:", error);
+      return { success: false, error: "Unknown error occurred" };
+    }
   }
 };  
 
@@ -294,7 +345,7 @@ export const editPost = async (post: Post) => {
     console.error("Error details:", error);
     return { 
       success: false, 
-      error: error.message
+      error: error instanceof Error ? error.message : "Unknown error"
     };
   }
 };
@@ -318,8 +369,13 @@ export const deleteCharacter = async (id: string) => {
 
     return await response.json();
   } catch (error) {
-    console.error("Error deleting character:", error);
-    return { success: false, error: error.message };
+    if (error instanceof Error) {
+      console.error("Error deleting character:", error);
+      return { success: false, error: error.message };
+    } else {
+      console.error("Unknown error deleting character:", error);
+      return { success: false, error: "Unknown error occurred" };
+    }
   }
 };
 
@@ -343,7 +399,7 @@ export const autoSavePost = async (autoSave: AutoSave) => {
     return await response.json();
   } catch (error) {
     console.error("Error auto saving post:", error);
-    return { success: false, error: error.message };
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
   }
 };
 
@@ -367,6 +423,6 @@ export const getAutoSave = async (userId: string) => {
     return await response.json();
   } catch (error) {
     console.error("Error getting auto save:", error);   
-    return { success: false, error: error.message };
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
   }
 };  

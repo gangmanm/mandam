@@ -11,8 +11,8 @@ import Dropdown from "react-dropdown";
 import "react-dropdown/style.css";
 import { FaPlus } from "react-icons/fa";
 import NavBar from "../components/NavBar";
-import { StyledDropdown } from "../styles/pages/post";
 import { useMediaQuery } from "react-responsive";
+import { srtTimeToSeconds } from "../utils/srtUtils";
 
 interface Subtitle {
   id: number;
@@ -631,13 +631,6 @@ export default function Create() {
 
     return () => clearInterval(intervalId);
   }, [player, subtitles, currentSubtitle]);
-
-  // SRT 시간 문자열을 초 단위로 변환하는 함수
-  const srtTimeToSeconds = (timeStr: string): number => {
-    const [time, ms] = timeStr.split(",");
-    const [hours, minutes, seconds] = time.split(":").map(Number);
-    return hours * 3600 + minutes * 60 + seconds + parseInt(ms) / 1000;
-  };
 
   // SRT 파일 처리 함수
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -16,6 +16,20 @@ const SignIn = () => {
   const [auth, setAuth] = useState<boolean>(false);
 
   useEffect(() => {
+    window.history.pushState(null, '', window.location.pathname);
+
+    const handlePopState = () => {
+      navigate('/list', { replace: true });
+    };
+
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [navigate]);
+
+  useEffect(() => {
     const checkLogin = async () => {
       const data = await checkUser();
       if (data.success) {
@@ -25,19 +39,6 @@ const SignIn = () => {
     };
 
     checkLogin();
-  }, [navigate]);
-
-  useEffect(() => {
-    const handlePopState = (e: PopStateEvent) => {
-      e.preventDefault();
-      navigate("/list");
-    };
-
-    window.addEventListener("popstate", handlePopState);
-
-    return () => {
-      window.removeEventListener("popstate", handlePopState);
-    };
   }, [navigate]);
 
   const [formData, setFormData] = useState<FormData>({

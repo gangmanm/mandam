@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import * as S from "../styles/pages/content";
 import { useParams, useNavigate } from "react-router-dom";
 import YouTube from "react-youtube";
@@ -16,64 +16,57 @@ import { ToastContainer, toast } from "react-toastify";
 import { deleteComment } from "../api/post";
 import { FaTrash } from "react-icons/fa";
 import ClipLoader from "react-spinners/ClipLoader";
-
+import { CommentaryItem } from "../types";
+import { useParseSrt } from "../hooks/useParseSrt";
+import UserCommentSection from "../components/UserCommentSection";
+import { VideoState, CommentState, LikeState } from "../types";
 const SERVER_URL = import.meta.env.VITE_SERVER_URL;
-
-interface Speaker {
-  name: string;
-  color: string;
-  img_file_path: string;
-}
-
-interface Comment {
-  comment: string;
-  username: string;
-}
-
-interface CommentaryItem {
-  startTime: number;
-  endTime: number;
-  text: string;
-  speaker?: string;
-}
-
-interface PreviewProps {
-  youtubeLink: string;
-  srtFile: File;
-  characterImages: { image: File; name: string }[];
-}
 
 export default function Content() {
   const { id } = useParams();
   const currentTime = useRef<number>(0);
-  const [subtitles, setSubtitles] = useState<CommentaryItem[]>([]);
-  const [currentSubtitle, setCurrentSubtitle] = useState<CommentaryItem | null>(
-    null
-  );
-  const [player, setPlayer] = useState<any>(null);
   const commentsContainerRef = useRef<HTMLDivElement>(null);
   const activeCommentRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-  const [speakers, setSpeakers] = useState<Speaker[]>([]);
-  const [videoId, setVideoId] = useState<string>("");
-  const [videoStart, setVideoStart] = useState<number>(0);
-  const [youtubeLink, setYoutubeLink] = useState<string>("");
+  
+  // 비디오 관련 상태 통합
+  const [videoState, setVideoState] = useState<VideoState>({
+    id: "",
+    link: "",
+    start: 0,
+    info: {
+      title: "",
+      text: "",
+      username: "",
+      created_at: "",
+    }
+  });
+
+  // 자막 관련 상태
+  const [subtitles, setSubtitles] = useState<CommentaryItem[]>([]);
+  const [currentSubtitle, setCurrentSubtitle] = useState<CommentaryItem | null>(null);
   const [srtFile, setSrtFile] = useState<File | null>(null);
-  const [characters, setCharacters] = useState<
-    { img_file_path: string; name: string }[]
-  >([]);
-  const [videoInfo, setVideoInfo] = useState<{
-    title: string;
-    text: string;
-    username: string;
-    created_at: string;
-  }>({ title: "", text: "", writer: "", created_at: "" });
-  const [comment, setComment] = useState<string>("");
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [like, setLike] = useState<number>(0);
-  const [isLiked, setIsLiked] = useState<boolean>(false);
+  
+  // 플레이어 상태
+  const [player, setPlayer] = useState<any>(null);
+  
+  // 캐릭터 상태
+  const [characters, setCharacters] = useState<{ img_file_path: string; name: string }[]>([]);
+  
+  // 댓글 관련 상태 통합
+  const [commentState, setCommentState] = useState<CommentState>({
+    text: "",
+    list: [],
+    isVisible: false
+  });
+
+  // 좋아요 관련 상태 통합
+  const [likeState, setLikeState] = useState<LikeState>({
+    count: 0,
+    isLiked: false
+  });
+
   const userId = localStorage.getItem("userId");
-  const [isCommentVisible, setIsCommentVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   const opts = {
@@ -88,99 +81,47 @@ export default function Content() {
       disablekb: 1,
       fs: 0,
       enablejsapi: 1,
-      start: videoStart,
+      start: videoState.start,
     },
   };
 
   useEffect(() => {
     getPost(id as string).then((res) => {
-      setYoutubeLink(res.youtube_url);
+      setVideoState({
+        id: res.youtube_url.split("=")[1].split("&")[0],
+        link: res.youtube_url,
+        start: 0,
+        info: {
+          title: res.title,
+          text: res.text,
+          username: res.username,
+          created_at: res.created_at,
+        }
+      });
       getFile(res.file_path).then((res) => {
         setSrtFile(res);
       });
       setCharacters(res.characters);
-      setVideoInfo(res);
       setIsLoading(false);
     });
   }, [id]);
 
-  // SRT 타임코드를 초로 변환하는 함수
-  const srtTimeToSeconds = (timeString: string): number => {
-    const [time, milliseconds] = timeString.split(",");
-    const [hours, minutes, seconds] = time.split(":").map(Number);
-    return hours * 3600 + minutes * 60 + seconds + Number(milliseconds) / 1000;
-  };
 
-  const getRandomColor = () => {
-    return "#" + Math.floor(Math.random() * 16777215).toString(16);
-  };
-
-  // speakers 데이터 로드
-  useEffect(() => {
-    if (characters.length > 0) {
-      const speakers = characters.map((character) => ({
-        name: character.name,
-        color: getRandomColor(),
-        img_file_path: character.img_file_path,
-      }));
-      setSpeakers(speakers);
-    }
-  }, [srtFile, characters]);
-
-  // SRT 파일 파싱
-  const parseSRT = (srtContent: string): CommentaryItem[] => {
-    if (!srtContent) return [];
-
-    // 자막 블록을 자막 번호와 시간 코드 사이의 공백을 기준으로 분리
-    const blocks = srtContent.split(/\n\s*\n/);
-    let currentSpeaker: string | undefined;
-
-    return blocks
-      .map((block) => {
-        if (!block.trim()) return null; // 빈 블록 무시
-
-        const lines = block.split("\n");
-        if (lines.length < 2) return null; // 유효하지 않은 블록 무시
-
-        const [startTime, endTime] = lines[1]
-          .split(" --> ")
-          .map(srtTimeToSeconds);
-        const text = lines.slice(2).join("\n");
-
-        // 화자 정보 추출
-        const speakerMatch = text.match(/^\[(.*?)\]/);
-        if (speakerMatch) {
-          currentSpeaker = speakerMatch[1];
-        }
-        const cleanText = speakerMatch
-          ? text.replace(/^\[(.*?)\]\s*/, "")
-          : text;
-
-        return {
-          startTime,
-          endTime,
-          text: cleanText,
-          speaker: currentSpeaker,
-        };
-      })
-      .filter((item): item is CommentaryItem => item !== null); // null 값 필터링
-  };
-
-  // SRT 파일 로드
   useEffect(() => {
     const fetchSRT = async () => {
       if (!srtFile) {
         return;
       }
-
       try {
         const srtContent = await srtFile.text();
-        const parsedSubtitles = parseSRT(srtContent);
+        const parsedSubtitles = useParseSrt(srtContent);
         setSubtitles(parsedSubtitles);
 
-        // 첫 번째 자막의 시작 시간을 비디오 시작 시간으로 설정
         if (parsedSubtitles.length > 0) {
-          setVideoStart(parsedSubtitles[0].startTime);
+          setVideoState({
+            ...videoState,
+            start: parsedSubtitles[0].startTime
+          });
         }
       } catch (error) {
         console.error("Failed to fetch SRT:", error);
@@ -188,9 +129,8 @@ export default function Content() {
     };
 
     fetchSRT();
-  }, [srtFile]);
+  }, [srtFile, videoState.start]);
 
-  // 현재 자막 업데이트
   useEffect(() => {
     if (!player || !subtitles.length) return;
 
@@ -206,23 +146,22 @@ export default function Content() {
       if (JSON.stringify(currentSub) !== JSON.stringify(currentSubtitle)) {
         setCurrentSubtitle(currentSub || null);
 
-        // 활성화된 자막으로 스크롤
         if (activeCommentRef.current && commentsContainerRef.current) {
-          activeCommentRef.current.style.scrollMarginBottom = "200px"; // 스크롤 마진을 추가
+          activeCommentRef.current.style.scrollMarginBottom = "200px";
           activeCommentRef.current.scrollIntoView({
             behavior: "smooth",
             block: "center",
           });
         }
       }
-    }, 100); // 100ms마다 체크
+    }, 100); 
 
     return () => clearInterval(intervalId);
   }, [player, subtitles, currentSubtitle]);
 
+
   const onPlayerReady = (event: any) => {
     setPlayer(event.target);
-    // 첫 자막의 시작 시간으로 이동 후 재생
     if (subtitles.length > 0) {
       event.target.seekTo(subtitles[0].startTime);
     }
@@ -231,16 +170,18 @@ export default function Content() {
 
   useEffect(() => {
     if (subtitles.length > 0) {
-      setVideoStart(subtitles[0].startTime);
+      setVideoState({
+        ...videoState,
+        start: subtitles[0].startTime
+      });
     }
-  }, [subtitles]);
+  }, [subtitles, videoState.start]);
 
-  // window 레벨에서 이벤트 리스너 추가
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!player) return;
 
-      // input이나 textarea에서만 제외
       if (
         e.target instanceof HTMLInputElement ||
         e.target instanceof HTMLTextAreaElement
@@ -265,22 +206,26 @@ export default function Content() {
   }, [player]);
 
   useEffect(() => {
-    if (youtubeLink) {
-      if (youtubeLink.includes("youtube.com")) {
-        const videoIdArray = youtubeLink.split("=");
-        setVideoId(videoIdArray[1].split("&")[0]);
-      } else if (youtubeLink.includes("youtu.be")) {
-        console.log(youtubeLink);
-        // youtu.be 형식의 URL 처리
-        const videoIdArray = youtubeLink.split("/")[3].split("?")[0];
-        setVideoId(videoIdArray);
+    if (videoState.link) {
+      if (videoState.link.includes("youtube.com")) {
+        const videoIdArray = videoState.link.split("=");
+        setVideoState({
+          ...videoState,
+          id: videoIdArray[1].split("&")[0]
+        });
+      } else if (videoState.link.includes("youtu.be")) {
+        console.log(videoState.link);
+        const videoIdArray = videoState.link.split("/")[3].split("?")[0];
+        setVideoState({
+          ...videoState,
+          id: videoIdArray
+        });
       } else {
         toast.error("유튜브 영상 링크가 올바르지 않습니다.");
       }
     }
-  }, [youtubeLink]);
+  }, [videoState.link]);
 
-  // 댓글 추가
   const handleAddComment = async () => {
     const userId = localStorage.getItem("userId");
 
@@ -308,12 +253,18 @@ export default function Content() {
       return;
     }
 
-    const res = await addComment(comment, id as string, userId as string);
+    const res = await addComment(commentState.text, id as string, userId as string);
     if (res.success) {
       toast.success("댓글 추가 완료");
       const res = await getComments(id as string);
-      setComments(res);
-      setComment("");
+      setCommentState({
+        ...commentState,
+        list: res
+      });
+      setCommentState({
+        ...commentState,
+        text: ""
+      });
     } else {
       toast.error("댓글 추가 실패");
     }
@@ -321,27 +272,41 @@ export default function Content() {
 
   useEffect(() => {
     getComments(id as string).then((res) => {
-      setComments(res);
+      setCommentState({
+        ...commentState,
+        list: res
+      });
     });
   }, [id]);
 
   const handleLikePost = async () => {
     const userId = localStorage.getItem("userId");
-
     await likePost(id as string, userId as string);
     getLike(id as string).then((res) => {
       const like = res.length;
-      setLike(like);
+      setLikeState({
+        ...likeState,
+        count: like
+      });
     });
-    setIsLiked(true);
+    setLikeState({
+      ...likeState,
+      isLiked: true
+    });
   };
 
   useEffect(() => {
     getLike(id as string).then((res) => {
       const userId = localStorage.getItem("userId");
       const like = res.length;
-      setLike(like);
-      setIsLiked(res.some((like: any) => like.user_id === userId));
+      setLikeState({
+        ...likeState,
+        count: like
+      });
+      setLikeState({
+        ...likeState,
+        isLiked: res.some((like: any) => like.user_id === userId)
+      });
     });
   }, [id]);
 
@@ -350,7 +315,10 @@ export default function Content() {
     if (res.success) {
       const res = await getComments(id as string);
       toast.success("댓글 삭제 완료");
-      setComments(res);
+      setCommentState({
+        ...commentState,
+        list: res
+      });
     }
   };
 
@@ -399,9 +367,9 @@ export default function Content() {
               tabIndex={0}
               onFocus={(e) => e.currentTarget.blur()}
             >
-              {youtubeLink && (
+              {videoState.link && (
                 <YouTube
-                  videoId={videoId}
+                  videoId={videoState.id}
                   opts={opts}
                   onReady={onPlayerReady}
                   style={{
@@ -426,22 +394,25 @@ export default function Content() {
                     maxWidth: "100%",
                   }}
                 >
-                  {videoInfo.title}
+                  {videoState.info.title}
                 </div>
                 <div style={{ display: "flex", alignItems: "center" }}>
                   {window.innerWidth < 768 && (
                     <div
                       style={{ marginRight: "10px" }}
-                      onClick={() => setIsCommentVisible(!isCommentVisible)}
+                      onClick={() => setCommentState({
+                        ...commentState,
+                        isVisible: !commentState.isVisible
+                      })}
                     >
-                      댓글 {isCommentVisible ? "닫기" : "보기"}
+                      댓글 {commentState.isVisible ? "닫기" : "보기"}
                     </div>
                   )}
                   <FaHeart
                     onClick={handleLikePost}
-                    color={isLiked ? "red" : "white"}
+                    color={likeState.isLiked ? "red" : "white"}
                   />
-                  <div style={{ marginLeft: "5px" }}>{like}</div>
+                  <div style={{ marginLeft: "5px" }}>{likeState.count}</div>
                   {userId && userId === localStorage.getItem("userId") && (
                     <FaTrash
                       style={{
@@ -471,43 +442,10 @@ export default function Content() {
               </S.TitleContainer>
 
               {window.innerWidth > 768 && (
-                <S.UserCommentContainer>
-                  <div
-                    style={{ display: "flex", justifyContent: "space-between" }}
-                  >
-                    <S.CommentInput
-                      value={comment}
-                      onChange={(e) => setComment(e.target.value)}
-                    />
-                    <S.CommentAddButton onClick={handleAddComment}>
-                      댓글 추가
-                    </S.CommentAddButton>
-                  </div>
-                  {comments.map((comment) => (
-                    <S.UserCommentTextContainer key={comment.id}>
-                      <S.UserCommentUsername>
-                        {comment.user.username}
-                      </S.UserCommentUsername>
-                      <div style={{ display: "flex", alignItems: "center" }}>
-                        <S.UserCommentText>
-                          {comment.comment}{" "}
-                        </S.UserCommentText>
-                        {comment.user_id === userId && (
-                          <FaTrash
-                            style={{
-                              cursor: "pointer",
-                              marginLeft: "10px",
-                              color: "white",
-                              width: "15px",
-                              height: "15px",
-                            }}
-                            onClick={() => handleDeleteComment(comment.id)}
-                          />
-                        )}
-                      </div>
-                    </S.UserCommentTextContainer>
-                  ))}
-                </S.UserCommentContainer>
+                <UserCommentSection comments={commentState.list} userId={userId} handleDeleteComment={handleDeleteComment} comment={commentState.text} setComment={(text) => setCommentState({
+                  ...commentState,
+                  text
+                })} handleAddComment={handleAddComment} />
               )}
             </S.VideoInfoContainer>
           </S.LeftContainer>
@@ -517,8 +455,8 @@ export default function Content() {
               const isActive =
                 currentTime.current >= subtitle.startTime &&
                 currentTime.current <= subtitle.endTime;
-              const speakerData = speakers.find(
-                (s) => s.name === subtitle.speaker
+              const characterData = characters.find(
+                (c) => c.name === subtitle.speaker
               );
 
               return (
@@ -528,14 +466,14 @@ export default function Content() {
                   ref={isActive ? activeCommentRef : null}
                 >
                   <S.CommentTextContainer>
-                    {speakerData && (
+                    {characterData && (
                       <S.SpeakerInfo>
                         <S.SpeakerImage
-                          src={`${SERVER_URL}/posts/get-file?file_path=${speakerData.img_file_path}`}
-                          alt={speakerData.name}
+                          src={`${SERVER_URL}/posts/get-file?file_path=${characterData.img_file_path}`}
+                          alt={characterData.name}
                         />
-                        <S.SpeakerName style={{ color: speakerData.color }}>
-                          {speakerData.name}
+                        <S.SpeakerName>
+                          {characterData.name}
                         </S.SpeakerName>
                       </S.SpeakerInfo>
                     )}
@@ -547,40 +485,11 @@ export default function Content() {
           </S.AllCommentsContainer>
 
           <ToastContainer />
-          {window.innerWidth < 768 && isCommentVisible && (
-            <S.UserCommentContainer>
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <S.CommentInput
-                  value={comment}
-                  onChange={(e) => setComment(e.target.value)}
-                />
-                <S.CommentAddButton onClick={handleAddComment}>
-                  댓글 추가
-                </S.CommentAddButton>
-              </div>
-              {comments.map((comment) => (
-                <S.UserCommentTextContainer key={comment.id}>
-                  <S.UserCommentUsername>
-                    {comment.user.username}
-                  </S.UserCommentUsername>
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    <S.UserCommentText>{comment.comment} </S.UserCommentText>
-                    {comment.user_id === userId && (
-                      <FaTrash
-                        style={{
-                          cursor: "pointer",
-                          marginLeft: "10px",
-                          color: "white",
-                          width: "15px",
-                          height: "15px",
-                        }}
-                        onClick={() => handleDeleteComment(comment.id)}
-                      />
-                    )}
-                  </div>
-                </S.UserCommentTextContainer>
-              ))}
-            </S.UserCommentContainer>
+          {window.innerWidth < 768 && commentState.isVisible && (
+            <UserCommentSection comments={commentState.list} userId={userId} handleDeleteComment={handleDeleteComment} comment={commentState.text} setComment={(text) => setCommentState({
+              ...commentState,
+              text
+            })} handleAddComment={handleAddComment} />
           )}
         </>
       )}

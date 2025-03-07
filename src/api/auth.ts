@@ -5,12 +5,12 @@ const SERVER_URL = SETTING === "dev" ? import.meta.env.VITE_DEV_SERVER_URL : imp
 export function sendEmail(email: string) {
     fetch(`${SERVER_URL}/auth/send-code`, {
         method: 'POST',
-        mode: 'cors', // CORS 문제를 해결하기 위한 설정
+        mode: 'cors', 
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            email: email // 전송할 이메일 주소
+            email: email 
         })
     })
     .then(response => response.json())
@@ -20,7 +20,7 @@ export async function verifyCode(email: string, code: string) {
     try {
         const response = await fetch(`${SERVER_URL}/auth/verify-code`, {
             method: 'POST',
-            mode: 'cors', // CORS 문제를 해결하기 위한 설정
+            mode: 'cors', 
             headers: {  
                 'Content-Type': 'application/json'
             },
@@ -41,7 +41,7 @@ export async function storeSignUp(email: string, password: string, username: str
     try {
         const response = await fetch(`${SERVER_URL}/auth/store-signup`, {
             method: 'POST',
-            mode: 'cors', // CORS 문제를 해결하기 위한 설정
+            mode: 'cors', 
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -63,7 +63,7 @@ export async function signIn(email: string, password: string) {
     try {
         const response = await fetch(`${SERVER_URL}/auth/signin`, {
             method: 'POST',
-            mode: 'cors', // CORS 문제를 해결하기 위한 설정
+            mode: 'cors', 
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -89,7 +89,7 @@ export async function checkUser() {
     }
     const response = await fetch(`${SERVER_URL}/auth/check-user-uuid`, {
         method: 'POST',
-        mode: 'cors', // CORS 문제를 해결하기 위한 설정
+        mode: 'cors', 
         headers: {
             'Content-Type': 'application/json'
         },

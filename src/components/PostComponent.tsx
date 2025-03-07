@@ -1,8 +1,7 @@
 import * as S from "../styles/components/postComponent";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaComment, FaHeart, FaTrash } from "react-icons/fa";
-import { deletePost } from "../api/post";
+import { FaComment, FaHeart } from "react-icons/fa";
 
 export default function PostComponent({
   title,
@@ -24,7 +23,6 @@ export default function PostComponent({
   const navigate = useNavigate();
 
   const [videoId, setVideoId] = useState("");
-  const [videoStart, setVideoStart] = useState(0);
   const [thumbnailUrl, setThumbnailUrl] = useState("");
   const [thumbnailError, setThumbnailError] = useState(false);
   const defaultThumbnail = "/images/mandam.png";
@@ -45,13 +43,6 @@ export default function PostComponent({
       }
     }
   }, [youtubeUrl]);
-
-  const handleDeletePost = async (postId: string) => {
-    const response = await deletePost(postId);
-    if (response.success) {
-      navigate("/list");
-    }
-  };
 
   return (
     <S.PostComponent onClick={() => navigate(`/content/${id}`)}>
