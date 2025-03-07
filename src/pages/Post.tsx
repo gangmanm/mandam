@@ -385,9 +385,16 @@ export default function Post() {
             <Preview
               youtubeLink={youtubeUrl}
               srtFile={file as File}
-              characterImages={characters.map((character) => ({
-                image: character.img as File,
+              characters={characters.map((character) => ({
+                img: character.img as File,
                 name: character.name,
+                id: '',
+                post_id: '',
+                img_file_path: null,
+                isDelete: false,
+                youtube_url: youtubeUrl,
+                userId: localStorage.getItem("userId") as string,
+                text: '',
               }))}
             />
           )}

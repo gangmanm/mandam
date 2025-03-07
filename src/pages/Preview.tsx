@@ -52,7 +52,7 @@ export default function Preview({
 
   // speakers 데이터 로드
   useEffect(() => {
-    if (edit && characters && characters.length > 0) {  // characters가 존재하고 비어있지 않은지 확인
+    if (characters && characters.length > 0) {  // characters가 존재하고 비어있지 않은지 확인
       const speakers = characters.map((character) => {
 
 
