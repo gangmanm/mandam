@@ -21,7 +21,6 @@ export default function Post() {
     { img: File | null; name: string }[]
   >([]);
   const characterImageInputRefs = useRef<(HTMLInputElement | null)[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [autoSaveFiles, setAutoSaveFiles] = useState<
     { file_name: string; file_path: string; created_at: string }[]
@@ -272,7 +271,7 @@ export default function Post() {
             <S.YoutubeContainer>
               <S.Label>유튜브 영상 링크</S.Label>
               <S.Input
-                value={youtubeUrl}
+                value={youtubeUrl || ""}
                 onChange={(e) => setYoutubeUrl(e.target.value)}
                 placeholder="유튜브 영상 링크를 입력해주세요."
    
@@ -397,10 +396,10 @@ export default function Post() {
                 img: character.img as File,
                 name: character.name,
                 id: '',
-                post_id: '',
+                postId: '',
                 img_file_path: null,
                 isDelete: false,
-                youtube_url: youtubeUrl,
+                youtubeUrl: youtubeUrl,
                 userId: localStorage.getItem("userId") as string,
                 text: '',
               }))}

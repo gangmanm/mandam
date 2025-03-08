@@ -4,27 +4,9 @@ import React, { useState, useEffect, useRef } from "react";
 import * as S from "../styles/pages/preview";
 import YouTube from "react-youtube";
 import { ToastContainer, toast } from "react-toastify";
-import { CommentaryItem } from "../types";
+import { CommentaryItem, Speaker, PreviewProps } from "../types";
 import { useParseSrt } from "../hooks/useParseSrt";
 
-interface Speaker {
-  name: string;
-  color: string;
-  image: string;
-}
-
-interface PreviewProps {
-  youtubeUrl: string | null;
-  srtFile: File;
-  characters?: {
-    img_file_path?: string | null;
-    name: string;
-    id: string;
-    post_id: string;
-    img?: File | null;
-  }[];
-  edit?: boolean;
-}
 
 export default function Preview({
   youtubeUrl,

@@ -259,13 +259,10 @@ export default function Content() {
     const res = await addComment(commentState.text, id as string, userId as string);
     if (res.success) {
       toast.success("댓글 추가 완료");
-      const res = await getComments(id as string);
+      const updatedComments = await getComments(id as string);
       setCommentState({
         ...commentState,
-        list: res
-      });
-      setCommentState({
-        ...commentState,
+        list: updatedComments,
         text: ""
       });
     } else {
@@ -329,7 +326,7 @@ export default function Content() {
     navigate(`/edit/${id}`);
   };
 
-  const handleDeletePost = () => {
+  const handleDeletePost = (id: string) => {
     toast.info(
       <div style={{ display: "flex", alignItems: "center" }}>
         게시글을 삭제하시겠습니까?
@@ -444,7 +441,7 @@ export default function Content() {
               </S.TitleContainer>
 
               {window.innerWidth > 768 && (
-                <UserCommentSection comments={commentState.list} userId={userId} handleDeleteComment={handleDeleteComment} comment={commentState.text} setComment={(text) => setCommentState({
+                <UserCommentSection comments={commentState.list} userId={userId as string} handleDeleteComment={handleDeleteComment} comment={commentState.text} setComment={(text) => setCommentState({
                   ...commentState,
                   text
                 })} handleAddComment={handleAddComment} />
@@ -488,7 +485,7 @@ export default function Content() {
 
           <ToastContainer />
           {window.innerWidth < 768 && commentState.isVisible && (
-            <UserCommentSection comments={commentState.list} userId={userId} handleDeleteComment={handleDeleteComment} comment={commentState.text} setComment={(text) => setCommentState({
+            <UserCommentSection comments={commentState.list} userId={userId as string} handleDeleteComment={handleDeleteComment} comment={commentState.text} setComment={(text) => setCommentState({
               ...commentState,
               text
             })} handleAddComment={handleAddComment} />

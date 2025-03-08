@@ -33,6 +33,7 @@ export interface Character {
   name: string;
   isDelete?: boolean;
   img_file_path?: string;
+  postId?: string | number;
 }
 
 export interface Comment {
@@ -43,12 +44,6 @@ export interface Comment {
     username: string;
   }
   user_id: string;
-}
-
-export interface PreviewProps {
-  youtubeUrl: string;
-  srtFile: File;
-  characterImages: { image: File; name: string }[];
 }
 
 export interface VideoState {
@@ -76,16 +71,39 @@ export interface LikeState {
 
 export interface Post {
   id? : string | undefined;
-  post_id: string;
   title: string;
   File: File;
   userId: string;
-  youtube_url: string;
   text: string;
+  content?: string;
+  characters?: Character[];
+  youtubeUrl?: string;
 }
 
 export interface AutoSave {
-  id: string;
-  post_id: string;
-  created_at: string;
+  id?: string;
+  postId?: string | number;
+  created_at?: string;
+  fileName: string;
+  userId: string;
+  File: File;
+}
+
+export interface Speaker {
+  name: string;
+  color: string;
+  image: string;
+}
+
+export interface PreviewProps {
+  youtubeUrl: string | null;
+  srtFile: File;
+  characters?: {
+    img_file_path?: string | null;
+    name: string;
+    id: string;
+    postId: string | number;
+    img?: File | null;
+  }[];
+  edit?: boolean;
 }

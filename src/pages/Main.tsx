@@ -1,7 +1,6 @@
 import * as S from "../styles/pages/main";
 import { useNavigate } from "react-router-dom";
 import NavBar from "../components/NavBar";
-import styled from "styled-components";
 import { motion } from "framer-motion";
 import MainInfo from "../components/MainInfo";
 

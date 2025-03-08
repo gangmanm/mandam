@@ -11,14 +11,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Dropdown from 'react-dropdown';
 import NavBar from "../components/NavBar";
 import Loading from "../components/Loading";
-import { Post } from "../types";
-interface Character {
-  id?: string;
-  img?: File;
-  name: string;
-  isDelete?: boolean;
-  img_file_path?: string;
-}
+import { Post, Character } from "../types";
 
 export default function Edit() {
   const navigate = useNavigate();
@@ -182,15 +175,15 @@ export default function Edit() {
     try {
       // 1. 게시글 수정
       const post = {
-        post_id: id,
+        id: id,
         title: title,
         File: file as File,
         userId: localStorage.getItem("userId") as string,
-        youtube_url: youtubeUrl,
+        youtubeUrl: youtubeUrl,
         text: "test",
       };
 
-      const response = await editPost(post as Post);
+      const response = await editPost(post as Post);  
 
       if (!response.success) {
         toast.error("글 편집 실패");
@@ -211,7 +204,7 @@ export default function Edit() {
             id: character.id,
             name: character.name,
             img: character.img,
-            post_id: id
+            postId: parseInt(id)
           });
           continue;
         }
@@ -221,7 +214,7 @@ export default function Edit() {
           await createCharacter({
             img: character.img,
             name: character.name
-          }, id); 
+          }, parseInt(id)); 
         }
       }
 
@@ -264,12 +257,13 @@ export default function Edit() {
       if (!selectedFile) return;
 
       const response = await getFile(filePath);
-      const text = await response.text();
-      
-      // 텍스트를 Blob으로 변환 후 File 객체 생성
-      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
-      const file = new File([blob], selectedFile.file_name + '.srt', { type: 'text/plain;charset=utf-8' });
-      
+      if (response instanceof Blob) {
+        const text = await response.text();
+        
+        // 텍스트를 Blob으로 변환 후 File 객체 생성
+        const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+        const file = new File([blob], selectedFile.file_name + '.srt', { type: 'text/plain;charset=utf-8' });
+        
       // 새 파일에서 캐릭터 추출
       const extractedCharacters = await extractCharactersFromSrt(file);
       
@@ -288,6 +282,8 @@ export default function Edit() {
 
       setFile(file);
       setCharacters(newCharacterList as Character[]);
+
+    }
     } catch (error) {
       console.error('파일 불러오기 오류:', error);
     }
@@ -492,7 +488,7 @@ export default function Edit() {
               name: char.name,
               img_file_path: char.img_file_path,
               id: char.id || '',
-              post_id: id
+              postId: id
             }))}
             edit={true} 
           />

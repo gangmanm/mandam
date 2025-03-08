@@ -1,24 +1,7 @@
-import { AutoSave } from "../types";
+import { AutoSave, Post, Character } from "../types";
 
 const SETTING = import.meta.env.VITE_SETTING;
 const SERVER_URL = SETTING === "dev" ? import.meta.env.VITE_DEV_SERVER_URL : import.meta.env.VITE_SERVER_URL;
-
-interface Post  {
-  title: string;
-  File: File;
-  youtubeUrl?: string;
-  userId: string;
-  text: string;
-  id: string;
-  youtube_url: string;
-  characters?: Character[];
-  content?: string;
-}
-
-interface Character {
-  img: File | null;
-  name: string; 
-}
 
 export const createPost = async (post: Post) => {
   try {
@@ -318,8 +301,8 @@ export const editPost = async (post: Post) => {
   formData.append("title", post.title);
   formData.append("userId", post.userId);
   formData.append("text", post.text);
-  formData.append("post_id", post.post_id);
-  formData.append("youtube_url", post.youtube_url);
+  formData.append("post_id", post.id as string);
+  formData.append("youtube_url", post.youtubeUrl as string);
   
   // File이 존재할 경우에만 추가
   if (post.File instanceof File) {
@@ -385,9 +368,9 @@ export const deleteCharacter = async (id: string) => {
 export const editCharacter = async (character: Character) => {
   try {
     const formData = new FormData();
-    formData.append("character_id", character.id);
+    formData.append("character_id", character.id as string);
     formData.append("name", character.name);
-    formData.append("img", character.img);
+    formData.append("img", character.img as File);
 
     const response = await fetch(`${SERVER_URL}/posts/edit-character`, {
       method: "POST",
@@ -413,7 +396,7 @@ export const editCharacter = async (character: Character) => {
 export const autoSavePost = async (autoSave: AutoSave) => {
   try {
     const formData = new FormData();
-    formData.append("file_name", autoSave.fileName);
+    formData.append("file_name", autoSave.fileName );
     formData.append("uuid", autoSave.userId);
     formData.append("file", autoSave.File);
     

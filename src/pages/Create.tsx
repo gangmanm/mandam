@@ -86,18 +86,6 @@ export default function Create() {
   });
   const intervalRef = useRef<number | null>(null);
   const [srtFile, setSrtFile] = useState<File | null>(null);
-  const [characterImages, setCharacterImages] = useState<
-    { image: File; name: string }[]
-  >([]);
-  const [characters, setCharacters] = useState<
-    {
-      img_file_path: string | null;
-      name: string;
-      id: string;
-      post_id: string;
-    }[]
-  >([]);
-  const [edit, setEdit] = useState(false);
   const commentsContainerRef = useRef<HTMLDivElement>(null);
   const activeCommentRef = useRef<HTMLDivElement>(null);
   const subtitleListRef = useRef<HTMLDivElement>(null);
@@ -382,7 +370,7 @@ export default function Create() {
 
     const autoSave = {
       fileName: projectName,
-      userId: localStorage.getItem("userId"),
+      userId: localStorage.getItem("userId") as string ,
       File: srtFile, // 새로 생성된 SRT 파일 사용
     };
 
@@ -665,12 +653,14 @@ export default function Create() {
     setProjectName(selectedFile.file_name);
     setSubtitles([]);
     try {
-      const response = await getFile(selectedFile.file_path);
-      const text = await response.text();
-      const blocks = text.trim().split(/\n\s*\n/);
-      const newSubtitles: Subtitle[] = [];
+      const response = await getFile(selectedFile.file_path) ;
+      
+      if (response instanceof Blob) {
+        const text = await response.text();
+        const blocks = text.trim().split(/\n\s*\n/);
+        const newSubtitles: Subtitle[] = [];
 
-      blocks.forEach((block) => {
+      blocks.forEach((block: string) => {
         const lines = block.trim().split("\n");
         if (lines.length >= 3) {
           const timeRange = lines[1].split(" --> ");
@@ -691,6 +681,7 @@ export default function Create() {
         // 이전 기록 삭제 후 새로운 자막 설정
         setSubtitles(newSubtitles.sort((a, b) => a.startTime - b.startTime));
         toast.success("자동 저장된 파일을 불러왔습니다.");
+      }
       }
     } catch (error) {
       console.error("파일 불러오기 오류:", error);
