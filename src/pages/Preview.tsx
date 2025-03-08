@@ -14,14 +14,14 @@ interface Speaker {
 }
 
 interface PreviewProps {
-  youtubeLink: string;
+  youtubeLink: string | null;
   srtFile: File;
   characters?: {
     img_file_path?: string | null;
     name: string;
     id: string;
     post_id: string;
-    img?: File;
+    img?: File | null;
   }[];
   edit?: boolean;
 }
@@ -201,7 +201,12 @@ export default function Preview({
         }
         setVideoId(videoIdArray[1].split("&")[0]);
       } else {
-        toast.error("유튜브 영상 링크가 올바르지 않습니다.");
+        if (!toast.isActive("youtube-link-error")) {
+          toast.error("유튜브 영상 링크가 올바르지 않습니다.", {
+            toastId: "youtube-link-error",
+          });
+        }
+
       }
     }
   }, [youtubeLink]);

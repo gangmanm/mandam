@@ -168,23 +168,6 @@ export default function Create() {
     setRange([0, videoDuration]);
   };
 
-  const handleRangeChange = (newRange: number[]) => {
-    setRange(newRange);
-    if (player) {
-      player.seekTo(newRange[0]);
-    }
-  };
-
-  const handleGenerateSubtitles = () => {
-    setIsGenerating(true);
-    // TODO: 자막 생성 로직 구현
-    console.log(
-      `Generating subtitles from ${formatTime(range[0])} to ${formatTime(
-        range[1]
-      )}`
-    );
-  };
-
   const onPlayerStateChange = (event: any) => {
     if (event.data === 1) {
       if (intervalRef.current) {
@@ -664,7 +647,7 @@ export default function Create() {
 
       if (newSubtitles.length > 0) {
         setSubtitles((prev) =>
-          [...prev, ...newSubtitles].sort((a, b) => a.startTime - b.startTime)
+          [...newSubtitles].sort((a, b) => a.startTime - b.startTime)
         );
         toast.success("SRT 파일을 성공적으로 불러왔습니다.");
       } else {
@@ -701,6 +684,7 @@ export default function Create() {
     if (!selectedFile) return;
 
     setProjectName(selectedFile.file_name);
+    setSubtitles([]);
     try {
       const response = await getFile(selectedFile.file_path);
       const text = await response.text();
@@ -725,6 +709,7 @@ export default function Create() {
       });
 
       if (newSubtitles.length > 0) {
+        // 이전 기록 삭제 후 새로운 자막 설정
         setSubtitles(newSubtitles.sort((a, b) => a.startTime - b.startTime));
         toast.success("자동 저장된 파일을 불러왔습니다.");
       }

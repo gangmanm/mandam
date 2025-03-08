@@ -5,6 +5,7 @@ import { createPost, createCharacter, getAutoSave, getFile } from "../api/post";
 import Preview from "./Preview";
 import { heicTo } from "heic-to";
 import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from "react-router-dom";
 import { checkUser } from "../api/auth";
 import Dropdown from "react-dropdown";
@@ -84,8 +85,10 @@ export default function Post() {
         return [...prev, ...newCharacters];
       });
 
-      if (extractedCharacters.length > 0) {
-        toast.success(`${extractedCharacters.length}개의 등장인물이 자동으로 추가되었습니다.`);
+      if (extractedCharacters.length > 0 && !toast.isActive('character-toast')) {
+        toast.success(`${extractedCharacters.length}개의 등장인물이 자동으로 추가되었습니다.`, {
+          toastId: 'character-toast'
+        });
       }
     }
   };
@@ -106,8 +109,10 @@ export default function Post() {
         return [...prev, ...newCharacters];
       });
 
-      if (extractedCharacters.length > 0) {
-        toast.success(`${extractedCharacters.length}개의 등장인물이 자동으로 추가되었습니다.`);
+      if (extractedCharacters.length > 0 && !toast.isActive('character-toast')) {
+        toast.success(`${extractedCharacters.length}개의 등장인물이 자동으로 추가되었습니다.`, {
+          toastId: 'character-toast'
+        });
       }
     }
   };
@@ -191,8 +196,10 @@ export default function Post() {
         return [...prev, ...newCharacters];
       });
 
-      if (extractedCharacters.length > 0) {
-        toast.success(`${extractedCharacters.length}개의 등장인물이 자동으로 추가되었습니다.`);
+      if (extractedCharacters.length > 0 && !toast.isActive('character-toast')) {
+        toast.success(`${extractedCharacters.length}개의 등장인물이 자동으로 추가되었습니다.`, {
+          toastId: 'character-toast'
+        });
       }
       
       toast.success('자동 저장된 파일을 불러왔습니다.');
@@ -381,7 +388,6 @@ export default function Post() {
           </S.ContentContainer>
         </S.LeftContainer>
         <S.RightContainer>
-          {youtubeUrl && (
             <Preview
               youtubeLink={youtubeUrl}
               srtFile={file as File}
@@ -397,10 +403,9 @@ export default function Post() {
                 text: '',
               }))}
             />
-          )}
         </S.RightContainer>
       </S.MainContainer>
-      <ToastContainer />
+      <ToastContainer autoClose={3000} closeOnClick pauseOnHover />
     </S.Container>
   );
 }
