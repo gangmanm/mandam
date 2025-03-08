@@ -245,8 +245,6 @@ export default function Create() {
         const videoIdArray = youtubeUrl.split("=");
         setVideoId(videoIdArray[1].split("&")[0]);
       } else if (youtubeUrl.includes("youtu.be")) {
-        console.log(youtubeUrl);
-        // youtu.be 형식의 URL 처리
         const videoIdArray = youtubeUrl.split("/")[3].split("?")[0];
         setVideoId(videoIdArray);
       } else {
@@ -602,10 +600,13 @@ export default function Create() {
     const userId = localStorage.getItem("userId");
     if (!userId) return;
     const autoSave = await getAutoSave(userId);
-    setAutoSaveFiles(autoSave.data.reverse());
 
     if (autoSave.success) {
-      console.log(autoSave);
+      // created_at 기준으로 최신순 정렬
+      const sortedAutoSaves = autoSave.data.sort((a, b) => 
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
+      setAutoSaveFiles(sortedAutoSaves);
     }
   };
 
@@ -810,7 +811,6 @@ export default function Create() {
             </div>
           </S.SliderContainer>
         </S.LeftContainer>
-
         {youtubeUrl && (
           <S.SubtitleList ref={subtitleListRef}>
             {subtitles.map((subtitle) => (

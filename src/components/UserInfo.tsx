@@ -27,6 +27,13 @@ export default function UserInfo({ selectedBoxId, setSelectedBoxId }: { selected
       text: "내가 좋아요 한 글",
       fontColor: "#ffffff",
     },
+    {
+      id: 4,
+      color: "#222222",
+      text: "내가 임시 저장한 자막",
+      fontColor: "#ffffff",
+    },
+
   ];
 
   return (

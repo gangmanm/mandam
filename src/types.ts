@@ -79,7 +79,16 @@ export interface Post {
   characters?: Character[];
   youtubeUrl?: string;
   created_at?: string;
-  
+
+}
+
+export interface PostPreview extends Post {
+  file_path: string;
+  file_name: string;
+  comments_count: number;
+  likes_count: number;
+  youtube_url: string;
+  username: string;
 }
 
 export interface AutoSave {
@@ -89,6 +98,9 @@ export interface AutoSave {
   fileName: string;
   userId: string;
   File: File;
+  file_path: string;
+  file_name: string;
+  
 }
 
 export interface Speaker {

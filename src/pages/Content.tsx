@@ -217,7 +217,6 @@ export default function Content() {
           id: videoIdArray[1].split("&")[0]
         });
       } else if (videoState.link.includes("youtu.be")) {
-        console.log(videoState.link);
         const videoIdArray = videoState.link.split("/")[3].split("?")[0];
         setVideoState({
           ...videoState,

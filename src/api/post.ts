@@ -5,9 +5,6 @@ const SERVER_URL = SETTING === "dev" ? import.meta.env.VITE_DEV_SERVER_URL : imp
 
 export const createPost = async (post: Post) => {
   try {
-    console.log(post);
-
-
     const formData = new FormData();
     formData.append("title", post.title);
     formData.append("userId", post.userId);
@@ -295,8 +292,6 @@ export const deletePost = async (postId: string) => {
 
 
 export const editPost = async (post: Post) => {
-  console.log("Sending post data:", post);
-
   const formData = new FormData();
   formData.append("title", post.title);
   formData.append("userId", post.userId);
@@ -314,17 +309,12 @@ export const editPost = async (post: Post) => {
       method: "POST",
       body: formData
     });
-
-    // 응답 상태 로깅
-    console.log("Response status:", response.status);
-
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(errorData.message || `Server responded with ${response.status}`);
     }
 
     const result = await response.json();
-    console.log("Response data:", result);
     return result;
 
   } catch (error) {
@@ -427,7 +417,6 @@ export const getAutoSave = async (userId: string) => {
     if (!response.ok) {
       throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
     }
-
     return await response.json();
   } catch (error) {
     console.error("Error getting auto save:", error);   
@@ -489,6 +478,31 @@ export const getMyLikesPosts = async (userId: string) => {
     return await response.json();
   } catch (error) {
     console.error("Error getting my likes posts:", error);
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+  }
+};
+
+export const deleteAutoSave = async (userId: string, fileName: string) => {
+  try {
+    const response = await fetch(`${SERVER_URL}/posts/delete-auto-save-file`, {
+      method: "DELETE",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        uuid: userId,
+        file_name: fileName
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error deleting auto save:", error);
     return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
   }
 };

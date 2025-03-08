@@ -29,18 +29,6 @@ const SignIn = () => {
     };
   }, [navigate]);
 
-  useEffect(() => {
-    const checkLogin = async () => {
-      const data = await checkUser();
-      if (data.success) {
-        navigate("/list");
-        setAuth(true);
-      }
-    };
-
-    checkLogin();
-  }, [navigate]);
-
   const [formData, setFormData] = useState<FormData>({
     email: "",
     password: "",

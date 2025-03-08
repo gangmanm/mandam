@@ -177,8 +177,6 @@ export default function Preview({
         const videoIdArray = youtubeUrl.split("=");
         setVideoId(videoIdArray[1].split("&")[0]);
       } else if (youtubeUrl.includes("youtu.be")) {
-        console.log(youtubeUrl);
-        // youtu.be 형식의 URL 처리
         const videoIdArray = youtubeUrl.split("/")[3].split("?")[0];
         setVideoId(videoIdArray);
       } else {

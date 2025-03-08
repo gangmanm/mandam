@@ -3,8 +3,6 @@ import * as S from "../styles/pages/content";
 import { Comment } from "../types";
 
 export default function UserCommentSection({ comments, userId, handleDeleteComment, comment, setComment, handleAddComment }: { comments: Comment[], userId: string, handleDeleteComment: (commentId: string) => void, comment: string, setComment: (comment: string) => void, handleAddComment: () => void }) {
-    
-  console.log("댓글",comments);
   return (
       <S.UserCommentContainer>
         <div style={{ display: "flex", justifyContent: "space-between" }}>

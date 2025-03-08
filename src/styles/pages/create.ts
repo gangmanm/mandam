@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import Dropdown from 'react-dropdown';
+
 export const MainContainer = styled.div`
   width: 100vw;
   height: 100vh;
@@ -16,7 +17,7 @@ export const MainContainer = styled.div`
 
 export const LeftContainer = styled.div`
   width: 100%;
-  height: 100%;
+  height: calc(100% - 60px);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -36,7 +37,7 @@ export const LeftContainer = styled.div`
 
 export const VideoContainer = styled.div`
   width: 100%;
-  height: 50%;
+  height: 300px;
   position: relative;
   
   @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
@@ -118,7 +119,7 @@ export const SpeakerName = styled.span`
 
 export const VideoInfoContainer = styled.div`
   width: 100%;
-  height: 400px;
+  height: 100%;
   display: flex;
   background-color :rgb(26, 26, 26);
   margin-top: 20px;
@@ -258,7 +259,6 @@ export const ToastButton = styled.div`
 
 export const YoutubeContainer = styled.div`
   width: 100%;
-  height: 40px;
 
   display: flex;
   align-items: center;
@@ -470,11 +470,11 @@ export const CancelButton = styled(AddButton)`
 
 export const SubtitleList = styled.div`
   width: 100%;
-  height: 100%;
+  height: calc(100% - 60px);
   padding: 20px;
+  margin-top: 20px;
   background-color:rgb(0, 0, 0);
-  overflow-y: auto;
-
+  overflow-y: scroll;
 
   &::-webkit-scrollbar {
     display: none;
@@ -700,8 +700,7 @@ export const RightContainer = styled.div`
   width: 100%;
   height: 100%;
   background-color:rgb(0, 0, 0);
-  padding: 20px;
-  overflow-y: auto;
+  overflow-y: scroll;
 `;
 
 
@@ -844,9 +843,10 @@ export const Select = styled.select`
 `;
 
 export const ContentContainer = styled.div`
-  width: 100%;
+  width: calc(100% - 60px)
   height: 100%;
   display: flex;
+  overflow-y: scroll;
 `;
 
 

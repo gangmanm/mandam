@@ -289,10 +289,13 @@ export default function Edit() {
     const userId = localStorage.getItem("userId");
     if (!userId) return;
     const autoSave = await getAutoSave(userId);
-    setAutoSaveFiles(autoSave.data.reverse());
 
     if (autoSave.success) {
-      console.log(autoSave);
+      // created_at 기준으로 최신순 정렬
+      const sortedAutoSaves = autoSave.data.sort((a, b) => 
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
+      setAutoSaveFiles(sortedAutoSaves);
     }
   }
 

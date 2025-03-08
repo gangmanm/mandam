@@ -100,7 +100,6 @@ const SignUp = () => {
         formData.password,
         formData.username
       );
-      console.log("res", res);
       if (res) {
         toast.success("회원가입이 완료되었습니다.");
         navigate("/signin");
