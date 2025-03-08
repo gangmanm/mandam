@@ -25,7 +25,7 @@ export const NavBarContainer = styled.div`
 
 export const ContentContainer = styled.div`
   width: 100%;
-  height: calc(100% - 60px);
+  height: 100%;
   display: flex;
   padding: 30px;
 
@@ -60,7 +60,7 @@ export const LeftContainer = styled.div`
 
   @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
     width: 100%;
-    height: 40%;
+    height: 100%;
     padding: 0px;
   }
 `;
@@ -166,9 +166,6 @@ export const AllCommentsContainer = styled.div`
   @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
     width: 100%;
     height: 100%;
-    padding: 10px;
-
-    margin-top: 60px;
   }
 `;
 
@@ -229,7 +226,7 @@ export const VideoInfoContainer = styled.div`
     width: 100%;
     height: 40px;
     padding: 10px;
-    margin-top: 170px;
+    margin-top: 220px;
     font-size: 12px;
     position: fixed;
   }
