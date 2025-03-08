@@ -216,7 +216,6 @@ const SignUp = () => {
 
         <S.SubmitButton type="submit">가입하기</S.SubmitButton>
       </S.Form>
-      <ToastContainer />
     </S.Container>
   );
 };

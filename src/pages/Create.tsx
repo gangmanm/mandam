@@ -678,9 +678,7 @@ export default function Create() {
       });
 
       if (newSubtitles.length > 0) {
-        // 이전 기록 삭제 후 새로운 자막 설정
         setSubtitles(newSubtitles.sort((a, b) => a.startTime - b.startTime));
-        toast.success("자동 저장된 파일을 불러왔습니다.");
       }
       }
     } catch (error) {

@@ -155,10 +155,6 @@ export default function Edit() {
       }));
 
       setCharacters(newCharacterList as Character[]);
-
-      if (extractedCharacters.length > 0) {
-        toast.success(`${extractedCharacters.length}개의 등장인물이 설정되었습니다.`);
-      }
     }
   };
 
@@ -494,12 +490,6 @@ export default function Edit() {
           />
         )}
       </S.RightContainer>
-      <ToastContainer
-        autoClose={1000}
-        closeOnClick
-        theme="light"
-      />
-
       </S.MainContainer>
       )}
     </S.Container>

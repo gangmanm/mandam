@@ -195,13 +195,14 @@ export default function Post() {
         return [...prev, ...newCharacters];
       });
 
-      if (extractedCharacters.length > 0 && !toast.isActive('character-toast')) {
+      toast.success("자동 저장된 파일을 불러왔습니다.", { autoClose: 3000 });
+     
+      if (extractedCharacters.length > 0) {
         toast.success(`${extractedCharacters.length}개의 등장인물이 자동으로 추가되었습니다.`, {
           toastId: 'character-toast'
         });
       }
       
-      toast.success('자동 저장된 파일을 불러왔습니다.');
     } catch (error) {
       console.error('파일 불러오기 오류:', error);
       toast.error('파일을 불러오는데 실패했습니다.');
@@ -406,7 +407,6 @@ export default function Post() {
             />
         </S.RightContainer>
       </S.MainContainer>
-      <ToastContainer autoClose={3000} />
     </S.Container>
   );
 }

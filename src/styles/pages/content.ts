@@ -5,7 +5,6 @@ export const MainContainer = styled.div`
   height: 100vh;
   display: flex;
   flex-direction: column;
-  overflow : hidden;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
     width: 100vw;
@@ -17,7 +16,7 @@ export const MainContainer = styled.div`
 
 export const ContentContainer = styled.div`
   width: 100%;
-  height: 100%;
+  height: calc(100% - 50px);
   display: flex;
   padding: 30px;
 
@@ -127,7 +126,7 @@ export const AllScenesContainer = styled.div`
 
 export const AllCommentsContainer = styled.div`
   width: 100%;
-  height: 90%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   gap: 15px;

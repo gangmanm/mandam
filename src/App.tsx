@@ -9,6 +9,7 @@ import Post from './pages/Post'
 import Content from './pages/Content'
 import Edit from './pages/Edit' 
 import Create from './pages/Create'
+import { ToastContainer } from 'react-toastify';
     const AppContent = () => {
       return (
     <>
@@ -32,6 +33,7 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <AppContent />
+      <ToastContainer />
     </ThemeProvider>
   )
 }

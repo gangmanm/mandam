@@ -482,8 +482,6 @@ export default function Content() {
               );
             })}
           </S.AllCommentsContainer>
-
-          <ToastContainer />
           {window.innerWidth < 768 && commentState.isVisible && (
             <UserCommentSection comments={commentState.list} userId={userId as string} handleDeleteComment={handleDeleteComment} comment={commentState.text} setComment={(text) => setCommentState({
               ...commentState,
