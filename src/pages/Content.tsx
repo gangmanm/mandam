@@ -355,7 +355,9 @@ export default function Content() {
 
   return (
     <S.MainContainer onKeyDown={(e) => e.stopPropagation()} tabIndex={-1}>
-      <NavBar />
+      <S.NavBarContainer>
+        <NavBar />
+      </S.NavBarContainer>
       {isLoading ? (
         <Loading />
       ) : (

@@ -14,6 +14,15 @@ export const MainContainer = styled.div`
   }
 `;
 
+export const NavBarContainer = styled.div`
+  width: 100%;
+  height: 60px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+`;
+
 export const ContentContainer = styled.div`
   width: 100%;
   height: calc(100% - 60px);
