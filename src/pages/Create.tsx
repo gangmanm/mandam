@@ -253,24 +253,30 @@ export default function Create() {
     }
   }, [youtubeUrl]);
 
-  const handleWheel = (e: React.WheelEvent) => {
-    if (e.ctrlKey || e.metaKey) {
-      // 줌 기능
-      e.preventDefault();
-      const delta = e.deltaY * -0.01;
-      const newZoom = Math.min(Math.max(zoom + delta, 1), 400);
-      setZoom(newZoom);
-    } else {
-      // 일반 스크롤 - 타임라인 이동
-      e.preventDefault();
-      if (timelineRef.current) {
-        const newScrollLeft =
-          timelineRef.current.scrollLeft + e.deltaX + e.deltaY;
-        timelineRef.current.scrollLeft = newScrollLeft;
+  useEffect(() => {
+    const timeline = timelineRef.current;
+    if (!timeline) return;
+
+    const handleWheel = (e: WheelEvent) => {
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+        const delta = e.deltaY * -0.01;
+        const newZoom = Math.min(Math.max(zoom + delta, 1), 400);
+        setZoom(newZoom);
+      } else {
+        e.preventDefault();
+        const newScrollLeft = timeline.scrollLeft + e.deltaX + e.deltaY;
+        timeline.scrollLeft = newScrollLeft;
         setScrollLeft(newScrollLeft);
       }
-    }
-  };
+    };
+
+    timeline.addEventListener('wheel', handleWheel, { passive: false });
+    
+    return () => {
+      timeline.removeEventListener('wheel', handleWheel);
+    };
+  }, [zoom]);
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     setScrollLeft(e.currentTarget.scrollLeft);
@@ -757,9 +763,8 @@ export default function Create() {
                 onClick={handleAddSubtitleClick}
               />
             </S.ButtonGroup>
-            <S.TimelineWrapper onWheel={handleWheel} onScroll={handleScroll}>
+            <S.TimelineWrapper ref={timelineRef}>
               <S.TimelineContainer
-                ref={timelineRef}
                 style={{
                   width: `${100 * zoom}%`,
                   transform: `translateX(-${scrollLeft}px)`,

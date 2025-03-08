@@ -33,6 +33,8 @@ import MyPage from './pages/MyPage';
 };
 
 function App() {
+
+  
   return (
     <ThemeProvider theme={theme}>
       <AppContent />
