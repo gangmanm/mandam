@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { FaUser, FaLock } from "react-icons/fa";
 import { useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
-
+import NavBar from "../components/NavBar";
 interface FormData {
   email: string;
   password: string;
@@ -55,6 +55,7 @@ const SignIn = () => {
 
   return (
     <S.Container>
+      <NavBar />
       <S.Form onSubmit={handleSubmit}>
         <S.Title>로그인</S.Title>
         <S.InputGroup>

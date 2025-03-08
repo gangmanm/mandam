@@ -4,7 +4,7 @@ import * as S from "../styles/pages/signUp";
 import { FaUser, FaLock, FaEnvelope, FaKey } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-
+import NavBar from "../components/NavBar";
 interface FormData {
   username: string;
   email: string;
@@ -113,6 +113,7 @@ const SignUp = () => {
 
   return (
     <S.Container>
+      <NavBar />
       <S.Form onSubmit={handleSubmit}>
         <S.Title>회원가입</S.Title>
 
@@ -121,7 +122,7 @@ const SignUp = () => {
             <FaUser />
           </S.Label>
           <S.Input
-            $width="200px"
+            $width="300px"
             type="text"
             name="username"
             placeholder="닉네임"
@@ -137,7 +138,7 @@ const SignUp = () => {
           </S.Label>
           <S.EmailWrapper>
             <S.Input
-              $width="130px"
+              $width="150px"
               type="email"
               name="email"
               placeholder="이메일"
@@ -163,7 +164,7 @@ const SignUp = () => {
             </S.Label>
             <S.EmailWrapper>
               <S.Input
-                $width="130px"
+                $width="150px"
                 type="text"
                 name="verificationCode"
                 placeholder="인증코드"

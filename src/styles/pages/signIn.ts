@@ -5,13 +5,18 @@ export const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  padding: 20px;
+  flex-direction: column;
+  height: 100vh;
 `;
 
 export const Form = styled.form`
-  width: 100%;
-  max-width: 400px;
+  width: 400px;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   padding: 40px;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
@@ -28,7 +33,7 @@ export const InputGroup = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 20px;
-  width: 300px;
+  width: 100%;
   background-color: #2a2a2a;
   border-radius: 8px;
   padding: 5px;
