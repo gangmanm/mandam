@@ -387,12 +387,6 @@ export const editCharacter = async (character: Character) => {
     return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
   }
 };
-
-
-
-
-
-
 export const autoSavePost = async (autoSave: AutoSave) => {
   try {
     const formData = new FormData();
@@ -440,3 +434,61 @@ export const getAutoSave = async (userId: string) => {
     return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
   }
 };  
+
+export const getMyPosts = async (userId: string) => {
+  try {
+    const response = await fetch(`${SERVER_URL}/posts/my-posts/${userId}`, {
+      method: "GET",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error getting my posts:", error);
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+  }
+};
+  
+
+export const getMyCommentsPosts = async (userId: string) => {
+  try {
+    const response = await fetch(`${SERVER_URL}/posts/my-comments/${userId}`, {
+      method: "GET",
+      mode: "cors",
+    });
+
+    if (!response.ok) {
+      throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error getting my comments posts:", error);
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+  }
+};
+
+export const getMyLikesPosts = async (userId: string) => {
+  try {
+    const response = await fetch(`${SERVER_URL}/posts/my-likes/${userId}`, {
+      method: "GET",
+      mode: "cors",
+    });
+
+    if (!response.ok) {
+      throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error getting my likes posts:", error);
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+  }
+};

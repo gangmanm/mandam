@@ -34,12 +34,25 @@ export const LeftContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-right: 10px;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
     width: 100%;
-    height: 40%;
+    height: 1200px;
     padding: 0px;
   }
+`;
+
+export const PostContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 10px;    
+  padding: 10px;
+  overflow-y: auto;
 `;
 
 export const RightContainer = styled.div`

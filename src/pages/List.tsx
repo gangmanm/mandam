@@ -39,7 +39,7 @@ export default function List() {
                 id={post.id}
                 comments_count={post.comments_count}
                 likes_count={post.likes_count}
-                date={post.created_at}
+                date={post.created_at ? new Date(post.created_at).toLocaleString() : "날짜 없음"}
               />
             ) : null
           )}

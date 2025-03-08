@@ -78,6 +78,8 @@ export interface Post {
   content?: string;
   characters?: Character[];
   youtubeUrl?: string;
+  created_at?: string;
+  
 }
 
 export interface AutoSave {
