@@ -107,3 +107,36 @@ export interface PreviewProps {
   }[];
   edit?: boolean;
 }
+
+
+export interface Subtitle {
+  id: number;
+  startTime: number;
+  endTime: number;
+  text: string;
+  speaker?: string;
+}
+
+export interface DragState {
+  isDragging: boolean;
+  subtitleId: number | null;
+  handle: "left" | "right" | null;
+  initialX: number;
+  initialTime: number;
+}
+
+export interface SubtitleDragState {
+  isDragging: boolean;
+  subtitleId: number | null;
+  startX: number;
+  originalStartTime: number;
+  originalEndTime: number;
+}
+
+export interface MarkerDragState {
+  isDragging: boolean;
+  subtitleId: number | null;
+  startX: number;
+  originalStartTime: number;
+  originalEndTime: number;
+}

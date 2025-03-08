@@ -10,6 +10,8 @@ import Content from './pages/Content'
 import Edit from './pages/Edit' 
 import Create from './pages/Create'
 import { ToastContainer } from 'react-toastify';
+import MyPage from './pages/MyPage';
+
     const AppContent = () => {
       return (
     <>
@@ -23,6 +25,7 @@ import { ToastContainer } from 'react-toastify';
          <Route path="/edit/:id" element={<Edit />} />
          <Route path="/content/:id" element={<Content />} />
          <Route path="/create" element={<Create />} />
+         <Route path="/mypage" element={<MyPage />} />
         </Routes>
       </BrowserRouter>
     </>

@@ -1,4 +1,4 @@
-import { useNavigate, useLocation } from "react-router-dom";
+import {useLocation } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import * as S from "../styles/pages/create";
 import YouTube from "react-youtube";
@@ -12,38 +12,7 @@ import { FaPlus } from "react-icons/fa";
 import NavBar from "../components/NavBar";
 import { useMediaQuery } from "react-responsive";
 import { srtTimeToSeconds } from "../utils/srtUtils";
-
-interface Subtitle {
-  id: number;
-  startTime: number;
-  endTime: number;
-  text: string;
-  speaker?: string;
-}
-
-interface DragState {
-  isDragging: boolean;
-  subtitleId: number | null;
-  handle: "left" | "right" | null;
-  initialX: number;
-  initialTime: number;
-}
-
-interface SubtitleDragState {
-  isDragging: boolean;
-  subtitleId: number | null;
-  startX: number;
-  originalStartTime: number;
-  originalEndTime: number;
-}
-
-interface MarkerDragState {
-  isDragging: boolean;
-  subtitleId: number | null;
-  startX: number;
-  originalStartTime: number;
-  originalEndTime: number;
-}
+import { Subtitle, DragState, SubtitleDragState, MarkerDragState } from "../types";
 
 export default function Create() {
   const location = useLocation();

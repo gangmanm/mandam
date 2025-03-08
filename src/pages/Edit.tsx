@@ -4,7 +4,7 @@ import { FaFileUpload, FaPlus } from "react-icons/fa";
 import { createCharacter, getPost, editPost, deleteCharacter, getFile, getAutoSave, editCharacter } from "../api/post";
 import Preview from "./Preview";
 import { heicTo } from "heic-to"
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { data, useNavigate } from "react-router-dom";
 import { checkUser } from "../api/auth";
 import 'react-toastify/dist/ReactToastify.css';
