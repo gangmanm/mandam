@@ -376,7 +376,7 @@ export default function Edit() {
             options={dropdownOptions}
             onChange={(option: any) => handleLoadAutoSave(option.value)}
             placeholder="자동 저장된 파일 선택"
-            className=""
+            className="auto-save-dropdown"
           />
           </S.StyledDropdown>
           </S.DropdownContainer>

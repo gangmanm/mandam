@@ -175,20 +175,14 @@ export default function Preview({
     if (youtubeUrl) {
       if (youtubeUrl.includes("youtube.com")) {
         const videoIdArray = youtubeUrl.split("=");
-
-        if (youtubeUrl.includes("t=")) {
-          const videoStartArray = youtubeUrl.split("t=");
-          const videoStart = videoStartArray[1].split("s")[0];
-          setVideoStart(Number(videoStart));
-        }
         setVideoId(videoIdArray[1].split("&")[0]);
+      } else if (youtubeUrl.includes("youtu.be")) {
+        console.log(youtubeUrl);
+        // youtu.be 형식의 URL 처리
+        const videoIdArray = youtubeUrl.split("/")[3].split("?")[0];
+        setVideoId(videoIdArray);
       } else {
-        if (!toast.isActive("youtube-link-error")) {
-          toast.error("유튜브 영상 링크가 올바르지 않습니다.", {
-            toastId: "youtube-link-error",
-          });
-        }
-
+        toast.error("유튜브 영상 링크가 올바르지 않습니다.");
       }
     }
   }, [youtubeUrl]);

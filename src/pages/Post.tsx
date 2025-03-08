@@ -189,11 +189,7 @@ export default function Post() {
       const extractedCharacters = await extractCharactersFromSrt(file);
       
       // 기존 캐릭터와 중복되지 않게 새로운 캐릭터 추가
-      setCharacters(prev => {
-        const existingNames = new Set(prev.map(char => char.name));
-        const newCharacters = extractedCharacters.filter(char => !existingNames.has(char.name));
-        return [...prev, ...newCharacters];
-      });
+      setCharacters(extractedCharacters);
 
       toast.success("자동 저장된 파일을 불러왔습니다.", { autoClose: 3000 });
      
