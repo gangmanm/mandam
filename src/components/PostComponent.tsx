@@ -58,6 +58,11 @@ export default function PostComponent({
         <S.PostComponentTitleContainer>
           <S.PostComponentUsername>작성자 : {username}</S.PostComponentUsername>
         </S.PostComponentTitleContainer>
+        <S.PostComponentTitleContainer>
+        <S.PostComponentDate>
+            {date.toLocaleString().split("T")[0].split("-").join(".")}
+          </S.PostComponentDate>
+        </S.PostComponentTitleContainer>
 
         <S.PostComponentInfoContainer>
           <S.PostComponentInfo>
@@ -70,9 +75,7 @@ export default function PostComponent({
               {likes_count}
             </S.PostComponentInfoText>
           </S.PostComponentInfo>
-          <S.PostComponentDate>
-            {date.toLocaleString().split("T")[0].split("-").join(".")}
-          </S.PostComponentDate>
+         
         </S.PostComponentInfoContainer>
       </S.PostInfoContainer>
     </S.PostComponent>
