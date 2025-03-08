@@ -60,7 +60,7 @@ export const LeftContainer = styled.div`
 
   @media (max-width: ${({ theme }) => theme.breakpoints.Mobile}) {
     width: 100%;
-    height: 100%;
+    height: 450px;
     padding: 0px;
   }
 `;
@@ -135,13 +135,13 @@ export const AllScenesContainer = styled.div`
 
 export const AllCommentsContainer = styled.div`
   width: 100%;
-  height: 100%;
+  height: calc(100% - 60px);
   display: flex;
   flex-direction: column;
   gap: 15px;
   overflow: auto;
   padding-right: 15px;
-  margin-top: 20px;
+  margin-top: 40px;
 
   /* 스크롤바 스타일링 */
   &::-webkit-scrollbar {
