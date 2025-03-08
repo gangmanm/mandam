@@ -122,7 +122,7 @@ const SignUp = () => {
             <FaUser />
           </S.Label>
           <S.Input
-            $width="300px"
+            $width="200px"
             type="text"
             name="username"
             placeholder="닉네임"
