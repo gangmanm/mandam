@@ -2,7 +2,6 @@ import { motion } from "framer-motion";
 import styled from "styled-components";
 
 export const Overlay = styled(motion.div)`
-
   position: fixed;
   top: 0;
   left: 0;
@@ -16,6 +15,7 @@ export const NavBarContainer = styled.div`
   width: 100vw;
   height: 50px;
   padding: 15px 20px;
+  z-index: 1000;
 `;
 
 export const NavBarContent = styled.div`
