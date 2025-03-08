@@ -336,6 +336,10 @@ export const RightContainer = styled.div`
   }
 `;
 
+export const DropdownContainer = styled.div`
+  width: 100%;
+`;
+
 export const StyledDropdown = styled.div`
   .auto-save-dropdown {
     width: 100%;
@@ -409,9 +413,6 @@ export const StyledDropdown = styled.div`
   }
 `;
 
-export const DropdownContainer = styled.div`
-  width: 100%;
-`;
 
 export const Button = styled.button`
   flex: 1;

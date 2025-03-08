@@ -5,7 +5,6 @@ import YouTube from "react-youtube";
 import { toast } from "react-toastify";
 import "react-range-slider-input/dist/style.css";
 import React from "react";
-import styled from "styled-components";
 import { autoSavePost, getAutoSave, getFile } from "../api/post";
 import Dropdown from "react-dropdown";
 import "react-dropdown/style.css";
@@ -48,19 +47,13 @@ interface MarkerDragState {
 
 export default function Create() {
   const location = useLocation();
-  const navigate = useNavigate();
   const [videoId, setVideoId] = useState<string>("");
   const [youtubeUrl, setYoutubeUrl] = useState("");
   const [range, setRange] = useState([0, 100]);
   const [duration, setDuration] = useState(0);
   const [player, setPlayer] = useState<any>(null);
-  const [isGenerating, setIsGenerating] = useState(false);
   const [subtitles, setSubtitles] = useState<Subtitle[]>([]);
   const [currentSubtitle, setCurrentSubtitle] = useState<Subtitle | null>(null);
-  const [isAddingSubtitle, setIsAddingSubtitle] = useState(false);
-  const [newSubtitleText, setNewSubtitleText] = useState("");
-  const [editingSubtitle, setEditingSubtitle] = useState<Subtitle | null>(null);
-  const [subtitleRange, setSubtitleRange] = useState<[number, number]>([0, 0]);
   const [dragState, setDragState] = useState<DragState>({
     isDragging: false,
     subtitleId: null,
@@ -382,21 +375,7 @@ export default function Create() {
       window.removeEventListener("mouseup", handleTimelineMouseUp);
     };
   }, [isDraggingTimeline, dragStartX, initialTime, zoom]);
-
-  const handleSubtitleItemMouseDown = (
-    e: React.MouseEvent,
-    subtitle: Subtitle
-  ) => {
-    e.preventDefault();
-    setSubtitleDragState({
-      isDragging: true,
-      subtitleId: subtitle.id,
-      startX: e.clientX,
-      originalStartTime: subtitle.startTime,
-      originalEndTime: subtitle.endTime,
-    });
-  };
-
+  
   const autoSave = () => {
     // 현재 자막을 SRT 파일로 생성
     const srtFile = generateSrt();
@@ -925,46 +904,3 @@ export default function Create() {
     </S.MainContainer>
   );
 }
-
-export const TimeMarker = styled.div`
-  position: absolute;
-  width: 2px;
-  height: 100%;
-  background-color: #ff0000;
-  top: 0;
-  transform: translateX(-50%);
-  z-index: 2;
-  pointer-events: none;
-  will-change: transform;
-  transition: left 0.1s linear;
-
-  &::after {
-    content: "";
-    position: absolute;
-    width: 12px;
-    height: 12px;
-    background-color: #ff0000;
-    border-radius: 50%;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
-`;
-
-export const FileInputLabel = styled.label`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 8px 16px;
-  background-color: rgb(0, 0, 0);
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.2s;
-  text-wrap: nowrap;
-  &:hover {
-    background-color: rgb(74, 74, 74);
-  }
-`;

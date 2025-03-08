@@ -1,3 +1,5 @@
+import { AutoSave } from "../types";
+
 const SETTING = import.meta.env.VITE_SETTING;
 const SERVER_URL = SETTING === "dev" ? import.meta.env.VITE_DEV_SERVER_URL : import.meta.env.VITE_SERVER_URL;
 
@@ -10,6 +12,7 @@ interface Post  {
   id: string;
   youtube_url: string;
   characters?: Character[];
+  content?: string;
 }
 
 interface Character {
@@ -33,8 +36,8 @@ export const createPost = async (post: Post) => {
       console.warn("post.File is not a valid File object.");
     }
 
-    formData.append("content", post.content);
-    formData.append("youtube_url", post.youtubeUrl);
+    formData.append("content", post.content as string);
+    formData.append("youtube_url", post.youtubeUrl as string);
 
     const response = await fetch(`${SERVER_URL}/posts/create-post`, {
       method: "POST",

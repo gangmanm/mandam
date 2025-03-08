@@ -275,6 +275,7 @@ export default function Post() {
                 value={youtubeUrl}
                 onChange={(e) => setYoutubeUrl(e.target.value)}
                 placeholder="유튜브 영상 링크를 입력해주세요."
+   
               />
             </S.YoutubeContainer>
 
@@ -285,6 +286,7 @@ export default function Post() {
                     options={dropdownOptions}
                     onChange={(option: any) => handleLoadAutoSave(option.value)}
                     placeholder="저장된 파일 선택"
+                   className="auto-save-dropdown"
                   />
                 </S.StyledDropdown>
               </S.DropdownContainer>
@@ -389,7 +391,7 @@ export default function Post() {
         </S.LeftContainer>
         <S.RightContainer>
             <Preview
-              youtubeLink={youtubeUrl}
+              youtubeUrl={youtubeUrl}
               srtFile={file as File}
               characters={characters.map((character) => ({
                 img: character.img as File,
@@ -405,7 +407,7 @@ export default function Post() {
             />
         </S.RightContainer>
       </S.MainContainer>
-      <ToastContainer autoClose={3000} closeOnClick pauseOnHover />
+      <ToastContainer autoClose={3000} />
     </S.Container>
   );
 }

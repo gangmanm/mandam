@@ -1,7 +1,7 @@
 import * as S from "../styles/pages/post";
 import { useState, useRef, useEffect } from "react";
-import { FaFileUpload, FaPlus, FaEdit } from "react-icons/fa";
-import { createPost, createCharacter, getPost, editPost, deleteCharacter, getFile, getAutoSave, editCharacter } from "../api/post";
+import { FaFileUpload, FaPlus } from "react-icons/fa";
+import { createCharacter, getPost, editPost, deleteCharacter, getFile, getAutoSave, editCharacter } from "../api/post";
 import Preview from "./Preview";
 import { heicTo } from "heic-to"
 import { ToastContainer, toast } from "react-toastify";
@@ -384,7 +384,7 @@ export default function Edit() {
             options={dropdownOptions}
             onChange={(option: any) => handleLoadAutoSave(option.value)}
             placeholder="자동 저장된 파일 선택"
-            className="auto-save-dropdown"
+            className=""
           />
           </S.StyledDropdown>
           </S.DropdownContainer>
@@ -485,7 +485,7 @@ export default function Edit() {
       <S.RightContainer>
         {youtubeUrl && file && (
           <Preview 
-            youtubeLink={youtubeUrl} 
+            youtubeUrl={youtubeUrl} 
             srtFile={file} 
             characters={characters.filter(char => !char.isDelete).map(char => ({
               img: char.img || null,

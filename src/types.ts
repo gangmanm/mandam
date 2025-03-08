@@ -37,11 +37,16 @@ export interface Character {
 
 export interface Comment {
   comment: string;
-  username: string;
+  created_at: string;
+  id: string;
+  user: {
+    username: string;
+  }
+  user_id: string;
 }
 
 export interface PreviewProps {
-  youtubeLink: string;
+  youtubeUrl: string;
   srtFile: File;
   characterImages: { image: File; name: string }[];
 }
@@ -70,7 +75,7 @@ export interface LikeState {
 }
 
 export interface Post {
-  id? : string;
+  id? : string | undefined;
   post_id: string;
   title: string;
   File: File;

@@ -14,7 +14,7 @@ interface Speaker {
 }
 
 interface PreviewProps {
-  youtubeLink: string | null;
+  youtubeUrl: string | null;
   srtFile: File;
   characters?: {
     img_file_path?: string | null;
@@ -27,7 +27,7 @@ interface PreviewProps {
 }
 
 export default function Preview({
-  youtubeLink,
+  youtubeUrl,
   srtFile,
   characters,
   edit,
@@ -181,21 +181,21 @@ export default function Preview({
       rel: 0,
       modestbranding: 1,
       showinfo: 0,
-      controls: 1, // 컨트롤을 활성화하여 키보드 이벤트 충돌 방지
-      disablekb: 1, // YouTube 기본 키보드 컨트롤 비활성화
+      controls: 1, 
+      disablekb: 1, 
       fs: 0,
-      enablejsapi: 1, // JavaScript API 활성화
+      enablejsapi: 1,
       start: videoStart || 0,
     },
   };
 
   useEffect(() => {
-    if (youtubeLink) {
-      if (youtubeLink.includes("youtube.com")) {
-        const videoIdArray = youtubeLink.split("=");
+    if (youtubeUrl) {
+      if (youtubeUrl.includes("youtube.com")) {
+        const videoIdArray = youtubeUrl.split("=");
 
-        if (youtubeLink.includes("t=")) {
-          const videoStartArray = youtubeLink.split("t=");
+        if (youtubeUrl.includes("t=")) {
+          const videoStartArray = youtubeUrl.split("t=");
           const videoStart = videoStartArray[1].split("s")[0];
           setVideoStart(Number(videoStart));
         }
@@ -209,12 +209,12 @@ export default function Preview({
 
       }
     }
-  }, [youtubeLink]);
+  }, [youtubeUrl]);
 
   return (
     <S.MainContainer onKeyDown={(e) => e.stopPropagation()} tabIndex={-1}>
       <S.VideoContainer tabIndex={0} onFocus={(e) => e.currentTarget.blur()}>
-        {youtubeLink && (
+        {youtubeUrl && (
           <YouTube
             key={videoId}
             videoId={videoId}

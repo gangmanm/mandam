@@ -1,8 +1,11 @@
 import { FaTrash } from "react-icons/fa";
 import * as S from "../styles/pages/content";
+import { Comment } from "../types";
 
 export default function UserCommentSection({ comments, userId, handleDeleteComment, comment, setComment, handleAddComment }: { comments: Comment[], userId: string, handleDeleteComment: (commentId: string) => void, comment: string, setComment: (comment: string) => void, handleAddComment: () => void }) {
-    return (
+    
+  console.log("댓글",comments);
+  return (
       <S.UserCommentContainer>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <S.CommentInput
