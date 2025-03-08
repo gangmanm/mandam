@@ -65,7 +65,7 @@ export const VideoContainer = styled.div`
     width: 100%;
     height: 220px;
     position: fixed;
-    top: 60px;
+    top: 0;
     left: 0;
     z-index: 100;
     background-color: #fff;
@@ -159,7 +159,7 @@ export const AllCommentsContainer = styled.div`
     height: 100%;
     padding: 10px;
 
-    margin-top: 80px;
+    margin-top: 60px;
   }
 `;
 
@@ -220,7 +220,7 @@ export const VideoInfoContainer = styled.div`
     width: 100%;
     height: 40px;
     padding: 10px;
-    margin-top: 230px;
+    margin-top: 170px;
     font-size: 12px;
     position: fixed;
   }
