@@ -15,10 +15,13 @@ export default function MyPage() {
   const [autoSavePosts, setAutoSavePosts] = useState<AutoSave[]>([]);
   const userId = localStorage.getItem("userId");
   const navigate = useNavigate();
+ 
 
-  if (!userId) {
-    navigate("/signin");
-  }
+  useEffect(() => {
+    if (!userId) {
+      navigate("/signin");
+    }
+  }, [userId, navigate]);
 
   useEffect(() => {
     const fetchPosts = async () => {
