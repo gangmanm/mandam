@@ -16,7 +16,7 @@ export const MainContainer = styled.div`
 
 export const ContentContainer = styled.div`
   width: 100%;
-  height: calc(100% - 50px);
+  height: calc(100% - 60px);
   display: flex;
   padding: 30px;
 
@@ -65,7 +65,7 @@ export const VideoContainer = styled.div`
     width: 100%;
     height: 220px;
     position: fixed;
-    top: 60;
+    top: 0;
     left: 0;
     z-index: 100;
     background-color: #fff;
@@ -220,7 +220,7 @@ export const VideoInfoContainer = styled.div`
     width: 100%;
     height: 40px;
     padding: 10px;
-    margin-top: 230px;
+    margin-top: 170px;
     font-size: 12px;
     position: fixed;
   }
