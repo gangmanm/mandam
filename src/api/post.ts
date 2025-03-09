@@ -506,3 +506,46 @@ export const deleteAutoSave = async (userId: string, fileName: string) => {
     return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
   }
 };
+
+
+export const updateView = async (postId: string) => {
+  try {
+    const response = await fetch(`${SERVER_URL}/posts/update-view`, {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ post_id: postId })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error updating view:", error);
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+  }
+};
+
+
+export const getView = async (postId: string) => {
+  try {
+    const response = await fetch(`${SERVER_URL}/posts/get-view/${postId}`, {
+      method: "GET",
+      mode: "cors",
+    });
+
+    if (!response.ok) {
+      throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error getting view:", error);
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+  }
+};
+  

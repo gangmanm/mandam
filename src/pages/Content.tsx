@@ -9,9 +9,11 @@ import {
   likePost,
   getLike,
   deletePost,
+  updateView,
+  getView,
 } from "../api/post";
 import { addComment } from "../api/post";
-import { FaEdit, FaHeart } from "react-icons/fa";
+import { FaEdit, FaEye, FaHeart } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import { deleteComment } from "../api/post";
 import { FaTrash } from "react-icons/fa";
@@ -65,6 +67,9 @@ export default function Content() {
     count: 0,
     isLiked: false
   });
+
+  //조회수 관련 상태
+  const [viewState, setViewState] = useState<number>(0);
 
   const userId = localStorage.getItem("userId");
   const [isLoading, setIsLoading] = useState(true);
@@ -325,6 +330,20 @@ export default function Content() {
     navigate(`/edit/${id}`);
   };
 
+  useEffect(() => {
+    const fetchViewCount = async () => {
+      if (!id) return;
+
+      await updateView(id as string);
+
+      // 조회수 표시 업데이트
+      const viewResponse = await getView(id);
+      setViewState(viewResponse.views);
+    };
+
+    fetchViewCount();
+  }, []); // 의존성 배열을 비워두어 컴포넌트 마운트 시 한 번만 실행
+
   const handleDeletePost = (id: string) => {
     toast.info(
       <div style={{ display: "flex", alignItems: "center" }}>
@@ -407,11 +426,7 @@ export default function Content() {
                       댓글 {commentState.isVisible ? "닫기" : "보기"}
                     </div>
                   )}
-                  <FaHeart
-                    onClick={handleLikePost}
-                    color={likeState.isLiked ? "red" : "white"}
-                  />
-                  <div style={{ marginLeft: "5px" }}>{likeState.count}</div>
+               
                   {userId && userId === localStorage.getItem("userId") && (
                     <FaTrash
                       style={{
@@ -436,6 +451,23 @@ export default function Content() {
                         onClick={() => handleEditPost()}
                       />
                     )}
+                  </div>
+                  <FaHeart
+                    onClick={handleLikePost}
+                    color={likeState.isLiked ? "red" : "white"}
+                    style={{
+                      marginLeft: "10px",
+                    }}
+                  />
+                  <div style={{ marginLeft: "5px" }}>{likeState.count}</div>
+                  <FaEye
+                    style={{
+                      marginLeft: "10px",
+                      color: "white",
+                    }}
+                  />
+                  <div style={{ marginLeft: "10px", fontSize: "12px" }}>
+                    {viewState}
                   </div>
                 </div>
               </S.TitleContainer>
