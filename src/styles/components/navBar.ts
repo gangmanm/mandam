@@ -48,7 +48,7 @@ export const Title = styled.div`
   cursor: pointer;
 
   &:hover {
-    color:rgb(154, 43, 43);
+    scale: 1.05;
   }
 `;
 

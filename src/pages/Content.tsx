@@ -285,17 +285,19 @@ export default function Content() {
 
   const handleLikePost = async () => {
     const userId = localStorage.getItem("userId");
+    if (!userId) {
+      toast.error("로그인 후 좋아요를 눌러주세요.");
+      return;
+    }
     await likePost(id as string, userId as string);
     getLike(id as string).then((res) => {
+      const userId = localStorage.getItem("userId");
       const like = res.length;
+      
       setLikeState({
-        ...likeState,
-        count: like
+        count: like,
+        isLiked: res.some((like: any) => like.user_id === userId)
       });
-    });
-    setLikeState({
-      ...likeState,
-      isLiked: true
     });
   };
 
@@ -303,12 +305,9 @@ export default function Content() {
     getLike(id as string).then((res) => {
       const userId = localStorage.getItem("userId");
       const like = res.length;
+      
       setLikeState({
-        ...likeState,
-        count: like
-      });
-      setLikeState({
-        ...likeState,
+        count: like,
         isLiked: res.some((like: any) => like.user_id === userId)
       });
     });
@@ -458,7 +457,7 @@ export default function Content() {
                     style={{
                       marginLeft: "10px",
                     }}
-                  />
+                      />  
                   <div style={{ marginLeft: "5px" }}>{likeState.count}</div>
                   <FaEye
                     style={{
