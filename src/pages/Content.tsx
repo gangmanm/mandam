@@ -471,7 +471,7 @@ export default function Content() {
                       color: "white",
                     }}
                   />
-                  <div style={{ marginLeft: "10px", fontSize: "12px" }}>
+                  <div style={{ marginLeft: "5px" }}>
                     {viewState}
                   </div>
                 </div>
