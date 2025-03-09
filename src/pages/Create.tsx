@@ -427,7 +427,7 @@ export default function Create() {
     const timelineRect = timelineRef.current.getBoundingClientRect();
     const timelineWidth = timelineRect.width;
     const pixelOffset = e.clientX - markerDragState.startX;
-    const timeOffset = (pixelOffset / timelineWidth) * duration * 2;
+    const timeOffset = (pixelOffset / timelineWidth) * duration * 0.5;
 
     const subtitleDuration =
       markerDragState.originalEndTime - markerDragState.originalStartTime;
