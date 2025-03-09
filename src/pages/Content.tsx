@@ -233,13 +233,11 @@ export default function Content() {
     }
   }, [videoState.link]);
 
-  const handleAddComment = async () => {
-    const userId = localStorage.getItem("userId");
-
-    if (!userId) {
+  const LoginError = (text: string) => {
+    return (
       toast.error(
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <span>댓글을 작성하려면 로그인을 진행해주세요</span>
+          <span>{text}</span>
           <button
             onClick={() => navigate("/signin")}
             style={{
@@ -256,7 +254,15 @@ export default function Content() {
           </button>
         </div>,
         { autoClose: false }
-      );
+      )
+    );
+  };
+
+  const handleAddComment = async () => {
+    const userId = localStorage.getItem("userId");
+
+    if (!userId) {
+      LoginError("댓글을 작성하려면 로그인을 진행해주세요");
       return;
     }
 
@@ -286,7 +292,7 @@ export default function Content() {
   const handleLikePost = async () => {
     const userId = localStorage.getItem("userId");
     if (!userId) {
-      toast.error("로그인 후 좋아요를 눌러주세요.");
+      LoginError("좋아요를 누르려면 로그인을 진행해주세요");
       return;
     }
     await likePost(id as string, userId as string);
