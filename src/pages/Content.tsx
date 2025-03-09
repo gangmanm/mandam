@@ -471,7 +471,7 @@ export default function Content() {
                     }}
                   />
                   <div style={{ marginLeft: "5px" }}>
-                    {viewState/2}
+                    {viewState}
                   </div>
                 </div>
               </S.TitleContainer>
