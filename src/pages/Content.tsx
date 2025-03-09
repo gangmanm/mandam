@@ -337,12 +337,11 @@ export default function Content() {
 
   useEffect(() => {
     const fetchViewCount = async () => {
-      if (!id) return;
 
       await updateView(id as string);
 
       // 조회수 표시 업데이트
-      const viewResponse = await getView(id);
+      const viewResponse = await getView(id as string);
       setViewState(viewResponse.views);
     };
 
@@ -472,7 +471,7 @@ export default function Content() {
                     }}
                   />
                   <div style={{ marginLeft: "5px" }}>
-                    {viewState}
+                    {viewState/2}
                   </div>
                 </div>
               </S.TitleContainer>
