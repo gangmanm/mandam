@@ -2,14 +2,15 @@
 
 <table>
   <tr>
-    <td><img src="https://github.com/user-attachments/assets/4973b3be-140a-4f89-b306-4c869f45117a" alt="image" /></td>
-    <td><img src="https://github.com/user-attachments/assets/5622bead-18b4-4eab-b6ee-57fb78f96c78" alt="image" /></td>
+    <td><img src="https://github.com/user-attachments/assets/4973b3be-140a-4f89-b306-4c869f45117a" alt="image" width="500"/></td>
+    <td><img src="https://github.com/user-attachments/assets/5622bead-18b4-4eab-b6ee-57fb78f96c78" alt="image" width="500"/></td>
   </tr>
   <tr>
-    <td><img src="https://github.com/user-attachments/assets/79a4cf15-49ef-46a3-a3e8-c991f9363c24" alt="image" /></td>
-    <td><img src="https://github.com/user-attachments/assets/a57caad6-c811-4023-84c8-c7e0f5a0837d" alt="image" /></td>
+    <td><img src="https://github.com/user-attachments/assets/79a4cf15-49ef-46a3-a3e8-c991f9363c24" alt="image" width="500"/></td>
+    <td><img src="https://github.com/user-attachments/assets/a57caad6-c811-4023-84c8-c7e0f5a0837d" alt="image" width="500"/></td>
   </tr>
 </table>
+
 
 ## 프로젝트 실행
 
